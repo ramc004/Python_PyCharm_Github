@@ -9,7 +9,6 @@ from PIL import ImageTk, Image
 # I have imported sqlite3, so I am able to connect to a database and store the users information
 
 
-
 def register():
     """this function is the code for the 'Register' window
        whenever the user doesn't have an account yet but would like to create one"""
@@ -260,5 +259,7 @@ def main_account_screen():
     #
     main_screen.mainloop()
     #
+
+
 main_account_screen()
 #
