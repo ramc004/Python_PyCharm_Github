@@ -1,0 +1,2 @@
+ans = input ("")
+if ans
