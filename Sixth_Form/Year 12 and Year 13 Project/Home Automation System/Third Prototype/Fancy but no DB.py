@@ -237,11 +237,11 @@ def main_account_screen():
     #
     main_screen.title("A Level Computer Science Project")
     #
-    frame = Frame(main_screen, width=450, height=400)
+    frame = Frame(main_screen, width=300, height=55)
     #
     frame.place(x=5, y=5)
     #
-    img = ImageTk.PhotoImage(Image.open("'home automation system' title.png"))
+    img = ImageTk.PhotoImage(Image.open("third.png"))
     #
     label = Label(frame, image=img)
     #

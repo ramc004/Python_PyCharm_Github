@@ -17,112 +17,11 @@ c = conn.cursor()
 
 # create table
 '''
-c.execute("""CREATE TABLE users (
+c.execute("""CREATE TABLE boring_users (
         email_address text,
         password text
     )""")
 '''
-
-
-def register():
-    # Create a database or connect to one
-    conn = sqlite3.connect('User Login Page Database.db')
-
-    # create cursor
-    c = conn.cursor()
-    """this function is the code for the 'Register' window
-       whenever the user doesn't have an account yet but would like to create one"""
-    global register_screen
-    register_screen = Toplevel(main_screen)
-    register_screen.title("Register")
-    register_screen.geometry("500x800")
-    register_screen.resizable(False, False)
-    global email_address
-    global password
-    global email_address
-    global password_entry
-    email_address = StringVar()
-    password = StringVar()
-    email_address_label_2 = Label(register_screen, text="Email Address ")
-    email_address_label_2.pack()
-    email_address = Entry(register_screen, textvariable=email_address)
-    email_address.pack()
-    password_label_2 = Label(register_screen, text="Password * ")
-    password_label_2.pack()
-    password_entry = Entry(register_screen, textvariable=password, show='*')
-    password_entry.pack()
-    Label(register_screen, text="").pack()
-    Button(register_screen, text="Register", width=10, height=1, bg="blue").pack()
-    Button(register_screen, text="Authenticate", width=10, height=1, bg="blue").pack()
-    # committing changes
-    conn.commit()
-
-    # close connection
-    conn.close()
-
-
-def login():
-    # Create a database or connect to one
-    conn = sqlite3.connect('User Login Page Database.db')
-
-    # create cursor
-    c = conn.cursor()
-    global login_screen
-    login_screen = Toplevel(main_screen)
-    login_screen.title("Login")
-    login_screen.geometry("500x800")
-    Label(login_screen, text="Please enter details below to login").pack()
-    Label(login_screen, text="").pack()
-    login_screen.resizable(False, False)
-    global email_address_verify
-    global password_verify
-    email_address_verify = StringVar()
-    password_verify = StringVar()
-    global email_address_login_entry
-    global password_login_entry
-    Label(login_screen, text="email address * ").pack()
-    email_address_login_entry = Entry(login_screen, textvariable=email_address_verify)
-    email_address_login_entry.pack()
-    Label(login_screen, text="").pack()
-    Label(login_screen, text="Password * ").pack()
-    password_login_entry = Entry(login_screen, textvariable=password_verify, show='*')
-    password_login_entry.pack()
-    Label(login_screen, text="").pack()
-    Button(login_screen, text="Login", width=10, height=1).pack()
-    # committing changes
-    conn.commit()
-
-    # close connection
-    conn.close()
-
-
-def main_account_screen():
-    # Create a database or connect to one
-    conn = sqlite3.connect('User Login Page Database.db')
-
-    # create cursor
-    c = conn.cursor()
-    global main_screen
-    main_screen = Tk()
-    main_screen.geometry("500x800")
-    main_screen.title("A Level Computer Science Project")
-    frame = Frame(main_screen, width=450, height=400)
-    frame.place(x=5, y=5)
-    img = ImageTk.PhotoImage(Image.open("'home automation system' title.png"))
-    label = Label(frame, image=img)
-    label.place(x=40, y=0)
-    Label(text="").pack()
-    Button(text="Login", height="2", width="30", command=login).place(x=100, y=75)
-    Label(text="").place(x=5, y=5)
-    Button(text="Register", height="2", width="30", command=register).place(x=100, y=125)
-    main_screen.resizable(False, False)
-    main_screen.mainloop()
-    # committing changes
-    conn.commit()
-
-    # close connection
-    conn.close()
-    main_account_screen()
 
 
 def update():
@@ -132,7 +31,7 @@ def update():
     # create cursor
     c = conn.cursor()
     record_id = delete_box.get()
-    c.execute("""UPDATE users SET 
+    c.execute("""UPDATE boring_users SET 
         email_address = :email,
         password = :password
         
@@ -166,7 +65,7 @@ def edit():
 
     record_id = delete_box.get()
     # Query the database
-    c.execute("SELECT * FROM users WHERE oid = " + record_id)
+    c.execute("SELECT * FROM boring_users WHERE oid = " + record_id)
     records = c.fetchall()
     # print(records)
 
@@ -205,7 +104,7 @@ def delete():
     c = conn.cursor()
 
     # Delete a record
-    c.execute("DELETE from users WHERE oid= " + delete_box.get())
+    c.execute("DELETE from boring_users WHERE oid= " + delete_box.get())
 
     # committing changes
     conn.commit()
@@ -223,7 +122,7 @@ def submit():
     c = conn.cursor()
 
     # Insert into table
-    c.execute("INSERT INTO users VALUES (:email_address, :password)",
+    c.execute("INSERT INTO boring_users VALUES (:email_address, :password)",
               {
                   'email_address': email_address.get(),
                   'password': password.get()
@@ -249,7 +148,7 @@ def query():
     c = conn.cursor()
 
     # Query the database
-    c.execute("SELECT *, oid FROM users")
+    c.execute("SELECT *, oid FROM boring_users")
     records = c.fetchall()
     # print(records)
 
