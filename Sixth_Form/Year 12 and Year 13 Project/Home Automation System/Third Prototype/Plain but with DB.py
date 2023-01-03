@@ -5,7 +5,7 @@ import sqlite3
 
 root = Tk()
 root.title('A Level Computer Science Project')
-root.geometry("500x800")
+root.geometry("400x400")
 
 # Databases
 
@@ -18,8 +18,8 @@ c = conn.cursor()
 # create table
 '''
 c.execute("""CREATE TABLE boring_users (
-        email_address text,
-        password text
+    email_address text,
+    password text
     )""")
 '''
 
