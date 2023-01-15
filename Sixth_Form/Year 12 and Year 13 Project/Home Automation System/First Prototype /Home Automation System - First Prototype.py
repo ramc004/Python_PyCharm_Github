@@ -11,12 +11,14 @@ def register_user():
 def login_verify():
     return
 
+
 def register():
     return
 
 
 def login():
     return
+
 
 def main_account_screen():
     #
