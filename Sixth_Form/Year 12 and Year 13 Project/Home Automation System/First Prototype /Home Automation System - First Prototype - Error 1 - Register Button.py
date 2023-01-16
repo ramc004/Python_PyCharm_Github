@@ -23,21 +23,9 @@ def main_account_screen():
     # gives our window a starting size of 500 width and 800 in length
     main_screen.title("A Level Computer Science Project")
     # gives the window a title of 'A Level Computer Science Project
-    Label(text="Home Automation System", bg="#10c2fe", width="300", height="2", font=("Arial", 13)).pack()
+    Label(text="Home Automation System", bg="#10c2fe", width="300", height="2", font=("Calibri", 13)).pack()
     # gives the window a label of 'Home Automation System' with a fixed border around it and a font
-    Label(text="").pack()
-    # gives some space between the title and the login button
-    Login_Button = Button(text="Login", height="2", width="30", command=login)
-    # creates a button for the user to click on with a set size of width 30 and height 2
-    Login_Button.pack()
-    # packs the Login button into the window directly below
-    Label(text="").pack()
-    # allows for some space between the login and register button
-    Register_Button = Button(text="Register", height="2", width="30", command=register)
-    # sets the variable register_button equal to a button with text register ste in the middle and a command of register
-    Register_Button.pack()
-    # packs the register button directly below the label
-    main_screen.resizable(False, False)
+    main_screen.resizable()
     # fixes the windows size to 500x800, so it cannot be altered
     main_screen.mainloop()
     # tells the system to have the window ready to be run
