@@ -25,12 +25,9 @@ def main_account_screen():
     # gives the window a title of 'A Level Computer Science Project
     Label(text="Home Automation System", bg="#10c2fe", width="300", height="2", font=("Calibri", 13)).pack()
     # gives the window a label of 'Home Automation System' with a fixed border around it and a font
-    main_screen.resizable()
-    # fixes the windows size to 500x800, so it cannot be altered
     main_screen.mainloop()
     # tells the system to have the window ready to be run
 
 
 main_account_screen()
 # this outputs the window with the user to interact with
-
