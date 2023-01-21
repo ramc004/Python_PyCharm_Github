@@ -2,6 +2,8 @@ from tkinter import *
 from PIL import ImageTk, Image
 import os
 import sqlite3
+import emoji
+
 
 # the first line tells the program to search for the built-in library Tkinter
 # and import all the modules found within Tkinter
@@ -96,11 +98,15 @@ def register():
 
     verify_button_description = Label(register_screen, text="click verify, email sent, 6 digit code")
 
-    verify_button_description.place(x=240, y=50)
+    verify_button_description.place(x=240, y=45)
 
     check_clause_1_email_address = Label(register_screen, text="Contains appropriate name")
 
     check_clause_1_email_address.place(x=150, y=100)
+
+    check_clause_1_email_address_emoji = Label(register_screen, text=f'{emoji.emojize(":cross_mark:")}')
+
+    check_clause_1_email_address_emoji.place(x=125, y=100)
 
     check_clause_2_email_address = Label(register_screen, text="'@' sign")
 
