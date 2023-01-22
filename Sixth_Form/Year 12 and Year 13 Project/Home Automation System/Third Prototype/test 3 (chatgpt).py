@@ -11,8 +11,8 @@ def send_email():
     # Send email
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login("calebrunner75@gmail.com", "your_password")
-    server.sendmail("your_email@gmail.com", "recipient_email@example.com", msg)
+    server.login("calebrunner75@gmail.com", "rikkuv-quSsex-fevqu9")
+    server.sendmail("calebrunner75@gmail.com", "ramcaleb@gmail.com", msg)
     server.quit()
     return code
 
