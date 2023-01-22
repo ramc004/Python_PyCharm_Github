@@ -3,7 +3,7 @@ from PIL import ImageTk, Image
 import os
 import sqlite3
 import emoji
-
+import re
 
 # the first line tells the program to search for the built-in library Tkinter
 # and import all the modules found within Tkinter
@@ -42,6 +42,8 @@ c.execute("""CREATE TABLE users (
         sixth_digit_for_six_digit_code integer
     )""")
 '''
+
+
 # creates table
 
 
@@ -100,13 +102,164 @@ def register():
 
     verify_button_description.place(x=240, y=45)
 
+    def check_email_address():
+        """"""
+        email = email_address_entry.get()
+
+        if "@" in email:
+
+            emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+
+        else:
+
+            emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+
+        if "gmail.com" in email \
+                or "yahoo.com" in email \
+                or "outlook.com" in email \
+                or "richardchalloner.com" in email \
+                or "icloud.com" in email \
+                or "mail.com" in email \
+                or "email.com" in email \
+                or "aol.com" in email \
+                or "proton.me" in email \
+                or "tutanota.com" in email \
+                or "tutanota.de" in email \
+                or "tutamail.com" in email \
+                or "tuta.io" in email \
+                or "keemail.me" in email \
+                or "zohomail.eu" in email \
+                or "tmmwj.com" in email \
+                or "gmx.com" in email \
+                or "gmx.co.uk" in email:
+
+            emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+
+        else:
+
+            emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+
+        if "caleb" in email \
+                or "hannah" in email \
+                or "mark" in email \
+                or "niki" in email \
+                or "sean" in email \
+                or "katherine" in email \
+                or "kat" in email \
+                or "alyssa" in email \
+                or "katy" in email \
+                or "isaac" in email \
+                or "esther" in email \
+                or "ben" in email \
+                or "connor" in email \
+                or "daisy" in email \
+                or "josh" in email \
+                or "zoey" in email \
+                or "valentina" in email \
+                or "stacy" in email \
+                or "george" in email \
+                or "graham" in email \
+                or "isabella" in email \
+                or "bella" in email \
+                or "ella" in email \
+                or "grace" in email \
+                or "ellis" in email \
+                or "emmanuel" in email \
+                or "christian" in email \
+                or "finn" in email \
+                or "fin" in email \
+                or "rachael" in email \
+                or "liv" in email \
+                or "olivia" in email \
+                or "elaine" in email \
+                or "bert" in email \
+                or "nilusha" in email \
+                or "andy" in email \
+                or "emma" in email \
+                or "emily" in email \
+                or "amelia" in email \
+                or "charlotte" in email \
+                or "sophia" in email \
+                or "mia" in email \
+                or "ava" in email \
+                or "eva" in email \
+                or "keira" in email \
+                or "kiera" in email \
+                or "harper" in email \
+                or "jessie" in email \
+                or "alex" in email \
+                or "liam" in email \
+                or "noah" in email \
+                or "elijah" in email \
+                or "oliver" in email \
+                or "ollie" in email \
+                or "lucas" in email \
+                or "luke" in email \
+                or "james" in email \
+                or "alexia" in email \
+                or "aaron" in email \
+                or "william" in email \
+                or "will" in email \
+                or "jo" in email \
+                or "joseph" in email \
+                or "benjamin" in email \
+                or "henry" in email \
+                or "laura" in email \
+                or "theo" in email \
+                or "daniel" in email \
+                or "marios" in email \
+                or "mario" in email \
+                or "benjy" in email \
+                or "arthur" in email \
+                or "john" in email \
+                or "tim" in email \
+                or "javier" in email \
+                or "xavier" in email \
+                or "eve" in email \
+                or "niamh" in email \
+                or "niam" in email \
+                or "alannah" in email \
+                or "reshee" in email \
+                or "amelie" in email \
+                or "nishtha" in email \
+                or "sofia" in email \
+                or "abi" in email \
+                or "abigail" in email \
+                or "penelope" in email \
+                or "brooke" in email \
+                or "brook" in email \
+                or "brooklyn" in email \
+                or "sophie" in email \
+                or "laila" in email \
+                or "jaimie" in email \
+                or "claudia" in email \
+                or "elena" in email \
+                or "eleanor" in email \
+                or "ram" in email \
+                or "mat" in email \
+                or "matt" in email \
+                or "matthew" in email \
+                or "mary" in email \
+                or "martha" in email \
+                or "peter" in email \
+                or "tamar" in email \
+                or "darius" in email \
+                or "edith" in email \
+                or "elise" in email:
+
+            emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+
+        else:
+
+            emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+
+    check_rules_button_email_address = Button(register_screen, text="check rules", command=check_email_address)
+
+    check_rules_button_email_address.place(x=345, y=125)
+
     check_clause_1_email_address = Label(register_screen, text="Contains appropriate name")
 
     check_clause_1_email_address.place(x=150, y=100)
-
-    check_clause_1_email_address_emoji = Label(register_screen, text=f'{emoji.emojize(":cross_mark:")}')
-
-    check_clause_1_email_address_emoji.place(x=125, y=100)
 
     check_clause_2_email_address = Label(register_screen, text="'@' sign")
 
@@ -138,6 +291,53 @@ def register():
 
     show_password_check_box.place(x=85, y=277)
 
+    def check_password():
+
+        password_length = password_entry.get()
+
+        if len(password_length) >= 8:
+
+            emoji_label_clause_1_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
+
+        else:
+
+            emoji_label_clause_1_password.config(text=f'{emoji.emojize(":cross_mark:")}')
+
+        password_caps = password_entry.get()
+
+        if re.search(r'[A-Z]{3,}', password_caps):
+
+            emoji_label_clause_2_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
+
+        else:
+
+            emoji_label_clause_2_password.config(text=f'{emoji.emojize(":cross_mark:")}')
+
+        password_numbers = password_entry.get()
+
+        if re.search(r'\d{3,}', password_numbers):
+
+            emoji_label_clause_4_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
+
+        else:
+
+            emoji_label_clause_4_password.config(text=f'{emoji.emojize(":cross_mark:")}')
+
+        password_special_chars = password_entry.get()
+
+        if re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{2,}'
+                , password_special_chars):
+
+            emoji_label_clause_3_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
+
+        else:
+
+            emoji_label_clause_3_password.config(text=f'{emoji.emojize(":cross_mark:")}')
+
+    check_rules_button_password = Button(register_screen, text="check rules", command=check_password)
+
+    check_rules_button_password.place(x=345, y=325)
+
     check_clause_1_password = Label(register_screen, text="At least 8 characters")
 
     check_clause_1_password.place(x=150, y=300)
@@ -150,9 +350,41 @@ def register():
 
     check_clause_3_password.place(x=150, y=340)
 
+    check_clause_4_password = Label(register_screen, text="At least 2 numbers")
+
+    check_clause_4_password.place(x=150, y=360)
+
     sign_up_button = Button(register_screen, text='Sign Up', command=sign_up)
 
     sign_up_button.place(x=350, y=390)
+
+    emoji_label_clause_1_password = Label(register_screen)
+
+    emoji_label_clause_1_password.place(x=125, y=300)
+
+    emoji_label_clause_2_password = Label(register_screen)
+
+    emoji_label_clause_2_password.place(x=125, y=320)
+
+    emoji_label_clause_3_password = Label(register_screen)
+
+    emoji_label_clause_3_password.place(x=125, y=340)
+
+    emoji_label_clause_4_password = Label(register_screen)
+
+    emoji_label_clause_4_password.place(x=125, y=360)
+
+    emoji_label_clause_1_email_address = Label(register_screen)
+
+    emoji_label_clause_1_email_address.place(x=125, y=100)
+
+    emoji_label_clause_2_email_address = Label(register_screen)
+
+    emoji_label_clause_2_email_address.place(x=125, y=120)
+
+    emoji_label_clause_3_email_address = Label(register_screen)
+
+    emoji_label_clause_3_email_address.place(x=125, y=140)
 
     conn.commit()
     # commits any changes the users inputs have made to the database
@@ -175,8 +407,6 @@ def login():
     # gives some limits for our window
     login_screen.resizable(False, False)
     # gives the window a fixed size
-
-
 
     conn.commit()
     # commits any changes the users inputs have made to the database
