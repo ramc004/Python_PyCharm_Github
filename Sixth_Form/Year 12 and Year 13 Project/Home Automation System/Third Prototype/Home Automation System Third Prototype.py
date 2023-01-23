@@ -257,7 +257,7 @@ def register():
 
     check_rules_button_email_address.place(x=345, y=125)
 
-    check_clause_1_email_address = Label(register_screen, text="Contains appropriate name")
+    check_clause_1_email_address = Label(register_screen, text="Contains account name")
 
     check_clause_1_email_address.place(x=150, y=100)
 
@@ -305,7 +305,7 @@ def register():
 
         password_caps = password_entry.get()
 
-        if re.search(r'[A-Z]{3,}', password_caps):
+        if re.search(r'[A-Z]{1,}', password_caps):
 
             emoji_label_clause_2_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
@@ -315,7 +315,7 @@ def register():
 
         password_numbers = password_entry.get()
 
-        if re.search(r'\d{3,}', password_numbers):
+        if re.search(r'\d{,}', password_numbers):
 
             emoji_label_clause_4_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
@@ -325,7 +325,7 @@ def register():
 
         password_special_chars = password_entry.get()
 
-        if re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{2,}'
+        if re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}'
                 , password_special_chars):
 
             emoji_label_clause_3_password.config(text=f'{emoji.emojize(":check_mark_button:")}')

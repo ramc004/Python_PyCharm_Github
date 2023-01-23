@@ -4,17 +4,6 @@ import os
 # I have imported os to allow my system to access how the user interacts with their device in relation to my system
 
 
-def register():
-    """this function will create a new window which allows the user to register their details"""
-    return
-
-
-def login():
-    """defines another function with the name of login
-    this will allow the user to log in with credentials they used to register with"""
-    return
-
-
 def main_account_screen():
     """create a function which makes the login and register window"""
     main_screen = Tk()
