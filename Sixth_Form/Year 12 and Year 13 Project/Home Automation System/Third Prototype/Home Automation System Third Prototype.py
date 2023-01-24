@@ -42,8 +42,6 @@ c.execute("""CREATE TABLE users (
         sixth_digit_for_six_digit_code integer
     )""")
 '''
-
-
 # creates table
 
 
@@ -131,7 +129,8 @@ def register():
                 or "zohomail.eu" in email \
                 or "tmmwj.com" in email \
                 or "gmx.com" in email \
-                or "gmx.co.uk" in email:
+                or "gmx.co.uk" in email\
+                or "yahoo.co.uk" in email:
 
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
