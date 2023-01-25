@@ -5,6 +5,7 @@ import random
 username = 'pythonmail069@gmail.com'
 password = 'pythonmail'
 
+
 def check_code(entry):
     email = entry.get()
     print(email)

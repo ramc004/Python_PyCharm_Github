@@ -1,19 +1,22 @@
 from tkinter import *
 from PIL import ImageTk, Image
-import os
 import sqlite3
 import emoji
 import re
+import random
+import smtplib
+
+# rmr tpo paste this in terminal 'python -m aiosmtpd -n -1 localhost: 8025' for server hosting
+
 
 # the first line tells the program to search for the built-in library Tkinter
 # and import all the modules found within Tkinter
 # the next line tells the program to search for the library Pillow
 # and import two modules: Image, which is used to allow us to use Images within our program
 # and ImageTk to allow us to import Images within a Tkinter window
-# next we have told the program to import os, allowing us to interact with the operating system,
-# for example to create or delete a folder
-# the final import line imports our database module
+# the next import line imports our database module
 # which allows us to provide a SQL-like interface to read, query, and write SQL databases from Python
+
 
 proceed = Tk()
 # we are creating a variable called proceed, and setting it equal to our tkinter window
@@ -42,14 +45,12 @@ c.execute("""CREATE TABLE users (
         sixth_digit_for_six_digit_code integer
     )""")
 '''
+
+
 # creates table
 
 
 def sign_up():
-    return
-
-
-def check():
     return
 
 
@@ -80,10 +81,6 @@ def register():
 
     email_address_text.place(x=56.2, y=72)
 
-    email_address_verify_button = Button(register_screen, text="Verify", width=10, height=1, command=verify)
-
-    email_address_verify_button.place(x=350, y=74)
-
     verify_box_entry = Entry(register_screen)
 
     verify_box_entry.place(x=150, y=170)
@@ -92,9 +89,38 @@ def register():
 
     verify_text.place(x=13, y=173)
 
-    verify_button = Button(register_screen, text="Check", width=10, height=1, command=check)
+    code = str(random.randint(100000, 999999))
 
-    verify_button.place(x=350, y=174)
+    def send_email():
+        """"""
+        email = email_address_entry.get()
+
+        server = smtplib.SMTP('localhost', 8025)
+
+        message = "Your code is: " + code
+
+        server.sendmail("", email, message)
+
+        server.quit()
+
+        sent_label = Label(register_screen, text="Email sent!")
+
+        sent_label.grid(row=2, column=0)
+
+    email_address_verify_button = Button(register_screen, text="Verify", width=10, height=1, command=send_email)
+
+    email_address_verify_button.place(x=350, y=74)
+
+    def check():
+        entered_code = verify_box_entry.get()
+        if entered_code == code:
+            print("correct code")
+        else:
+            print("incorrect code")
+
+    check_button = Button(register_screen, text="Check", width=10, height=1, command=check)
+
+    check_button.place(x=350, y=174)
 
     verify_button_description = Label(register_screen, text="click verify, email sent, 6 digit code")
 
@@ -129,7 +155,7 @@ def register():
                 or "zohomail.eu" in email \
                 or "tmmwj.com" in email \
                 or "gmx.com" in email \
-                or "gmx.co.uk" in email\
+                or "gmx.co.uk" in email \
                 or "yahoo.co.uk" in email:
 
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
@@ -406,6 +432,7 @@ def login():
     # gives some limits for our window
     login_screen.resizable(False, False)
     # gives the window a fixed size
+
     conn.commit()
     # commits any changes the users inputs have made to the database
     conn.close()
