@@ -1,19 +1,21 @@
 from tkinter import *
 from PIL import ImageTk, Image
-import os
 import sqlite3
 import emoji
 import re
+import random
+import smtplib
+from email.message import EmailMessage
 
 # the first line tells the program to search for the built-in library Tkinter
 # and import all the modules found within Tkinter
 # the next line tells the program to search for the library Pillow
 # and import two modules: Image, which is used to allow us to use Images within our program
 # and ImageTk to allow us to import Images within a Tkinter window
-# next we have told the program to import os, allowing us to interact with the operating system,
-# for example to create or delete a folder
-# the final import line imports our database module
+# the next import line imports our database module
 # which allows us to provide a SQL-like interface to read, query, and write SQL databases from Python
+
+database_name = 'Home Automation System Database.db'
 
 proceed = Tk()
 # we are creating a variable called proceed, and setting it equal to our tkinter window
@@ -24,32 +26,20 @@ proceed.geometry("450x300")
 # gives some restrictions for our tkinter window of 400x300
 
 # database
-conn = sqlite3.connect('User Login Page Database.db')
+conn = sqlite3.connect(database_name)
 # creates a database with a name of 'User Login Page Database' or connects to a database with this name
 c = conn.cursor()
 # creates a cursor
 
 
-'''
 c.execute("""CREATE TABLE users (
         email_address text, 
-        password text, 
-        first_digit_for_six_digit_code integer, 
-        second_digit_for_six_digit_code integer, 
-        third_digit_for_six_digit_code integer, 
-        fourth_digit_for_six_digit_code integer, 
-        fifth_digit_for_six_digit_code integer, 
-        sixth_digit_for_six_digit_code integer
+        password text
     )""")
-'''
 # creates table
 
 
 def sign_up():
-    return
-
-
-def check():
     return
 
 
@@ -60,7 +50,7 @@ def verify():
 def register():
     """this function creates a new window which allows the user to register their details
      and saves them to the database"""
-    conn = sqlite3.connect('User Login Page Database.db')
+    conn = sqlite3.connect(database_name)
     # creates a database with a name of 'User Login Page Database' or connects to a database with this name
     c = conn.cursor()
     # creates a cursor
@@ -80,10 +70,6 @@ def register():
 
     email_address_text.place(x=56.2, y=72)
 
-    email_address_verify_button = Button(register_screen, text="Verify", width=10, height=1, command=verify)
-
-    email_address_verify_button.place(x=350, y=74)
-
     verify_box_entry = Entry(register_screen)
 
     verify_box_entry.place(x=150, y=170)
@@ -92,9 +78,46 @@ def register():
 
     verify_text.place(x=13, y=173)
 
-    verify_button = Button(register_screen, text="Check", width=10, height=1, command=check)
+    code = str(random.randint(100000, 999999))
 
-    verify_button.place(x=350, y=174)
+    def send_email():
+        """"""
+        emailRecipient = email_address_entry.get()
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        emailSender = "haspythontkinter1@gmail.com"
+        emailPassword = "sshpectpbiegxtpz"  # don't want so show password in code
+
+        subject = "Test Subject"
+
+        email = EmailMessage()
+        email["From"] = emailSender
+        email["To"] = emailRecipient
+        email["Subject"] = subject
+        email.set_content("Your code is: " + code)
+
+        server.login(emailSender, emailPassword)
+        server.sendmail(emailSender, emailRecipient, email.as_string())
+
+        server.quit()  # can do automatically with a 'with as' statement
+
+        sent_label = Label(register_screen, text="Email sent!")
+
+        sent_label.grid(row=2, column=0)
+
+    email_address_verify_button = Button(register_screen, text="Verify", width=10, height=1, command=send_email)
+
+    email_address_verify_button.place(x=350, y=74)
+
+    def check():
+        entered_code = verify_box_entry.get()
+        if entered_code == code:
+            print("correct code")
+        else:
+            print("incorrect code")
+
+    check_button = Button(register_screen, text="Check", width=10, height=1, command=check)
+
+    check_button.place(x=350, y=174)
 
     verify_button_description = Label(register_screen, text="click verify, email sent, 6 digit code")
 
@@ -129,7 +152,7 @@ def register():
                 or "zohomail.eu" in email \
                 or "tmmwj.com" in email \
                 or "gmx.com" in email \
-                or "gmx.co.uk" in email\
+                or "gmx.co.uk" in email \
                 or "yahoo.co.uk" in email:
 
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
@@ -394,7 +417,7 @@ def register():
 def login():
     """defines another function with the name of login
     this will allow the user to log in with credentials they used to register with"""
-    conn = sqlite3.connect('User Login Page Database.db')
+    conn = sqlite3.connect(database_name)
     # creates a database with a name of 'User Login Page Database' or connects to a database with this name
     c = conn.cursor()
     # creates a cursor
@@ -406,6 +429,7 @@ def login():
     # gives some limits for our window
     login_screen.resizable(False, False)
     # gives the window a fixed size
+
     conn.commit()
     # commits any changes the users inputs have made to the database
     conn.close()
@@ -415,7 +439,7 @@ def login():
 def no():
     """this defines our function with the name of yes
     this takes the user to the main screen """
-    conn = sqlite3.connect('User Login Page Database.db')
+    conn = sqlite3.connect(database_name)
     # creates a database with a name of 'User Login Page Database' or connects to a database with this name
     c = conn.cursor()
     # creates a cursor
@@ -430,7 +454,7 @@ def no():
 def yes():
     """this defines a function with a name of yes which directs the user to the new window
     which will allow the user to login and/or register"""
-    conn = sqlite3.connect('User Login Page Database.db')
+    conn = sqlite3.connect(database_name)
     # creates a database with a name of 'User Login Page Database' or connects to a database with this name
     c = conn.cursor()
     # creates a cursor
