@@ -83,26 +83,36 @@ def register():
     def send_email():
         """"""
         emailRecipient = email_address_entry.get()
-        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-        emailSender = "haspythontkinter1@gmail.com"
-        emailPassword = "sshpectpbiegxtpz"  # don't want so show password in code
 
-        subject = "Test Subject"
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+
+        emailSender = "haspythontkinter1@gmail.com"
+
+        emailPassword = "sshpectpbiegxtpz"
+
+        subject = "Code Verification Email"
 
         email = EmailMessage()
+
         email["From"] = emailSender
+
         email["To"] = emailRecipient
+
         email["Subject"] = subject
+
         email.set_content("Your code is: " + code)
 
         server.login(emailSender, emailPassword)
+
         server.sendmail(emailSender, emailRecipient, email.as_string())
 
-        server.quit()  # can do automatically with a 'with as' statement
+        server.quit()
 
         sent_label = Label(register_screen, text="Email sent!")
 
-        sent_label.grid(row=2, column=0)
+        sent_label.place(x=360, y=97)
+
+        sent_label.config(foreground="green")
 
     email_address_verify_button = Button(register_screen, text="Verify", width=10, height=1, command=send_email)
 
@@ -111,17 +121,25 @@ def register():
     def check():
         entered_code = verify_box_entry.get()
         if entered_code == code:
-            print("correct code")
+            code_label_success = Label(register_screen, text="  code correct")
+            code_label_success.place(x=350, y=200)
+            code_label_success.config(foreground="green")
         else:
-            print("incorrect code")
+            code_label_failure = Label(register_screen, text="code incorrect")
+            code_label_failure.place(x=350, y=200)
+            code_label_failure.config(foreground="red")
 
     check_button = Button(register_screen, text="Check", width=10, height=1, command=check)
 
     check_button.place(x=350, y=174)
 
-    verify_button_description = Label(register_screen, text="click verify, email sent, 6 digit code")
+    verify_button_description = Label(register_screen, text="sends your 6 digit code")
 
-    verify_button_description.place(x=240, y=45)
+    verify_button_description.place(x=320, y=35)
+
+    verify_button_arrow = Label(register_screen, text="↕️")
+
+    verify_button_arrow.place(x=382, y=51)
 
     def check_email_address():
         """"""
