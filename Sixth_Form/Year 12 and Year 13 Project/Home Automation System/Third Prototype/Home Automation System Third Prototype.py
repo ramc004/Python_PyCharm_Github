@@ -299,7 +299,7 @@ def register():
 
     check_rules_button_email_address = Button(register_screen, text="check rules", command=check_email_address)
 
-    check_rules_button_email_address.place(x=345, y=125)
+    check_rules_button_email_address.place(x=355, y=125)
 
     check_clause_1_email_address = Label(register_screen, text="Contains account name")
 
@@ -380,7 +380,7 @@ def register():
 
     check_rules_button_password = Button(register_screen, text="check rules", command=check_password)
 
-    check_rules_button_password.place(x=345, y=325)
+    check_rules_button_password.place(x=355, y=325)
 
     check_clause_1_password = Label(register_screen, text="At least 8 characters")
 
@@ -613,7 +613,7 @@ def login():
 
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
 
-    check_rules_button_email_address_login.place(x=345, y=125)
+    check_rules_button_email_address_login.place(x=355, y=125)
 
     check_clause_1_email_address_login = Label(login_screen, text="Contains account name")
 
@@ -694,7 +694,7 @@ def login():
 
     check_rules_button_password_login = Button(login_screen, text="check rules", command=check_password)
 
-    check_rules_button_password_login.place(x=345, y=325)
+    check_rules_button_password_login.place(x=355, y=325)
 
     check_clause_1_password_login = Label(login_screen, text="At least 8 characters")
 
