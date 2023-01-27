@@ -1,3 +1,4 @@
+import parser
 from tkinter import *
 from PIL import ImageTk, Image
 import sqlite3
@@ -32,18 +33,65 @@ c = conn.cursor()
 # creates a cursor
 
 
-c.execute("""CREATE TABLE users (
+c.execute("""CREATE TABLE IF NOT EXISTS users (
+        userID int PRIMARY KEY,
         email_address text, 
-        password text
-    )""")
+        password text, 
+        accessLevel text, 
+        nickname text, 
+        date_of_birth DATE)""")
+
+
 # creates table
 
 
 def log_in():
+    conn = sqlite3.connect(database_name)
+    # creates a database with a name of 'User Login Page Database' or connects to a database with this name
+    c = conn.cursor()
+    # creates a cursor
+    home_automation_system_window = Tk()
+    home_automation_system_window.title("Home Automation System")
+    home_automation_system_window.geometry("500x600")
+    add_new_device = Label(home_automation_system_window, text="Would you like to add a new device?")
+    add_new_device.place(y=30, x=140)
+    conn.commit()
+    # commits any changes the users inputs have made to the database
+    conn.close()
+
     return
 
 
-def sign_up():
+def sign_up(email_address_db, password_db):
+    conn = sqlite3.connect(database_name)
+    # creates a database with a name of 'User Login Page Database' or connects to a database with this name
+    c = conn.cursor()
+
+    accessLevel = "userAccount"
+
+    selectQuery = "SELECT userID FROM users ORDER BY userID DESC LIMIT 1"
+
+    c.execute(selectQuery)
+
+    highestID = c.fetchone()
+    print(highestID)
+    if highestID is not None:
+        highestID = highestID[0]
+        newID = int(highestID) + 1
+    else:
+        newID = 0
+
+    insertQuery = """INSERT INTO users
+                (userID, email_address, password, accessLevel) 
+                VALUES
+                (%d,"%s","%s","%s")""" % (newID, email_address_db, password_db, accessLevel)
+
+    c.execute(insertQuery)
+
+    conn.commit()
+    # commits any changes the users inputs have made to the database
+    conn.close()
+
     return
 
 
@@ -289,7 +337,8 @@ def register():
                 or "tamar" in email_register \
                 or "darius" in email_register \
                 or "edith" in email_register \
-                or "elise" in email_register:
+                or "elise" in email_register \
+                or "adam" in email_register:
 
             emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
@@ -359,7 +408,7 @@ def register():
 
         password_numbers = password_entry.get()
 
-        if re.search(r'\d{,}', password_numbers):
+        if re.search(r'[1234567890]{2,}', password_numbers):
 
             emoji_label_clause_4_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
@@ -398,7 +447,8 @@ def register():
 
     check_clause_4_password.place(x=150, y=360)
 
-    sign_up_button = Button(register_screen, text='Sign Up', command=sign_up)
+    sign_up_button = Button(register_screen, text='Sign Up',
+                            command=lambda: sign_up(email_address_entry_register_screen.get(), password_entry.get()))
 
     sign_up_button.place(x=350, y=390)
 
@@ -453,11 +503,11 @@ def login():
     # gives the window a fixed size
     email_address_entry_login_screen = Entry(login_screen)
 
-    email_address_entry_login_screen.place(x=150, y=70)
+    email_address_entry_login_screen.place(x=150, y=50)
 
     email_address_text_login_screen = Label(login_screen, text="Email address")
 
-    email_address_text_login_screen.place(x=56.2, y=72)
+    email_address_text_login_screen.place(x=56.2, y=52)
 
     def check_email_address():
         """"""
@@ -603,7 +653,8 @@ def login():
                 or "tamar" in email_login \
                 or "darius" in email_login \
                 or "edith" in email_login \
-                or "elise" in email_login:
+                or "elise" in email_login \
+                or "adam" in email_login:
 
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
@@ -613,27 +664,27 @@ def login():
 
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
 
-    check_rules_button_email_address_login.place(x=355, y=125)
+    check_rules_button_email_address_login.place(x=355, y=105)
 
     check_clause_1_email_address_login = Label(login_screen, text="Contains account name")
 
-    check_clause_1_email_address_login.place(x=150, y=100)
+    check_clause_1_email_address_login.place(x=150, y=80)
 
     check_clause_2_email_address_login = Label(login_screen, text="'@' sign")
 
-    check_clause_2_email_address_login.place(x=150, y=120)
+    check_clause_2_email_address_login.place(x=150, y=100)
 
     check_clause_3_email_address_login = Label(login_screen, text="Domain name")
 
-    check_clause_3_email_address_login.place(x=150, y=140)
+    check_clause_3_email_address_login.place(x=150, y=120)
 
     password_label_login = Label(login_screen, text='Password')
 
-    password_label_login.place(x=80, y=250)
+    password_label_login.place(x=80, y=190)
 
     password_entry_login = Entry(login_screen, show='*')
 
-    password_entry_login.place(x=150, y=250)
+    password_entry_login.place(x=150, y=190)
 
     def show_password():
         """this defines a function which allows the users password to be shown where check box is ticked"""
@@ -647,7 +698,7 @@ def login():
 
     show_password_check_box_login = Checkbutton(login_screen, text='Show Password', command=show_password)
 
-    show_password_check_box_login.place(x=85, y=277)
+    show_password_check_box_login.place(x=85, y=227)
 
     def check_password():
 
@@ -673,7 +724,7 @@ def login():
 
         password_numbers_login = password_entry_login.get()
 
-        if re.search(r'\d{,}', password_numbers_login):
+        if re.search(r'[1234567890]{2,}', password_numbers_login):
 
             emoji_label_clause_4_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
@@ -694,55 +745,79 @@ def login():
 
     check_rules_button_password_login = Button(login_screen, text="check rules", command=check_password)
 
-    check_rules_button_password_login.place(x=355, y=325)
+    check_rules_button_password_login.place(x=355, y=260)
 
     check_clause_1_password_login = Label(login_screen, text="At least 8 characters")
 
-    check_clause_1_password_login.place(x=150, y=300)
+    check_clause_1_password_login.place(x=150, y=250)
 
     check_clause_2_password_login = Label(login_screen, text="At least 2 capital letters")
 
-    check_clause_2_password_login.place(x=150, y=320)
+    check_clause_2_password_login.place(x=150, y=270)
 
     check_clause_3_password_login = Label(login_screen, text="At least 1 special character")
 
-    check_clause_3_password_login.place(x=150, y=340)
+    check_clause_3_password_login.place(x=150, y=290)
 
     check_clause_4_password_login = Label(login_screen, text="At least 2 numbers")
 
-    check_clause_4_password_login.place(x=150, y=360)
+    check_clause_4_password_login.place(x=150, y=310)
 
     login_button = Button(login_screen, text='Log in', command=log_in)
 
-    login_button.place(x=350, y=390)
+    login_button.place(x=350, y=550)
 
     emoji_label_clause_1_password_login = Label(login_screen)
 
-    emoji_label_clause_1_password_login.place(x=125, y=300)
+    emoji_label_clause_1_password_login.place(x=125, y=250)
 
     emoji_label_clause_2_password_login = Label(login_screen)
 
-    emoji_label_clause_2_password_login.place(x=125, y=320)
+    emoji_label_clause_2_password_login.place(x=125, y=270)
 
     emoji_label_clause_3_password_login = Label(login_screen)
 
-    emoji_label_clause_3_password_login.place(x=125, y=340)
+    emoji_label_clause_3_password_login.place(x=125, y=290)
 
     emoji_label_clause_4_password_login = Label(login_screen)
 
-    emoji_label_clause_4_password_login.place(x=125, y=360)
+    emoji_label_clause_4_password_login.place(x=125, y=310)
 
     emoji_label_clause_1_email_address_login = Label(login_screen)
 
-    emoji_label_clause_1_email_address_login.place(x=125, y=100)
+    emoji_label_clause_1_email_address_login.place(x=125, y=80)
 
     emoji_label_clause_2_email_address_login = Label(login_screen)
 
-    emoji_label_clause_2_email_address_login.place(x=125, y=120)
+    emoji_label_clause_2_email_address_login.place(x=125, y=100)
 
     emoji_label_clause_3_email_address_login = Label(login_screen)
 
-    emoji_label_clause_3_email_address_login.place(x=125, y=140)
+    emoji_label_clause_3_email_address_login.place(x=125, y=120)
+
+    optional_details_text_description = Label(login_screen, text="the details below are optional")
+
+    optional_details_text_description.place(x=150, y=365)
+
+    nickname_entry_label = Label(login_screen, text="Nickname")
+
+    nickname_entry_label.place(x=80, y=390)
+
+    nickname_entry = Entry(login_screen)
+
+    nickname_entry.place(x=150, y=390)
+
+    date_of_birth_entry = Entry(login_screen)
+
+    date_of_birth_entry.place(x=150, y=480)
+
+    date_of_birth_entry_label = Label(login_screen, text="Date of Birth")
+
+    date_of_birth_entry_label.place(x=63, y=480)
+
+    date_of_birth_entry_label_description = Label(login_screen, text="Enter like this: DD/MM/YYYY")
+
+    date_of_birth_entry_label_description.place(x=65, y=455)
 
     conn.commit()
     # commits any changes the users inputs have made to the database
