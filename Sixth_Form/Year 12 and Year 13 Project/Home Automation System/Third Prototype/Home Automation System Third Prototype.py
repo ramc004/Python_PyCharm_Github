@@ -897,7 +897,6 @@ def login():
                     conn.commit()
                     # commits any changes the users inputs have made to the database
                     conn.close()
-
                     # closes the connection for the database
 
                     def change_information(oldEmail, newEmail, newPassword, newNickname, newDOB):
