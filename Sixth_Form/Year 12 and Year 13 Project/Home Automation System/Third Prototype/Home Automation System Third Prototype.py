@@ -1,4 +1,3 @@
-import parser
 from tkinter import *
 from PIL import ImageTk, Image
 import sqlite3
@@ -44,9 +43,11 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
 
 # creates table
 
-
 def verify():
     return
+
+
+register_verify = False
 
 
 def register():
@@ -66,52 +67,54 @@ def register():
 
     # limits the user from resizing the interface
 
-    def sign_up(email_address_db, password_db):
+    def sign_up(is_verified, email_address_db, password_db):
         conn = sqlite3.connect(database_name)
         # creates a database with a name of 'User Login Page Database' or connects to a database with this name
         c = conn.cursor()
-        if email_address_db == "admin":
-            accessLevel = "admin"
+        if is_verified:
+            if email_address_db == "admin":
+                accessLevel = "admin"
+            else:
+                accessLevel = "userAccount"
+
+            selectQuery = "SELECT userID FROM users ORDER BY userID DESC LIMIT 1"
+
+            c.execute(selectQuery)
+
+            highestID = c.fetchone()
+            if highestID is not None:
+                highestID = highestID[0]
+                newID = int(highestID) + 1
+            else:
+                newID = 0
+            if not email_address_db:
+                no_email_entry = Label(register_screen, text="   please enter email")
+                no_email_entry.place(x=150, y=160)
+                no_email_entry.config(foreground="red")
+            else:
+
+                email_has_been_entered = Label(register_screen, text="you entered an email")
+                email_has_been_entered.place(x=150, y=160)
+                email_has_been_entered.config(foreground="green")
+            if not password_db:
+                no_password_entry = Label(register_screen, text="  please enter password")
+                no_password_entry.place(x=150, y=385)
+                no_password_entry.config(foreground="red")
+            else:
+                password_has_been_entered = Label(register_screen, text="you entered a password")
+                password_has_been_entered.place(x=150, y=385)
+                password_has_been_entered.config(foreground="green")
+            if email_address_db and password_db:
+                insertQuery = """INSERT INTO users
+                        (userID, email_address, password, accessLevel) 
+                        VALUES
+                        (%d,"%s","%s","%s")""" % (newID, email_address_db, password_db, accessLevel)
+                c.execute(insertQuery)
         else:
-            accessLevel = "userAccount"
-
-        selectQuery = "SELECT userID FROM users ORDER BY userID DESC LIMIT 1"
-
-        c.execute(selectQuery)
-
-        highestID = c.fetchone()
-        if highestID is not None:
-            highestID = highestID[0]
-            newID = int(highestID) + 1
-        else:
-            newID = 0
-        if not email_address_db:
-            no_email_entry = Label(register_screen, text="   please enter email")
-            no_email_entry.place(x=150, y=160)
-            no_email_entry.config(foreground="red")
-        else:
-
-            email_has_been_entered = Label(register_screen, text="you entered an email")
-            email_has_been_entered.place(x=150, y=160)
-            email_has_been_entered.config(foreground="green")
-        if not password_db:
-            no_password_entry = Label(register_screen, text="  please enter password")
-            no_password_entry.place(x=150, y=385)
-            no_password_entry.config(foreground="red")
-        else:
-            password_has_been_entered = Label(register_screen, text="you entered a password")
-            password_has_been_entered.place(x=150, y=385)
-            password_has_been_entered.config(foreground="green")
-        if email_address_db and password_db:
-            insertQuery = """INSERT INTO users
-                    (userID, email_address, password, accessLevel) 
-                    VALUES
-                    (%d,"%s","%s","%s")""" % (newID, email_address_db, password_db, accessLevel)
-            c.execute(insertQuery)
-
-        conn.commit()
-        # commits any changes the users inputs have made to the database
-        conn.close()
+            print("code not verified")
+            conn.commit()
+            # commits any changes the users inputs have made to the database
+            conn.close()
 
     email_address_entry_register_screen = Entry(register_screen)
 
@@ -138,9 +141,9 @@ def register():
         server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 
         emailSender = "ramcaleb50@gmail.com"
-
-        emailPassword = "wwmefehhfvinqgvj"
-
+        file = open("hello.txt", "r")
+        emailPassword = file.read()
+        file.close()
         subject = "Code Verification Email"
 
         email = EmailMessage()
@@ -175,6 +178,8 @@ def register():
             code_label_success = Label(register_screen, text="  code correct")
             code_label_success.place(x=350, y=225)
             code_label_success.config(foreground="green")
+            global register_verify
+            register_verify = True
         else:
             code_label_failure = Label(register_screen, text="code incorrect")
             code_label_failure.place(x=350, y=225)
@@ -195,7 +200,6 @@ def register():
     def check_email_address():
         """"""
         email_register = email_address_entry_register_screen.get()
-
         if "@" in email_register:
 
             emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
@@ -475,7 +479,8 @@ def register():
     emoji_label_clause_3_email_address.place(x=125, y=140)
 
     sign_up_button = Button(register_screen, text='Sign Up',
-                            command=lambda: sign_up(email_address_entry_register_screen.get(), password_entry.get()))
+                            command=lambda: sign_up(register_verify, email_address_entry_register_screen.get(),
+                                                    password_entry.get()))
 
     sign_up_button.place(x=350, y=430)
 
@@ -547,6 +552,7 @@ def login():
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
 
         if "caleb" in email_login \
+                or "admin" in email_login \
                 or "hannah" in email_login \
                 or "mark" in email_login \
                 or "niki" in email_login \
@@ -814,6 +820,13 @@ def login():
     date_of_birth_entry_label_description = Label(login_screen, text="Enter like this: YYYY/MM/DD")
 
     date_of_birth_entry_label_description.place(x=65, y=455)
+    login_button = Button(login_screen, text='Log in',
+                          command=lambda: log_in(email_address_entry_login_screen.get()
+                                                 , password_entry_login.get(), nickname_entry.get(),
+                                                 date_of_birth_entry.get()))
+
+    login_button.place(x=350, y=550)
+
     conn.commit()
     # commits any changes the users inputs have made to the database
     conn.close()
@@ -865,10 +878,10 @@ def login():
                     date_of_birth_not_entered.config(foreground="orange")
                 getAccessLevelQuery = "SELECT accessLevel FROM users WHERE email_address == '%s'" % email_address_log_in
                 c.execute(getAccessLevelQuery)
-                accessLevel = c.fetchone()
-                accessLevel = accessLevel[0]
+                access_Level = c.fetchone()
+                access_Level = access_Level[0]
 
-                if accessLevel == "admin":
+                if access_Level == "admin":
                     adminPage = Tk()
                     adminPage.title("Admin Page")
                     adminPage.geometry("500x700")
@@ -893,57 +906,12 @@ def login():
                     admin_Date_of_birth_change.place(x=20, y=205)
                     admin_Date_of_birth_change_entry = Entry(adminPage)
                     admin_Date_of_birth_change_entry.place(x=175, y=205)
-
-                    conn.commit()
-                    # commits any changes the users inputs have made to the database
-                    conn.close()
-                    # closes the connection for the database
-
-                    def change_information(oldEmail, newEmail, newPassword, newNickname, newDOB):
-                        conn = sqlite3.connect(database_name)
-                        c = conn.cursor()
-                        # creates a cursor
-                        if oldEmail:
-                            getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % oldEmail
-                            c.execute(getUserIDQuery)
-                            id = c.fetchone()
-
-                            if id:
-                                id = id[0]
-                                email_is_valid = Label(adminPage, text="                          email is valid")
-                                email_is_valid.place(x=155, y=75)
-                                email_is_valid.config(foreground="green")
-
-                                if newEmail:
-                                    changeEmailQuery = "UPDATE users SET email_address = '%s' WHERE userID == '%s'" % (
-                                        newEmail, id)
-                                    c.execute(changeEmailQuery)
-                                if newPassword:
-                                    changePasswordQuery = "UPDATE users SET password = '%s' WHERE userID == '%s'" % (
-                                        newPassword, id)
-                                    c.execute(changePasswordQuery)
-                                if newNickname:
-                                    changeNicknameQuery = "UPDATE users SET nickname = '%s' WHERE userID == '%s'" % (
-                                        newNickname, id)
-                                    c.execute(changeNicknameQuery)
-                                if newDOB:
-                                    changeDOBQuery = "UPDATE users SET date_of_birth = '%s' WHERE userID == '%s'" % (
-                                        newDOB, id)
-                                    c.execute(changeDOBQuery)
-                                fields_updated = Label(adminPage, text="fields have been updated if edited")
-                                fields_updated.place(x=150, y=250)
-                                fields_updated.config(foreground="green")
-                        else:
-                            previous_email_not_found = Label(adminPage, text="previous email not found")
-                            previous_email_not_found.place(x=175, y=75)
-                            previous_email_not_found.config(foreground="red")
-
                     change_button = Button(adminPage, text='Change information', command=lambda: change_information(
                         admin_email_previous_entry.get(), admin_email_change_entry.get(),
                         admin_password_change_entry.get(), admin_nickname_change_entry.get(),
-                        admin_Date_of_birth_change_entry.get()))
+                        admin_Date_of_birth_change_entry.get(), adminPage))
                     change_button.place(x=350, y=565)
-                elif accessLevel == "userAccount":
+                elif access_Level == "userAccount":
                     home_automation_system_window = Tk()
                     home_automation_system_window.title("Home Automation System")
                     home_automation_system_window.geometry("500x600")
@@ -954,21 +922,55 @@ def login():
                 password_does_not_match = Label(login_screen, text="password does not match")
                 password_does_not_match.place(x=160, y=330)
                 password_does_not_match.config(foreground="red")
+        conn.commit()
+        conn.close()
 
+
+def change_information(oldEmail, newEmail, newPassword, newNickname, newDOB, adminPage):
+    print("change information")
     conn = sqlite3.connect(database_name)
     c = conn.cursor()
+    # creates a cursor
+    if oldEmail:
+        getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % oldEmail
+        c.execute(getUserIDQuery)
+        id = c.fetchone()
 
-    login_button = Button(login_screen, text='Log in',
-                          command=lambda: log_in(email_address_entry_login_screen.get()
-                                                 , password_entry_login.get(), nickname_entry.get(),
-                                                 date_of_birth_entry.get()))
+        if id:
+            id = id[0]
+            email_is_valid = Label(adminPage, text="email is valid")
+            email_is_valid.place(x=190, y=75)
+            email_is_valid.config(foreground="green")
 
-    login_button.place(x=350, y=550)
-
+            if newEmail:
+                changeEmailQuery = "UPDATE users SET email_address = '%s' WHERE userID == '%s'" % (
+                    newEmail, id)
+                c.execute(changeEmailQuery)
+            if newPassword:
+                changePasswordQuery = "UPDATE users SET password = '%s' WHERE userID == '%s'" % (
+                    newPassword, id)
+                c.execute(changePasswordQuery)
+            if newNickname:
+                changeNicknameQuery = "UPDATE users SET nickname = '%s' WHERE userID == '%s'" % (
+                    newNickname, id)
+                c.execute(changeNicknameQuery)
+            if newDOB:
+                changeDOBQuery = "UPDATE users SET date_of_birth = '%s' WHERE userID == '%s'" % (
+                    newDOB, id)
+                c.execute(changeDOBQuery)
+            fields_updated = Label(adminPage, text="fields have been updated if edited")
+            fields_updated.place(x=150, y=250)
+            fields_updated.config(foreground="green")
+        else:
+            previous_email_not_found = Label(adminPage, text="previous email not found")
+            previous_email_not_found.place(x=175, y=75)
+            previous_email_not_found.config(foreground="red")
+    else:
+        previous_email_not_found = Label(adminPage, text=" you haven't entered an email")
+        previous_email_not_found.place(x=175, y=75)
+        previous_email_not_found.config(foreground="red")
     conn.commit()
-    # commits any changes the users inputs have made to the database
     conn.close()
-    # closes the connection for the database
 
 
 def no():
