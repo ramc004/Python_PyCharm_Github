@@ -1,22 +1,21 @@
 from tkinter import *
+# tells the program to use the built-in library Tkinter and import all the modules found within Tkinter
 from PIL import ImageTk, Image
+# finds the library PIL and imports two separate packages, ImageTk and Image allowing us to store images inside tkinter
 import sqlite3
+# sqlite3 is the library I will be using for databases allowing us to read, query and write to and from the database
 import emoji
+# emoji library allowing us to show emojis inside our program
 import re
+# allows us to ensure the user follows rules when entering a password
 import random
+# uses an algorithm to generate random numbers
 import smtplib
+# allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
-
-# the first line tells the program to search for the built-in library Tkinter
-# and import all the modules found within Tkinter
-# the next line tells the program to search for the library Pillow
-# and import two modules: Image, which is used to allow us to use Images within our program
-# and ImageTk to allow us to import Images within a Tkinter window
-# the next import line imports our database module
-# which allows us to provide a SQL-like interface to read, query, and write SQL databases from Python
-
+# allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 database_name = 'Home Automation System Database.db'
-
+# gives a name to our database so that we can call it throughout our program
 proceed = Tk()
 # we are creating a variable called proceed, and setting it equal to our tkinter window
 # so whenever we need to put something inside out Tkinter window we just have to call proceed
@@ -24,14 +23,11 @@ proceed.title('A Level Computer Science Project')
 # we are calling our variable root and defining more of its attributes giving our tkinter window a title
 proceed.geometry("450x300")
 # gives some restrictions for our tkinter window of 400x300
-
-# database
 conn = sqlite3.connect(database_name)
-# creates a database with a name of 'User Login Page Database' or connects to a database with this name
+# connects to sqlite3 using a variable name of conn short for connection
+# finds the variable database_name and calls our database file from above
 c = conn.cursor()
-# creates a cursor
-
-
+# creates a cursor allowing us to execute sql commands
 c.execute("""CREATE TABLE IF NOT EXISTS users (
         userID int PRIMARY KEY not null,
         email_address text not null, 
@@ -39,14 +35,14 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
         accessLevel text, 
         nickname text, 
         date_of_birth DATE)""")
-
-
-# creates table
-
-def verify():
-    return
-
-
+# using the execute command creates our table within our database giving it a name of users
+# only creates the database if it hasn't already been created
+# I have decided to make userID a primary key
+# creates the field, userID, inside our database as an integer
+# this field cannot equal null it has to be given a value more than zero
+# creates another field, email_address, this time will be text allowing a user to input their email address
+# creates another field, accessLevel, allowing us to later on give different access levels
+# creates fields, nickname and date_of_birth
 register_verify = False
 
 
@@ -92,7 +88,6 @@ def register():
                 no_email_entry.place(x=150, y=160)
                 no_email_entry.config(foreground="red")
             else:
-
                 email_has_been_entered = Label(register_screen, text="you entered an email")
                 email_has_been_entered.place(x=150, y=160)
                 email_has_been_entered.config(foreground="green")
@@ -111,7 +106,6 @@ def register():
                         (%d,"%s","%s","%s")""" % (newID, email_address_db, password_db, accessLevel)
                 c.execute(insertQuery)
         else:
-            print("code not verified")
             conn.commit()
             # commits any changes the users inputs have made to the database
             conn.close()
@@ -927,7 +921,6 @@ def login():
 
 
 def change_information(oldEmail, newEmail, newPassword, newNickname, newDOB, adminPage):
-    print("change information")
     conn = sqlite3.connect(database_name)
     c = conn.cursor()
     # creates a cursor
