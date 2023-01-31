@@ -43,16 +43,23 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
 # creates another field, email_address, this time will be text allowing a user to input their email address
 # creates another field, accessLevel, allowing us to later on give different access levels
 # creates fields, nickname and date_of_birth
+# these fields are only optional meaning they can be empty inside the database
+# if they do enter a nickname it will be stored as text
+# if they enter a date_of_birth then it will be stored as a DATE
 register_verify = False
+# creates a variable called register_verify and sets it to false
+# unless the user successfully enters an email address they have verified and have also entered a password
+# their credentials will not be saved to the database
 
 
 def register():
     """this function creates a new window which allows the user to register their details
      and saves them to the database"""
     conn = sqlite3.connect(database_name)
-    # creates a database with a name of 'User Login Page Database' or connects to a database with this name
+    # connects to sqlite3 using a variable name of conn short for connection
+    # finds the variable database_name and calls our database file from above
     c = conn.cursor()
-    # creates a cursor
+    # creates a cursor allowing us to execute sql commands
     register_screen = Tk()
     # creates a new Tkinter user interface
     register_screen.title("Register")
@@ -60,15 +67,23 @@ def register():
     register_screen.geometry("500x600")
     # gives the starting size for the Tkinter user interface
     register_screen.resizable(False, False)
-
     # limits the user from resizing the interface
 
     def sign_up(is_verified, email_address_db, password_db):
+        """this function is used for when the user clicks on the sign_up button
+        I have passed is_verified, email_address_db, password_db as parameters through this function
+        we are then able to call any of these parameters throughout our program
+        """
         conn = sqlite3.connect(database_name)
-        # creates a database with a name of 'User Login Page Database' or connects to a database with this name
+        # connects to sqlite3 using a variable name of conn short for connection
+        # finds the variable database_name and calls our database file from above
         c = conn.cursor()
+        # creates a cursor allowing us to execute sql commands
         if is_verified:
+            # creates a clause using a parameter from our function
+            # the function will only get here if the user has been verified
             if email_address_db == "admin":
+                # within 
                 accessLevel = "admin"
             else:
                 accessLevel = "userAccount"
@@ -109,7 +124,6 @@ def register():
             conn.commit()
             # commits any changes the users inputs have made to the database
             conn.close()
-
     email_address_entry_register_screen = Entry(register_screen)
 
     email_address_entry_register_screen.place(x=150, y=70)
