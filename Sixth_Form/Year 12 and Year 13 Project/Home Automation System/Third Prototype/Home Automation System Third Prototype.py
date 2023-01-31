@@ -83,7 +83,6 @@ def register():
             # creates a clause using a parameter from our function
             # the function will only get here if the user has been verified
             if email_address_db == "admin":
-                # within 
                 accessLevel = "admin"
             else:
                 accessLevel = "userAccount"
