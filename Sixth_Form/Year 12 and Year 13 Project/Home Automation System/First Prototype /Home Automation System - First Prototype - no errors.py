@@ -29,13 +29,13 @@ def main_account_screen():
     # gives the window a label of 'Home Automation System' with a fixed border around it and a font
     Label(text="").pack()
     # gives some space between the title and the login button
-    Login_Button = Button(text="Login", height="2", width="30", command=login)
+    Login_Button = Button(text="Login", height="2", width="30", command=login, font=("Comic Sans MS", 15))
     # creates a button for the user to click on with a set size of width 30 and height 2
     Login_Button.pack()
     # packs the Login button into the window directly below
     Label(text="").pack()
     # allows for some space between the login and register button
-    Register_Button = Button(text="Register", height="2", width="30", command=register)
+    Register_Button = Button(text="Register", height="2", width="30", command=register, font=("Comic Sans MS", 15))
     # sets the variable register_button equal to a button with text register ste in the middle and a command of register
     Register_Button.pack()
     # packs the register button directly below the label
