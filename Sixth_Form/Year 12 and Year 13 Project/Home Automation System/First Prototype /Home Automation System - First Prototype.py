@@ -1,7 +1,5 @@
 from tkinter import *
-import os
 # This is to import the python library tkinter to be able to build a graphical user interface using its framework
-# I have imported os to allow my system to access how the user interacts with their device in relation to my system
 
 
 def register():
@@ -23,7 +21,11 @@ def main_account_screen():
     # gives our window a starting size of 500 width and 800 in length
     main_screen.title("A Level Computer Science Project")
     # gives the window a title of 'A Level Computer Science Project
-    Label(text="Home Automation System", bg="#10c2fe", width="300", height="2", font=("Arial", 13)).pack()
+    Label(text="Home Automation System",
+          bg="#10c2fe",
+          width="300",
+          height="2",
+          font=("Comic Sans MS", 20, "bold")).pack()
     # gives the window a label of 'Home Automation System' with a fixed border around it and a font
     Label(text="").pack()
     # gives some space between the title and the login button

@@ -19,7 +19,6 @@ def register():
     # This gives the register screen a value of 500 along the 'x' axis and a value of 800 on the 'y' axis
     register_screen.resizable(False, False)
     # This makes the register screen not resizable
-
     global email_address
     # This creates a variable called 'email_address' and allows us to use it throughout the program
     global password
@@ -32,7 +31,6 @@ def register():
     # sets the variable 'email_address' to be a variable with the data type of string
     password = StringVar()
     # Sets the variable 'password' to be a string meaning the user can enter numbers, special characters and letters
-
     email_address_label_2 = Label(register_screen, text="email address ")
     #
     email_address_label_2.pack()

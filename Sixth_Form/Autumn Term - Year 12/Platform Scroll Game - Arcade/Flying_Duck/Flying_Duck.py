@@ -4,7 +4,6 @@ import math
 import random
 import os
 
-
 frame_time = 0.0
 
 
@@ -72,7 +71,7 @@ class MapGridObject:
                 == MapGridObject.OBJECT_TRAMPOLINE)
 
     def get_instance_from_string(self):
-        
+
         if self == ".":
             return None
 
@@ -316,7 +315,7 @@ class Level:
                 self.set_lost()
                 return
 
-        if object_under_player_tile != None and object_under_player_tile.object_type == MapGridObject.OBJECT_TRAMPOLINE\
+        if object_under_player_tile != None and object_under_player_tile.object_type == MapGridObject.OBJECT_TRAMPOLINE \
                 and not self.player.is_in_air():
             self.player.force_computer.velocity_vector[1] = -10
             self.sound_player.play_trampoline()
@@ -765,8 +764,8 @@ class Renderer:
 
         self.player_images.special.append(prepare_image(pygame.image.load(
             "backgrounds and sounds/duck_right_quack.bmp"),
-                                                        transparency_mask=pygame.image.load(
-                                                            "backgrounds and sounds/duck_right_quack_mask.bmp")))
+            transparency_mask=pygame.image.load(
+                "backgrounds and sounds/duck_right_quack_mask.bmp")))
         self.player_images.special.append(pygame.transform.flip(self.player_images.special[0], True, False))
 
     def __milliseconds_to_time(self, value):

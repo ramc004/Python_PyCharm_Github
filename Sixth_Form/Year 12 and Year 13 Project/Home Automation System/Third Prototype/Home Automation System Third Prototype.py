@@ -46,10 +46,101 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
 # these fields are only optional meaning they can be empty inside the database
 # if they do enter a nickname it will be stored as text
 # if they enter a date_of_birth then it will be stored as a DATE
+findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
+c.execute(findAdminQuery)
+ourAdmin = c.fetchone()
+if not ourAdmin:
+    selectIDQuery = "SELECT userID FROM users ORDER BY userID DESC LIMIT 1"
+    c.execute(selectIDQuery)
+    new_highestID = c.fetchone()
+    if new_highestID is not None:
+        new_highestID = new_highestID[0]
+        newID2 = int(new_highestID) + 1
+    else:
+        newID2 = 0
+    createAdminQuery = "INSERT INTO users(userID,email_address,password,accessLevel) " \
+                       "VALUES ('%s','admin','root','admin')" % newID2
+    c.execute(createAdminQuery)
 register_verify = False
 # creates a variable called register_verify and sets it to false
-# unless the user successfully enters an email address they have verified and have also entered a password
-# their credentials will not be saved to the database
+
+def check_verification(email_address, password, actual_code, user_code, register_screen):
+    conn = sqlite3.connect(database_name)
+    # connects to sqlite3 using a variable name of conn short for connection
+    # finds the variable database_name and calls our database file from above
+    c = conn.cursor()
+    # creates a cursor allowing us to execute sql commands
+    verified = True
+    emoji_label_clause_1_password_check_verification = Label(register_screen)
+    emoji_label_clause_1_password_check_verification.place(x=125, y=300)
+    emoji_label_clause_4_password_check_verification = Label(register_screen)
+    emoji_label_clause_4_password_check_verification.place(x=125, y=364)
+    emoji_label_clause_3_password_check_verification = Label(register_screen)
+    emoji_label_clause_3_password_check_verification.place(x=125, y=342)
+    emoji_label_clause_2_password_check_verification = Label(register_screen)
+    emoji_label_clause_2_password_check_verification.place(x=125, y=320)
+    if not email_address:
+        no_email_entry = Label(register_screen, text="please enter email")
+        no_email_entry.place(x=150, y=160)
+        no_email_entry.config(foreground="red")
+        verified = False
+    else:
+        email_has_been_entered = Label(register_screen, text="you entered an email, you are now verified")
+        email_has_been_entered.place(x=150, y=160)
+        email_has_been_entered.config(foreground="green")
+    if not password:
+        no_password_entry = Label(register_screen, text="  please enter password")
+        no_password_entry.place(x=150, y=385)
+        no_password_entry.config(foreground="red")
+        verified = False
+    else:
+        password_has_been_entered = Label(register_screen, text="you entered a password")
+        password_has_been_entered.place(x=150, y=385)
+        password_has_been_entered.config(foreground="green")
+        successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
+        successful_sign_up.place(x=75, y=500)
+        successful_sign_up.config(foreground="green")
+    if len(password) < 8:
+        emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
+        verified = False
+    else:
+        emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
+    if not re.search(r'[A-Z]{1,}', password):
+        emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
+        verified = False
+    else:
+        emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
+    if not re.search(r'[1234567890]{1,}', password):
+        emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
+        verified = False
+    else:
+        emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
+    if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}', password):
+        emoji_label_clause_3_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
+        verified = False
+    else:
+        emoji_label_clause_3_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
+    findEmailQuery = "SELECT userID FROM users WHERE email_address == '%s'" % email_address
+    c.execute(findEmailQuery)
+    emailID = c.fetchone()
+    if emailID:
+        email_already_exists_label = Label(register_screen, text="   this email is already linked to an account")
+        email_already_exists_label.place(x=150, y=160)
+        email_already_exists_label.config(foreground="orange")
+        verified = False
+    if actual_code != user_code:
+        code_label_failure = Label(register_screen, text="code incorrect")
+        code_label_failure.place(x=200, y=227)
+        code_label_failure.config(foreground="red")
+        verified = False
+    else:
+        code_label_success = Label(register_screen, text="  code correct")
+        code_label_success.place(x=200, y=227)
+        code_label_success.config(foreground="green")
+    conn.commit()
+    # commits any changes the users inputs have made to the database
+    conn.close()
+    return verified
 
 
 def register():
@@ -69,7 +160,7 @@ def register():
     register_screen.resizable(False, False)
     # limits the user from resizing the interface
 
-    def sign_up(is_verified, email_address_db, password_db):
+    def sign_up(email_address_db, password_db, actual_code, user_code):
         """this function is used for when the user clicks on the sign_up button
         I have passed is_verified, email_address_db, password_db as parameters through this function
         we are then able to call any of these parameters throughout our program
@@ -79,7 +170,7 @@ def register():
         # finds the variable database_name and calls our database file from above
         c = conn.cursor()
         # creates a cursor allowing us to execute sql commands
-        if is_verified:
+        if check_verification(email_address_db, password_db, actual_code, user_code, register_screen):
             # creates a clause using a parameter from our function
             # the function will only get here if the user has been verified
             if email_address_db == "admin":
@@ -119,10 +210,10 @@ def register():
                         VALUES
                         (%d,"%s","%s","%s")""" % (newID, email_address_db, password_db, accessLevel)
                 c.execute(insertQuery)
-        else:
-            conn.commit()
-            # commits any changes the users inputs have made to the database
-            conn.close()
+        conn.commit()
+        # commits any changes the users inputs have made to the database
+        conn.close()
+
     email_address_entry_register_screen = Entry(register_screen)
 
     email_address_entry_register_screen.place(x=150, y=70)
@@ -178,23 +269,6 @@ def register():
     email_address_verify_button = Button(register_screen, text="Verify", width=10, height=1, command=send_email)
 
     email_address_verify_button.place(x=350, y=74)
-
-    def check():
-        entered_code = verify_box_entry.get()
-        if entered_code == code:
-            code_label_success = Label(register_screen, text="  code correct")
-            code_label_success.place(x=350, y=225)
-            code_label_success.config(foreground="green")
-            global register_verify
-            register_verify = True
-        else:
-            code_label_failure = Label(register_screen, text="code incorrect")
-            code_label_failure.place(x=350, y=225)
-            code_label_failure.config(foreground="red")
-
-    check_button = Button(register_screen, text="Check", width=10, height=1, command=check)
-
-    check_button.place(x=350, y=204)
 
     verify_button_description = Label(register_screen, text="sends your 6 digit code")
 
@@ -394,53 +468,6 @@ def register():
 
     show_password_check_box.place(x=85, y=277)
 
-    def check_password():
-
-        password_length = password_entry.get()
-
-        if len(password_length) >= 8:
-
-            emoji_label_clause_1_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
-        else:
-
-            emoji_label_clause_1_password.config(text=f'{emoji.emojize(":cross_mark:")}')
-
-        password_caps = password_entry.get()
-
-        if re.search(r'[A-Z]{1,}', password_caps):
-
-            emoji_label_clause_2_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
-        else:
-
-            emoji_label_clause_2_password.config(text=f'{emoji.emojize(":cross_mark:")}')
-
-        password_numbers = password_entry.get()
-
-        if re.search(r'[1234567890]{2,}', password_numbers):
-
-            emoji_label_clause_4_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
-        else:
-
-            emoji_label_clause_4_password.config(text=f'{emoji.emojize(":cross_mark:")}')
-
-        password_special_chars = password_entry.get()
-
-        if re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}'
-                , password_special_chars):
-
-            emoji_label_clause_3_password.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
-        else:
-
-            emoji_label_clause_3_password.config(text=f'{emoji.emojize(":cross_mark:")}')
-
-    check_rules_button_password = Button(register_screen, text="check rules", command=check_password)
-
-    check_rules_button_password.place(x=355, y=325)
-
     check_clause_1_password = Label(register_screen, text="At least 8 characters")
 
     check_clause_1_password.place(x=150, y=300)
@@ -463,15 +490,15 @@ def register():
 
     emoji_label_clause_2_password = Label(register_screen)
 
-    emoji_label_clause_2_password.place(x=125, y=320)
+    emoji_label_clause_2_password.place(x=125, y=325)
 
     emoji_label_clause_3_password = Label(register_screen)
 
-    emoji_label_clause_3_password.place(x=125, y=340)
+    emoji_label_clause_3_password.place(x=125, y=355)
 
     emoji_label_clause_4_password = Label(register_screen)
 
-    emoji_label_clause_4_password.place(x=125, y=360)
+    emoji_label_clause_4_password.place(x=125, y=370)
 
     emoji_label_clause_1_email_address = Label(register_screen)
 
@@ -486,8 +513,8 @@ def register():
     emoji_label_clause_3_email_address.place(x=125, y=140)
 
     sign_up_button = Button(register_screen, text='Sign Up',
-                            command=lambda: sign_up(register_verify, email_address_entry_register_screen.get(),
-                                                    password_entry.get()))
+                            command=lambda: sign_up(email_address_entry_register_screen.get(),
+                                                    password_entry.get(), code, verify_box_entry.get()))
 
     sign_up_button.place(x=350, y=430)
 
