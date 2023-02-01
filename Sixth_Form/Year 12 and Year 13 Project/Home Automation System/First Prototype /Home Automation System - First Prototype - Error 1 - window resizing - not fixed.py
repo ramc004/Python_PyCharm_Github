@@ -1,7 +1,5 @@
 from tkinter import *
-import os
 # This is to import the python library tkinter to be able to build a graphical user interface using its framework
-# I have imported os to allow my system to access how the user interacts with their device in relation to my system
 
 
 def main_account_screen():
