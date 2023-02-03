@@ -13,6 +13,10 @@ import random
 import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
+
+import speech_recognition as s_r
+
+
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 database_name = 'Home Automation System Database.db'
 # gives a name to our database so that we can call it throughout our program
@@ -62,6 +66,8 @@ if not ourAdmin:
                        "VALUES ('%s','admin','root','admin')" % newID2
     c.execute(createAdminQuery)
 register_verify = False
+
+
 # creates a variable called register_verify and sets it to false
 
 def check_verification(email_address, password, actual_code, user_code, register_screen):
@@ -158,6 +164,7 @@ def register():
     register_screen.geometry("500x600")
     # gives the starting size for the Tkinter user interface
     register_screen.resizable(False, False)
+
     # limits the user from resizing the interface
 
     def sign_up(email_address_db, password_db, actual_code, user_code):
@@ -952,6 +959,21 @@ def login():
                     home_automation_system_window.resizable(False, False)
                     add_new_device = Label(home_automation_system_window, text="Would you like to add a new device?")
                     add_new_device.place(y=30, x=140)
+
+                    def yes_add_new_device_command():
+                        return
+
+                    yes_add_new_device_button = Button(home_automation_system_window,
+                                                       text="Yes",
+                                                       command=yes_add_new_device_command)
+                    yes_add_new_device_button.place(x=75, y=180)
+
+                    def activate_voice_assistant():
+                        return
+                    voice_assistant_activation_button = Button(home_automation_system_window,
+                                                               text="voice assistant",
+                                                               command=activate_voice_assistant)
+                    voice_assistant_activation_button.place(x=400, y=500)
             else:
                 password_does_not_match = Label(login_screen, text="password does not match")
                 password_does_not_match.place(x=160, y=330)
