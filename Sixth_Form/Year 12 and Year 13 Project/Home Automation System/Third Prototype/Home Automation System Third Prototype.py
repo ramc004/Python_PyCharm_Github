@@ -957,23 +957,6 @@ def login():
                     home_automation_system_window.title("Home Automation System")
                     home_automation_system_window.geometry("500x600")
                     home_automation_system_window.resizable(False, False)
-                    add_new_device = Label(home_automation_system_window, text="Would you like to add a new device?")
-                    add_new_device.place(y=30, x=140)
-
-                    def yes_add_new_device_command():
-                        return
-
-                    yes_add_new_device_button = Button(home_automation_system_window,
-                                                       text="Yes",
-                                                       command=yes_add_new_device_command)
-                    yes_add_new_device_button.place(x=75, y=180)
-
-                    def activate_voice_assistant():
-                        return
-                    voice_assistant_activation_button = Button(home_automation_system_window,
-                                                               text="voice assistant",
-                                                               command=activate_voice_assistant)
-                    voice_assistant_activation_button.place(x=400, y=500)
             else:
                 password_does_not_match = Label(login_screen, text="password does not match")
                 password_does_not_match.place(x=160, y=330)
