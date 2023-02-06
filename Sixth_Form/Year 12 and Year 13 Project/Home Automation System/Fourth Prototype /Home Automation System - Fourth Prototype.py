@@ -246,7 +246,7 @@ def register():
         server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 
         emailSender = "ramcaleb50@gmail.com"
-        file = open("hello.txt", "r")
+        file = open("fp.txt", "r")
         emailPassword = file.read()
         file.close()
         subject = "Code Verification Email"
