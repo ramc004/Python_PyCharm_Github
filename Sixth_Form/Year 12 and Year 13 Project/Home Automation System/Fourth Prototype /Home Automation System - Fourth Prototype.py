@@ -273,17 +273,17 @@ def register():
 
         sent_label.config(foreground="green")
 
-    email_address_verify_button = Button(register_screen, text="Verify", width=10, height=1, command=send_email)
+    email_address_verify_button = Button(register_screen, height=1, width=8, text="Verify", command=send_email)
 
-    email_address_verify_button.place(x=350, y=74)
+    email_address_verify_button.place(x=355, y=70)
 
     verify_button_description = Label(register_screen, text="sends your 6 digit code")
 
-    verify_button_description.place(x=320, y=35)
+    verify_button_description.place(x=320, y=33)
 
     verify_button_arrow = Label(register_screen, text="↕️")
 
-    verify_button_arrow.place(x=382, y=51)
+    verify_button_arrow.place(x=394, y=50)
 
     def check_email_address():
         """"""

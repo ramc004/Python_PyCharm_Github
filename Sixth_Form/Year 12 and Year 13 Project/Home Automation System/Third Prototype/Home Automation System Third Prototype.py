@@ -14,9 +14,6 @@ import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
 
-import speech_recognition as s_r
-
-
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 database_name = 'Home Automation System Database.db'
 # gives a name to our database so that we can call it throughout our program
