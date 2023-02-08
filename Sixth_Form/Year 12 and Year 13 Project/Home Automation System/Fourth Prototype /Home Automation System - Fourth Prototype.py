@@ -14,9 +14,6 @@ import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
 
-import speech_recognition as s_r
-
-
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 database_name = 'Home Automation System Database.db'
 # gives a name to our database so that we can call it throughout our program
@@ -49,26 +46,44 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
 # creates fields, nickname and date_of_birth
 # these fields are only optional meaning they can be empty inside the database
 # if they do enter a nickname it will be stored as text
-# if they enter a date_of_birth then it will be stored as a DATE
+# if they enter a date_of_birth then it will be stored as a DATE which allows the user to enter their dob simply
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
+# creates a variable called findAdminQuery
+# this will select the userID from our table but only where they are not a customer
+# this is if they wanted to update users inputs
 c.execute(findAdminQuery)
-ourAdmin = c.fetchone()
-if not ourAdmin:
+# executes the findAdminQuery to ensure its commands are executed
+MyAdmin = c.fetchone()
+# creates a variable, MyAdmin, forces the program to only select one record of admin at a time
+if not MyAdmin:
+    # where the person is trying to log in to the system it will check if they are not admin
+    # also if no admin has been created yet
     selectIDQuery = "SELECT userID FROM users ORDER BY userID DESC LIMIT 1"
+    # where the person is not admin a new query variable is created, selectIDQuery
+    # this will select the userID of the person which wasn't an admin
     c.execute(selectIDQuery)
+    # runs the command above
     new_highestID = c.fetchone()
+    # creates another variable and only allows one piece of data to be selected at a time
     if new_highestID is not None:
+        # as long as there is no other users they will be placed below the admin user
         new_highestID = new_highestID[0]
+        # sets our variable from above to be equal to the first piece of data stored in the database
         newID2 = int(new_highestID) + 1
+        # creates a new variable which will be incremented one more than the variable above,
+        # so it appears like admin, then users who have created accounts
     else:
         newID2 = 0
+        # this is if the admin had been pre-created beforehand
     createAdminQuery = "INSERT INTO users(userID,email_address,password,accessLevel) " \
                        "VALUES ('%s','admin','root','admin')" % newID2
+    # places the admin user in the table with an access level of admin and an email of root and password of admin
     c.execute(createAdminQuery)
+    # executes the admin query to ensure the above database statement follows through
 register_verify = False
+# creates a variable called register_verify outside any functions allowing us to call it from anywhere
+# sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
-
-# creates a variable called register_verify and sets it to false
 
 def check_verification(email_address, password, actual_code, user_code, register_screen):
     conn = sqlite3.connect(database_name)
@@ -92,7 +107,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         verified = False
     else:
         email_has_been_entered = Label(register_screen, text="you entered an email, you are now verified")
-        email_has_been_entered.place(x=150, y=160)
+        email_has_been_entered.place(x=140, y=170)
         email_has_been_entered.config(foreground="green")
     if not password:
         no_password_entry = Label(register_screen, text="  please enter password")
@@ -131,7 +146,7 @@ def check_verification(email_address, password, actual_code, user_code, register
     emailID = c.fetchone()
     if emailID:
         email_already_exists_label = Label(register_screen, text="   this email is already linked to an account")
-        email_already_exists_label.place(x=150, y=160)
+        email_already_exists_label.place(x=140, y=170)
         email_already_exists_label.config(foreground="orange")
         verified = False
     if actual_code != user_code:
@@ -201,7 +216,7 @@ def register():
                 no_email_entry.config(foreground="red")
             else:
                 email_has_been_entered = Label(register_screen, text="you entered an email")
-                email_has_been_entered.place(x=150, y=160)
+                email_has_been_entered.place(x=140, y=170)
                 email_has_been_entered.config(foreground="green")
             if not password_db:
                 no_password_entry = Label(register_screen, text="  please enter password")
@@ -246,7 +261,7 @@ def register():
         server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 
         emailSender = "ramcaleb50@gmail.com"
-        file = open("fp.txt", "r")
+        file = open("hello.txt", "r")
         emailPassword = file.read()
         file.close()
         subject = "Code Verification Email"
@@ -261,29 +276,50 @@ def register():
 
         email.set_content("Your code is: " + code)
 
-        server.login(emailSender, emailPassword)
+        if emailSender and emailPassword and emailRecipient:
 
-        server.sendmail(emailSender, emailRecipient, email.as_string())
+            sent_label = Label(register_screen, text="Email sent!", width=20)
 
-        server.quit()
+            sent_label.place(x=320, y=103)
 
-        sent_label = Label(register_screen, text="Email sent!")
+            sent_label.config(foreground="green")
 
-        sent_label.place(x=360, y=97)
+            why_clause_email_sent = Label(register_screen, text="click button above to see why")
 
-        sent_label.config(foreground="green")
+            why_clause_email_sent.place(x=315, y=152)
 
-    email_address_verify_button = Button(register_screen, height=1, width=8, text="Verify", command=send_email)
+            why_clause_email_sent.config(foreground="green")
 
-    email_address_verify_button.place(x=355, y=70)
+            server.login(emailSender, emailPassword)
+
+            server.sendmail(emailSender, emailRecipient, email.as_string())
+
+            server.quit()
+
+        else:
+            not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+
+            why_clause_email_not_sent = Label(register_screen, text="click button above to see why")
+
+            why_clause_email_not_sent.place(x=315, y=152)
+
+            why_clause_email_not_sent.config(foreground="orange")
+
+            not_sent_label.place(x=320, y=103)
+
+            not_sent_label.config(foreground="orange")
+
+    email_address_verify_button = Button(register_screen, text="Verify", command=send_email)
+
+    email_address_verify_button.place(x=365, y=74)
 
     verify_button_description = Label(register_screen, text="sends your 6 digit code")
 
-    verify_button_description.place(x=320, y=33)
+    verify_button_description.place(x=330, y=32)
 
     verify_button_arrow = Label(register_screen, text="↕️")
 
-    verify_button_arrow.place(x=394, y=50)
+    verify_button_arrow.place(x=388, y=50)
 
     def check_email_address():
         """"""
@@ -323,6 +359,7 @@ def register():
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
 
         if "caleb" in email_register \
+                or "fish" in email_register \
                 or "hannah" in email_register \
                 or "mark" in email_register \
                 or "niki" in email_register \
@@ -593,6 +630,7 @@ def login():
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
 
         if "caleb" in email_login \
+                or "fish" in email_login \
                 or "admin" in email_login \
                 or "hannah" in email_login \
                 or "mark" in email_login \
@@ -957,23 +995,6 @@ def login():
                     home_automation_system_window.title("Home Automation System")
                     home_automation_system_window.geometry("500x600")
                     home_automation_system_window.resizable(False, False)
-                    add_new_device = Label(home_automation_system_window, text="Would you like to add a new device?")
-                    add_new_device.place(y=30, x=140)
-
-                    def yes_add_new_device_command():
-                        return
-
-                    yes_add_new_device_button = Button(home_automation_system_window,
-                                                       text="Yes",
-                                                       command=yes_add_new_device_command)
-                    yes_add_new_device_button.place(x=75, y=180)
-
-                    def activate_voice_assistant():
-                        return
-                    voice_assistant_activation_button = Button(home_automation_system_window,
-                                                               text="voice assistant",
-                                                               command=activate_voice_assistant)
-                    voice_assistant_activation_button.place(x=400, y=500)
             else:
                 password_does_not_match = Label(login_screen, text="password does not match")
                 password_does_not_match.place(x=160, y=330)

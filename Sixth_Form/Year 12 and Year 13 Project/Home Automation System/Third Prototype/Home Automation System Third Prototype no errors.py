@@ -46,26 +46,44 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
 # creates fields, nickname and date_of_birth
 # these fields are only optional meaning they can be empty inside the database
 # if they do enter a nickname it will be stored as text
-# if they enter a date_of_birth then it will be stored as a DATE
+# if they enter a date_of_birth then it will be stored as a DATE which allows the user to enter their dob simply
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
+# creates a variable called findAdminQuery
+# this will select the userID from our table but only where they are not a customer
+# this is if they wanted to update users inputs
 c.execute(findAdminQuery)
-ourAdmin = c.fetchone()
-if not ourAdmin:
+# executes the findAdminQuery to ensure its commands are executed
+MyAdmin = c.fetchone()
+# creates a variable, MyAdmin, forces the program to only select one record of admin at a time
+if not MyAdmin:
+    # where the person is trying to log in to the system it will check if they are not admin
+    # also if no admin has been created yet
     selectIDQuery = "SELECT userID FROM users ORDER BY userID DESC LIMIT 1"
+    # where the person is not admin a new query variable is created, selectIDQuery
+    # this will select the userID of the person which wasn't an admin
     c.execute(selectIDQuery)
+    # runs the command above
     new_highestID = c.fetchone()
+    # creates another variable and only allows one piece of data to be selected at a time
     if new_highestID is not None:
+        # as long as there is no other users they will be placed below the admin user
         new_highestID = new_highestID[0]
+        # sets our variable from above to be equal to the first piece of data stored in the database
         newID2 = int(new_highestID) + 1
+        # creates a new variable which will be incremented one more than the variable above,
+        # so it appears like admin, then users who have created accounts
     else:
         newID2 = 0
+        # this is if the admin had been pre-created beforehand
     createAdminQuery = "INSERT INTO users(userID,email_address,password,accessLevel) " \
                        "VALUES ('%s','admin','root','admin')" % newID2
+    # places the admin user in the table with an access level of admin and an email of root and password of admin
     c.execute(createAdminQuery)
+    # executes the admin query to ensure the above database statement follows through
 register_verify = False
+# creates a variable called register_verify outside any functions allowing us to call it from anywhere
+# sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
-
-# creates a variable called register_verify and sets it to false
 
 def check_verification(email_address, password, actual_code, user_code, register_screen):
     conn = sqlite3.connect(database_name)
@@ -89,7 +107,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         verified = False
     else:
         email_has_been_entered = Label(register_screen, text="you entered an email, you are now verified")
-        email_has_been_entered.place(x=150, y=160)
+        email_has_been_entered.place(x=140, y=170)
         email_has_been_entered.config(foreground="green")
     if not password:
         no_password_entry = Label(register_screen, text="  please enter password")
@@ -128,7 +146,7 @@ def check_verification(email_address, password, actual_code, user_code, register
     emailID = c.fetchone()
     if emailID:
         email_already_exists_label = Label(register_screen, text="   this email is already linked to an account")
-        email_already_exists_label.place(x=150, y=160)
+        email_already_exists_label.place(x=140, y=170)
         email_already_exists_label.config(foreground="orange")
         verified = False
     if actual_code != user_code:
@@ -198,7 +216,7 @@ def register():
                 no_email_entry.config(foreground="red")
             else:
                 email_has_been_entered = Label(register_screen, text="you entered an email")
-                email_has_been_entered.place(x=150, y=160)
+                email_has_been_entered.place(x=140, y=170)
                 email_has_been_entered.config(foreground="green")
             if not password_db:
                 no_password_entry = Label(register_screen, text="  please enter password")
@@ -258,29 +276,50 @@ def register():
 
         email.set_content("Your code is: " + code)
 
-        server.login(emailSender, emailPassword)
+        if emailSender and emailPassword and emailRecipient:
 
-        server.sendmail(emailSender, emailRecipient, email.as_string())
+            sent_label = Label(register_screen, text="Email sent!", width=20)
 
-        server.quit()
+            sent_label.place(x=320, y=103)
 
-        sent_label = Label(register_screen, text="Email sent!")
+            sent_label.config(foreground="green")
 
-        sent_label.place(x=360, y=97)
+            why_clause_email_sent = Label(register_screen, text="click button above to see why")
 
-        sent_label.config(foreground="green")
+            why_clause_email_sent.place(x=315, y=152)
 
-    email_address_verify_button = Button(register_screen, text="Verify", width=10, height=1, command=send_email)
+            why_clause_email_sent.config(foreground="green")
 
-    email_address_verify_button.place(x=350, y=74)
+            server.login(emailSender, emailPassword)
+
+            server.sendmail(emailSender, emailRecipient, email.as_string())
+
+            server.quit()
+
+        else:
+            not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+
+            why_clause_email_not_sent = Label(register_screen, text="click button above to see why")
+
+            why_clause_email_not_sent.place(x=315, y=152)
+
+            why_clause_email_not_sent.config(foreground="orange")
+
+            not_sent_label.place(x=320, y=103)
+
+            not_sent_label.config(foreground="orange")
+
+    email_address_verify_button = Button(register_screen, text="Verify", command=send_email)
+
+    email_address_verify_button.place(x=365, y=74)
 
     verify_button_description = Label(register_screen, text="sends your 6 digit code")
 
-    verify_button_description.place(x=320, y=35)
+    verify_button_description.place(x=330, y=32)
 
     verify_button_arrow = Label(register_screen, text="↕️")
 
-    verify_button_arrow.place(x=382, y=51)
+    verify_button_arrow.place(x=388, y=50)
 
     def check_email_address():
         """"""
@@ -320,6 +359,7 @@ def register():
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
 
         if "caleb" in email_register \
+                or "fish" in email_register \
                 or "hannah" in email_register \
                 or "mark" in email_register \
                 or "niki" in email_register \
@@ -590,6 +630,7 @@ def login():
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
 
         if "caleb" in email_login \
+                or "fish" in email_login \
                 or "admin" in email_login \
                 or "hannah" in email_login \
                 or "mark" in email_login \
