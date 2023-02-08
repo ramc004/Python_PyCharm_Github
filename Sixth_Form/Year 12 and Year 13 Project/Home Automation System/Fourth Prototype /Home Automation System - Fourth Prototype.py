@@ -81,6 +81,8 @@ if not MyAdmin:
     c.execute(createAdminQuery)
     # executes the admin query to ensure the above database statement follows through
 register_verify = False
+
+
 # creates a variable called register_verify outside any functions allowing us to call it from anywhere
 # sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
@@ -261,7 +263,7 @@ def register():
         server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 
         emailSender = "ramcaleb50@gmail.com"
-        file = open("hello.txt", "r")
+        file = open("fp.txt", "r")
         emailPassword = file.read()
         file.close()
         subject = "Code Verification Email"
@@ -991,10 +993,53 @@ def login():
                         admin_Date_of_birth_change_entry.get(), adminPage))
                     change_button.place(x=350, y=565)
                 elif access_Level == "userAccount":
-                    home_automation_system_window = Tk()
-                    home_automation_system_window.title("Home Automation System")
-                    home_automation_system_window.geometry("500x600")
-                    home_automation_system_window.resizable(False, False)
+                    home_automation_system_prompt_window = Tk()
+                    home_automation_system_prompt_window.title("Home Automation System Adding Devices")
+                    home_automation_system_prompt_window.geometry("500x600")
+                    home_automation_system_prompt_window.resizable(False, False)
+                    add_device_question = Label(home_automation_system_prompt_window,
+                                                text="Would you like to add a device?")
+                    add_device_question.place(x=45, y=45)
+
+                    def yes_button_to_add_device_question_command():
+                        device_brand_question_label = Label(home_automation_system_prompt_window,
+                                                            text="What brand is the device you would like to pair?")
+                        device_brand_question_label.place(x=20, y=250)
+                        device_brand_entry_box = Entry(home_automation_system_prompt_window)
+                        device_brand_entry_box.place(x=45, y=270)
+                        enter_button_device_brand = Button(home_automation_system_prompt_window, text="Enter")
+                        enter_button_device_brand.place(x=350, y=260)
+                        device_adding_description_label_first_line = Label(home_automation_system_prompt_window,
+                                                                           text="Download the             app and "
+                                                                                "follow "
+                                                                                "their instructions to add the device")
+                        device_adding_description_label_first_line.place(x=25, y=300)
+                        device_adding_description_label_second_line = Label(home_automation_system_prompt_window,
+                                                                            text="You can then click next to connect it"
+                                                                                 " via this system")
+                        device_adding_description_label_second_line.place(x=25, y=320)
+                        device_brand_entry_box.get()
+                        actual_device_name_entered = Label(home_automation_system_prompt_window,
+                                                           text=device_brand_entry_box.get())
+                        actual_device_name_entered.place(x=75, y=300)
+
+                    yes_button_to_add_device_question = Button(home_automation_system_prompt_window,
+                                                               text="Yes",
+                                                               command=yes_button_to_add_device_question_command)
+                    yes_button_to_add_device_question.place(x=75, y=100)
+
+                    def no_button_to_add_device_question_command():
+                        home_automation_system_prompt_window.destroy()
+                        home_automation_system_control_devices_window = Tk()
+                        home_automation_system_control_devices_window.title("Home Automation System Control Devices")
+                        home_automation_system_control_devices_window.geometry("500x600")
+                        home_automation_system_control_devices_window.resizable(False, False)
+
+                    no_button_to_add_device_question = Button(home_automation_system_prompt_window,
+                                                              text="No",
+                                                              command=no_button_to_add_device_question_command)
+                    no_button_to_add_device_question.place(x=155, y=100)
+
             else:
                 password_does_not_match = Label(login_screen, text="password does not match")
                 password_does_not_match.place(x=160, y=330)
