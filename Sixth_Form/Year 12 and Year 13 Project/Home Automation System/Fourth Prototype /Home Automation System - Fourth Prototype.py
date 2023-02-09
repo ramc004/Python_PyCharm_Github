@@ -287,282 +287,241 @@ def register():
             c.execute(selectQuery)
             # executes the selectQuery command
             highestID = c.fetchone()
-            
+            # creates a new variable and only allows one piece of data to be fetched at a time
             if highestID is not None:
+                # where there are other users already saved to the database
                 highestID = highestID[0]
+                # call the first one 0 so it places it in order
                 newID = int(highestID) + 1
+                # and places thew new id incremented 1 below the past id
             else:
+                # if this is the first id to be added
                 newID = 0
+                # place it as the first id
             if not email_address_db:
+                # where the user has not entered an email
                 no_email_entry = Label(register_screen, text="   please enter email")
+                # creates a variable
+                # sets it equal to Tkinter's label function with text informing the user they need to enter an email
                 no_email_entry.place(x=150, y=160)
+                # tells the system where to place this new label function, just below the email clauses
                 no_email_entry.config(foreground="red")
+                # configures the text to red telling the user they need to fix this before moving on
             else:
+                # where the user has entered an email
                 email_has_been_entered = Label(register_screen, text="you entered an email")
+                # new variable created, using text within label to tell user they entered an email
                 email_has_been_entered.place(x=140, y=170)
+                # tells system where to place new variable using the built in place function within tkinter
                 email_has_been_entered.config(foreground="green")
+                # by showing the user green text tells them they have followed this rule
             if not password_db:
+                # where the user has not entered a password
                 no_password_entry = Label(register_screen, text="  please enter password")
+                # creates a new variable and sets it equal to a label telling user to enter a password
                 no_password_entry.place(x=150, y=385)
+                # this places the please enter a password text below the password clauses
                 no_password_entry.config(foreground="red")
+                # colours the text red telling the user they have to follow this rule before moving on
             else:
+                # however if they have entered a password
                 password_has_been_entered = Label(register_screen, text="you entered a password")
+                # tells the user they have entered a password
                 password_has_been_entered.place(x=150, y=385)
+                # places this label and overrides the past label
                 password_has_been_entered.config(foreground="green")
+                # sets the colour of this label to green telling the user they have followed this rule
             if email_address_db and password_db:
+                # only where both the email and password have been entered
                 insertQuery = """INSERT INTO users
                         (userID, email_address, password, accessLevel) 
                         VALUES
                         (%d,"%s","%s","%s")""" % (newID, email_address_db, password_db, accessLevel)
+                # creates a new variable and tells sql to insert the information into the database
                 c.execute(insertQuery)
+                # executes the query to ensure the database will be updated when committed
         conn.commit()
         # commits any changes the users inputs have made to the database
         conn.close()
-
+        # closes the database connection until reopened
     email_address_entry_register_screen = Entry(register_screen)
-
+    # creates a new variable and sets it equal to an entry box placing it in the register_screen
     email_address_entry_register_screen.place(x=150, y=70)
-
+    # tells the system where to place this register screen
     email_address_text_register_screen = Label(register_screen, text="Email address")
-
+    # creates another new variable telling the user what to write in the entry box, their email address
     email_address_text_register_screen.place(x=56.2, y=72)
-
+    # places the text telling the user to write an email address
     verify_box_entry = Entry(register_screen)
-
+    # creates another entry box this time for the 6 digit code
     verify_box_entry.place(x=150, y=200)
-
+    # places this six digit code entry box below the email address clauses
     verify_text = Label(register_screen, text=" Enter six digit code: ")
-
+    # tells the user to enter a six digit code
     verify_text.place(x=13, y=203)
-
+    # places this label next to the verify box so the user knows where to put the information
     code = str(random.randint(100000, 999999))
+    # using the random function which uses an algorithm to cycle through numbers and creates a six digit code
 
     def send_email():
-        """"""
+        """this function is called when the user clicks the verify button
+        it will then send the the user a short email"""
         emailRecipient = email_address_entry_register_screen.get()
-
+        # fetches the email address the user has inputted and sets it equal to emailRecipient to be called later on
         server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-
+        # opens up the mail server where email will be sent from
         emailSender = "ramcaleb50@gmail.com"
+        # creates an emailSender variable to called later, and sets this to an email address,
+        # this will be the email address the code is sent by
         file = open("fp.txt", "r")
+        # creates a variable and tells it to open a file and allows the system to read from the file
         emailPassword = file.read()
+        # sets the emailPassword, which will be called below, equal to reading the file
         file.close()
+        # closes our file opened from above
         subject = "Code Verification Email"
-
+        # sets another variable which will be called below to code verification email
         email = EmailMessage()
-
+        # making another variable and sets it equal to the class EmailMessage
+        # allowing us to set the where the email is going where its coming from and a message
         email["From"] = emailSender
-
+        # calls the emailSender variable above and sets it equal to who is sending the email
         email["To"] = emailRecipient
-
+        # calls the email address the user entered to tell the system where to send the email
         email["Subject"] = subject
-
+        # adds a subject onto the email to tell the user why they are receiving this email
         email.set_content("Your code is: " + code)
-
+        # gives the user their code by using the built in function set_content
         if emailSender and emailPassword and emailRecipient:
-
+            # as long the emailPassword, emailSender and the emailRecipient exists
             sent_label = Label(register_screen, text="Email sent!", width=20)
-
+            # creates a label, placing it inside the register_screen with text of email sent
+            # fixes the width of this label
             sent_label.place(x=320, y=103)
-
+            # places this label just underneath the verify button
             sent_label.config(foreground="green")
-
+            # sets the colour of the label to green to show the user has successfully sent the email
             why_clause_email_sent = Label(register_screen, text="click button above to see why")
-
+            # informs the user to click the button so they can see why their email wasn't set
             why_clause_email_sent.place(x=315, y=152)
-
+            # places this clause just below the verify button
             why_clause_email_sent.config(foreground="green")
-
+            # configures the label to green
             server.login(emailSender, emailPassword)
-
+            # using the built-in function passes through the emailSender and the emailPassword logging the user in
             server.sendmail(emailSender, emailRecipient, email.as_string())
-
+            # using the sendmail function it fetches the emailSender, emailRecipient and the email the user has entered
             server.quit()
-
+            # now the email has been sent, we can close the server
         else:
+            # although if the user has not entered an email
             not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
-
+            # it will make a new variable and set it equal to a label with text, Email has failed to send
             why_clause_email_not_sent = Label(register_screen, text="click button above to see why")
-
+            # creates another variable telling the user how to tell what they haven't included
             why_clause_email_not_sent.place(x=315, y=152)
-
+            # tells the system where to place the label
             why_clause_email_not_sent.config(foreground="orange")
-
+            # configures the text to orange showing the user they need to follow the rules
             not_sent_label.place(x=320, y=103)
-
+            # places label just above the verify button
             not_sent_label.config(foreground="orange")
-
+            # colours the label orange warning the user they haven't followed the rules
     email_address_verify_button = Button(register_screen, text="Verify", command=send_email)
-
+    # creates a button in the register_screen with text of verify and puts a command of send_email
+    # where this button is clicked the email will be sent
     email_address_verify_button.place(x=365, y=74)
-
+    # tells system where to place the verify button
     verify_button_description = Label(register_screen, text="sends your 6 digit code")
-
+    # describes to the user what the verify button does
     verify_button_description.place(x=330, y=32)
-
+    # places the button description above the verify button
     verify_button_arrow = Label(register_screen, text="↕️")
-
+    # creates a label inside our tkinter window with text
     verify_button_arrow.place(x=388, y=50)
+    # places this label in between the description and the verify button
 
     def check_email_address():
-        """"""
+        """this ensure the user's email address follows all the rules"""
         email_register = email_address_entry_register_screen.get()
+        # creates a new variable and sets it equal to whatever the user entered inside the email address entry box
+        # this is using the get function built in to python
         if "@" in email_register:
-
+            # as long as the user's email has an @ sign inside of it
             emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # configures the label to be a tick showing the user they have followed this rule
         else:
-
+            # on the other hand if the user has not inputted an @ sign in their email
             emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # then the emoji library will work with tkinter and configure the text to a cross
         if "gmail.com" in email_register \
-                or "yahoo.com" in email_register \
-                or "outlook.com" in email_register \
-                or "richardchalloner.com" in email_register \
-                or "icloud.com" in email_register \
-                or "mail.com" in email_register \
-                or "email.com" in email_register \
-                or "aol.com" in email_register \
-                or "proton.me" in email_register \
-                or "tutanota.com" in email_register \
-                or "tutanota.de" in email_register \
-                or "tutamail.com" in email_register \
-                or "tuta.io" in email_register \
-                or "keemail.me" in email_register \
-                or "zohomail.eu" in email_register \
-                or "tmmwj.com" in email_register \
-                or "gmx.com" in email_register \
-                or "gmx.co.uk" in email_register \
-                or "yahoo.co.uk" in email_register:
-
+                or "yahoo.com" in email_register or "outlook.com" in email_register \
+                or "richardchalloner.com" in email_register or "icloud.com" in email_register \
+                or "mail.com" in email_register or "email.com" in email_register \
+                or "aol.com" in email_register or "proton.me" in email_register \
+                or "tutanota.com" in email_register or "tutanota.de" in email_register \
+                or "tutamail.com" in email_register or "tuta.io" in email_register \
+                or "keemail.me" in email_register or "zohomail.eu" in email_register \
+                or "tmmwj.com" in email_register or "gmx.com" in email_register \
+                or "gmx.co.uk" in email_register or "yahoo.co.uk" in email_register:
+            # this ensure they are trying to send the email to an existing email address with a correct domain
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # as long as the user's email address contains one of the above domains then a tick will be shown
         else:
-
+            # however if they do not have any domain that exists in the list above
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # this changes the text from a tick to a cross where there is no existing domain
         if "caleb" in email_register \
-                or "fish" in email_register \
-                or "hannah" in email_register \
-                or "mark" in email_register \
-                or "niki" in email_register \
-                or "sean" in email_register \
-                or "katherine" in email_register \
-                or "kat" in email_register \
-                or "alyssa" in email_register \
-                or "katy" in email_register \
-                or "isaac" in email_register \
-                or "esther" in email_register \
-                or "ben" in email_register \
-                or "connor" in email_register \
-                or "daisy" in email_register \
-                or "josh" in email_register \
-                or "zoey" in email_register \
-                or "valentina" in email_register \
-                or "stacy" in email_register \
-                or "george" in email_register \
-                or "graham" in email_register \
-                or "isabella" in email_register \
-                or "bella" in email_register \
-                or "ella" in email_register \
-                or "grace" in email_register \
-                or "ellis" in email_register \
-                or "emmanuel" in email_register \
-                or "christian" in email_register \
-                or "finn" in email_register \
-                or "fin" in email_register \
-                or "rachael" in email_register \
-                or "liv" in email_register \
-                or "olivia" in email_register \
-                or "elaine" in email_register \
-                or "bert" in email_register \
-                or "nilusha" in email_register \
-                or "andy" in email_register \
-                or "emma" in email_register \
-                or "emily" in email_register \
-                or "amelia" in email_register \
-                or "charlotte" in email_register \
-                or "sophia" in email_register \
-                or "mia" in email_register \
-                or "ava" in email_register \
-                or "eva" in email_register \
-                or "keira" in email_register \
-                or "kiera" in email_register \
-                or "harper" in email_register \
-                or "jessie" in email_register \
-                or "alex" in email_register \
-                or "liam" in email_register \
-                or "noah" in email_register \
-                or "elijah" in email_register \
-                or "oliver" in email_register \
-                or "ollie" in email_register \
-                or "lucas" in email_register \
-                or "luke" in email_register \
-                or "james" in email_register \
-                or "alexia" in email_register \
-                or "aaron" in email_register \
-                or "william" in email_register \
-                or "will" in email_register \
-                or "jo" in email_register \
-                or "joseph" in email_register \
-                or "benjamin" in email_register \
-                or "henry" in email_register \
-                or "laura" in email_register \
-                or "theo" in email_register \
-                or "daniel" in email_register \
-                or "marios" in email_register \
-                or "mario" in email_register \
-                or "benjy" in email_register \
-                or "arthur" in email_register \
-                or "john" in email_register \
-                or "tim" in email_register \
-                or "javier" in email_register \
-                or "xavier" in email_register \
-                or "eve" in email_register \
-                or "niamh" in email_register \
-                or "niam" in email_register \
-                or "alannah" in email_register \
-                or "reshee" in email_register \
-                or "amelie" in email_register \
-                or "nishtha" in email_register \
-                or "sofia" in email_register \
-                or "abi" in email_register \
-                or "abigail" in email_register \
-                or "penelope" in email_register \
-                or "brooke" in email_register \
-                or "brook" in email_register \
-                or "brooklyn" in email_register \
-                or "sophie" in email_register \
-                or "laila" in email_register \
-                or "jaimie" in email_register \
-                or "claudia" in email_register \
-                or "elena" in email_register \
-                or "eleanor" in email_register \
-                or "ram" in email_register \
-                or "mat" in email_register \
-                or "matt" in email_register \
-                or "matthew" in email_register \
-                or "mary" in email_register \
-                or "martha" in email_register \
-                or "peter" in email_register \
-                or "tamar" in email_register \
-                or "darius" in email_register \
-                or "edith" in email_register \
-                or "elise" in email_register \
-                or "adam" in email_register:
-
+                or "fish" in email_register or "hannah" in email_register or "mark" in email_register \
+                or "niki" in email_register or "sean" in email_register or "katherine" in email_register \
+                or "kat" in email_register or "alyssa" in email_register or "katy" in email_register \
+                or "isaac" in email_register or "esther" in email_register or "ben" in email_register \
+                or "connor" in email_register or "daisy" in email_register or "josh" in email_register \
+                or "zoey" in email_register or "valentina" in email_register or "stacy" in email_register \
+                or "george" in email_register or "graham" in email_register or "isabella" in email_register \
+                or "bella" in email_register or "ella" in email_register or "grace" in email_register \
+                or "ellis" in email_register or "emmanuel" in email_register or "christian" in email_register \
+                or "finn" in email_register or "fin" in email_register or "rachael" in email_register \
+                or "liv" in email_register or "olivia" in email_register or "elaine" in email_register \
+                or "bert" in email_register or "nilusha" in email_register or "andy" in email_register \
+                or "emma" in email_register or "emily" in email_register or "amelia" in email_register \
+                or "charlotte" in email_register or "sophia" in email_register or "mia" in email_register \
+                or "ava" in email_register or "eva" in email_register or "keira" in email_register \
+                or "kiera" in email_register or "harper" in email_register or "jessie" in email_register \
+                or "alex" in email_register or "liam" in email_register or "noah" in email_register \
+                or "elijah" in email_register or "oliver" in email_register or "ollie" in email_register \
+                or "lucas" in email_register or "luke" in email_register or "james" in email_register \
+                or "alexia" in email_register or "aaron" in email_register or "william" in email_register \
+                or "will" in email_register or "jo" in email_register or "joseph" in email_register \
+                or "benjamin" in email_register or "henry" in email_register or "laura" in email_register \
+                or "theo" in email_register or "daniel" in email_register or "marios" in email_register \
+                or "mario" in email_register or "benjy" in email_register or "arthur" in email_register \
+                or "john" in email_register or "tim" in email_register or "javier" in email_register \
+                or "xavier" in email_register or "eve" in email_register or "niamh" in email_register \
+                or "niam" in email_register or "alannah" in email_register or "reshee" in email_register \
+                or "amelie" in email_register or "nishtha" in email_register or "sofia" in email_register \
+                or "abi" in email_register or "abigail" in email_register or "penelope" in email_register \
+                or "brooke" in email_register or "brook" in email_register or "brooklyn" in email_register \
+                or "sophie" in email_register or "laila" in email_register or "jaimie" in email_register \
+                or "claudia" in email_register or "elena" in email_register or "eleanor" in email_register \
+                or "ram" in email_register or "mat" in email_register or "matt" in email_register \
+                or "matthew" in email_register or "mary" in email_register or "martha" in email_register \
+                or "peter" in email_register or "tamar" in email_register or "darius" in email_register \
+                or "edith" in email_register or "elise" in email_register or "adam" in email_register:
+            # checks their email has some form of name in its email
             emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # this will adapt a tick next door to the clause to do with account name
         else:
-
+            # but if the user's entered email address does not have one of the above names
             emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # the previous mark, tick, will change to a cross
     check_rules_button_email_address = Button(register_screen, text="check rules", command=check_email_address)
-
+    # creates a variable and sets it equal to a button placed in the register_screen with text being check rules
+    # it will then run through the above rules adapting the text to a tick or a cross
     check_rules_button_email_address.place(x=355, y=125)
-
+    # tells the system where to place the check rules button
     check_clause_1_email_address = Label(register_screen, text="Contains account name")
-
+    
     check_clause_1_email_address.place(x=150, y=100)
 
     check_clause_2_email_address = Label(register_screen, text="'@' sign")
@@ -687,24 +646,12 @@ def login():
             emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
 
         if "gmail.com" in email_login \
-                or "yahoo.com" in email_login \
-                or "outlook.com" in email_login \
-                or "richardchalloner.com" in email_login \
-                or "icloud.com" in email_login \
-                or "mail.com" in email_login \
-                or "email.com" in email_login \
-                or "aol.com" in email_login \
-                or "proton.me" in email_login \
-                or "tutanota.com" in email_login \
-                or "tutanota.de" in email_login \
-                or "tutamail.com" in email_login \
-                or "tuta.io" in email_login \
-                or "keemail.me" in email_login \
-                or "zohomail.eu" in email_login \
-                or "tmmwj.com" in email_login \
-                or "gmx.com" in email_login \
-                or "gmx.co.uk" in email_login \
-                or "yahoo.co.uk" in email_login:
+                or "yahoo.com" in email_login or "outlook.com" in email_login or "richardchalloner.com" in email_login \
+                or "icloud.com" in email_login or "mail.com" in email_login or "email.com" in email_login \
+                or "aol.com" in email_login or "proton.me" in email_login or "tutanota.com" in email_login \
+                or "tutanota.de" in email_login or "tutamail.com" in email_login or "tuta.io" in email_login \
+                or "keemail.me" in email_login or "zohomail.eu" in email_login or "tmmwj.com" in email_login \
+                or "gmx.com" in email_login or "gmx.co.uk" in email_login or "yahoo.co.uk" in email_login:
 
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
@@ -713,115 +660,42 @@ def login():
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
 
         if "caleb" in email_login \
-                or "fish" in email_login \
-                or "admin" in email_login \
-                or "hannah" in email_login \
-                or "mark" in email_login \
-                or "niki" in email_login \
-                or "sean" in email_login \
-                or "katherine" in email_login \
-                or "kat" in email_login \
-                or "alyssa" in email_login \
-                or "katy" in email_login \
-                or "isaac" in email_login \
-                or "esther" in email_login \
-                or "ben" in email_login \
-                or "connor" in email_login \
-                or "daisy" in email_login \
-                or "josh" in email_login \
-                or "zoey" in email_login \
-                or "valentina" in email_login \
-                or "stacy" in email_login \
-                or "george" in email_login \
-                or "graham" in email_login \
-                or "isabella" in email_login \
-                or "bella" in email_login \
-                or "ella" in email_login \
-                or "grace" in email_login \
-                or "ellis" in email_login \
-                or "emmanuel" in email_login \
-                or "christian" in email_login \
-                or "finn" in email_login \
-                or "fin" in email_login \
-                or "rachael" in email_login \
-                or "liv" in email_login \
-                or "olivia" in email_login \
-                or "elaine" in email_login \
-                or "bert" in email_login \
-                or "nilusha" in email_login \
-                or "andy" in email_login \
-                or "emma" in email_login \
-                or "emily" in email_login \
-                or "amelia" in email_login \
-                or "charlotte" in email_login \
-                or "sophia" in email_login \
-                or "mia" in email_login \
-                or "ava" in email_login \
-                or "eva" in email_login \
-                or "keira" in email_login \
-                or "kiera" in email_login \
-                or "harper" in email_login \
-                or "jessie" in email_login \
-                or "alex" in email_login \
-                or "liam" in email_login \
-                or "noah" in email_login \
-                or "elijah" in email_login \
-                or "oliver" in email_login \
-                or "ollie" in email_login \
-                or "lucas" in email_login \
-                or "luke" in email_login \
-                or "james" in email_login \
-                or "alexia" in email_login \
-                or "aaron" in email_login \
-                or "william" in email_login \
-                or "will" in email_login \
-                or "jo" in email_login \
-                or "joseph" in email_login \
-                or "benjamin" in email_login \
-                or "henry" in email_login \
-                or "laura" in email_login \
-                or "theo" in email_login \
-                or "daniel" in email_login \
-                or "marios" in email_login \
-                or "mario" in email_login \
-                or "benjy" in email_login \
-                or "arthur" in email_login \
-                or "john" in email_login \
-                or "tim" in email_login \
-                or "javier" in email_login \
-                or "xavier" in email_login \
-                or "eve" in email_login \
-                or "niamh" in email_login \
-                or "niam" in email_login \
-                or "alannah" in email_login \
-                or "reshee" in email_login \
-                or "amelie" in email_login \
-                or "nishtha" in email_login \
-                or "sofia" in email_login \
-                or "abi" in email_login \
-                or "abigail" in email_login \
-                or "penelope" in email_login \
-                or "brooke" in email_login \
-                or "brook" in email_login \
-                or "brooklyn" in email_login \
-                or "sophie" in email_login \
-                or "laila" in email_login \
-                or "jaimie" in email_login \
-                or "claudia" in email_login \
-                or "elena" in email_login \
-                or "eleanor" in email_login \
-                or "ram" in email_login \
-                or "mat" in email_login \
-                or "matt" in email_login \
-                or "matthew" in email_login \
-                or "mary" in email_login \
-                or "martha" in email_login \
-                or "peter" in email_login \
-                or "tamar" in email_login \
-                or "darius" in email_login \
-                or "edith" in email_login \
-                or "elise" in email_login \
-                or "adam" in email_login:
+                or "fish" in email_login or "admin" in email_login or "hannah" in email_login \
+                or "mark" in email_login or "niki" in email_login or "sean" in email_login \
+                or "katherine" in email_login or "kat" in email_login or "alyssa" in email_login \
+                or "katy" in email_login or "isaac" in email_login or "esther" in email_login or "ben" \
+                in email_login or "connor" in email_login or "daisy" in email_login or "josh" in email_login \
+                or "zoey" in email_login or "valentina" in email_login or "stacy" in email_login \
+                or "george" in email_login or "graham" in email_login or "isabella" in email_login \
+                or "bella" in email_login or "ella" in email_login or "grace" in email_login \
+                or "emmanuel" in email_login or "christian" in email_login or "finn" in email_login \
+                or "fin" in email_login or "rachael" in email_login or "liv" in email_login \
+                or "olivia" in email_login or "elaine" in email_login or "bert" in email_login \
+                or "nilusha" in email_login or "andy" in email_login or "emma" in email_login \
+                or "emily" in email_login or "amelia" in email_login or "ellis" in email_login \
+                or "charlotte" in email_login or "sophia" in email_login or "mia" in email_login \
+                or "ava" in email_login or "eva" in email_login or "keira" in email_login \
+                or "kiera" in email_login or "harper" in email_login or "jessie" in email_login \
+                or "alex" in email_login or "liam" in email_login or "noah" in email_login \
+                or "elijah" in email_login or "oliver" in email_login or "ollie" in email_login \
+                or "lucas" in email_login or "luke" in email_login or "james" in email_login \
+                or "alexia" in email_login or "aaron" in email_login or "william" in email_login \
+                or "will" in email_login or "jo" in email_login or "joseph" in email_login \
+                or "benjamin" in email_login or "henry" in email_login or "laura" in email_login \
+                or "theo" in email_login or "daniel" in email_login or "marios" in email_login \
+                or "mario" in email_login or "benjy" in email_login or "arthur" in email_login \
+                or "john" in email_login or "tim" in email_login or "javier" in email_login \
+                or "xavier" in email_login or "eve" in email_login or "niamh" in email_login \
+                or "niam" in email_login or "alannah" in email_login or "reshee" in email_login \
+                or "amelie" in email_login or "nishtha" in email_login or "sofia" in email_login \
+                or "abi" in email_login or "abigail" in email_login or "penelope" in email_login \
+                or "brooke" in email_login or "brook" in email_login or "brooklyn" in email_login \
+                or "sophie" in email_login or "laila" in email_login or "jaimie" in email_login \
+                or "claudia" in email_login or "elena" in email_login or "eleanor" in email_login \
+                or "ram" in email_login or "mat" in email_login or "matt" in email_login \
+                or "matthew" in email_login or "mary" in email_login or "martha" in email_login \
+                or "peter" in email_login or "tamar" in email_login or "darius" in email_login \
+                or "edith" in email_login or "elise" in email_login or "adam" in email_login:
 
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
 
