@@ -13,9 +13,10 @@ import random
 import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
+
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 
-database_name = 'Home Automation System'
+database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
 # we are creating a variable called proceed, and setting it equal to our tkinter window
@@ -81,6 +82,8 @@ if not MyAdmin:
     c.execute(createAdminQuery)
     # executes the admin query to ensure the above database statement follows through
 register_verify = False
+
+
 # creates a variable called register_verify outside any functions allowing us to call it from anywhere
 # sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
@@ -115,9 +118,9 @@ def check_verification(email_address, password, actual_code, user_code, register
     # ensures the emoji is being configured next to the appropriate clause
     if not email_address:
         # this checks if the email_address field is filled
-        no_email_entry = Label(register_screen, text="please enter email")
+        no_email_entry = Label(register_screen, text="                             please enter email")
         # tells the user to enter an email
-        no_email_entry.place(x=150, y=160)
+        no_email_entry.place(x=150, y=170)
         # places the label using the place function, ensure it goes just below email box
         no_email_entry.config(foreground="red")
         # configures this text to the colour red to show the user there is an issue
@@ -167,42 +170,77 @@ def check_verification(email_address, password, actual_code, user_code, register
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # the system will then overlay a tick emoji overriding the cross emoji
     if not re.search(r'[A-Z]{1,}', password):
-        # 
+        # using the re library to check the user has entered 2 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
+        # calls the variable from above and places the cross emoji
         verified = False
+        # sets the verified variable to false if the user hasn't entered two capital letters
     else:
+        # where the user has entered 2 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
+        # changes the emoji to a tick to show the user they have followed this rule
     if not re.search(r'[1234567890]{1,}', password):
+        # if user doesn't have 2 or more number in their password
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
+        # the system will find where we placed this variable from above and configure it to a cross
         verified = False
+        # this sets the verified variable to false to ensure the user's details won't be saved unless follow rules
     else:
+        # if they have entered 2 or more numbers
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
+        # changes the emoji next to the final clause to a tick
     if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}', password):
+        # where the user hasn't entered 1 or more special characters
         emoji_label_clause_3_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
+        # sets the label to a cross telling the user they have not followed this rule
         verified = False
+        # calls the verified variable and sets it equal to false
     else:
+        # if the user does have the required amount of special characters
         emoji_label_clause_3_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
+        # the system shows this by changing the cross into a tick
     findEmailQuery = "SELECT userID FROM users WHERE email_address == '%s'" % email_address
+    # this selects the email addresses from the database and ensures they haven't entered an email that already links
     c.execute(findEmailQuery)
+    # executes our command searching for email addresses
     emailID = c.fetchone()
+    # creates a new variable and forces only one piece of data at a time to be compared
     if emailID:
+        # where the emailID entered by user is already saved to database
         email_already_exists_label = Label(register_screen, text="   this email is already linked to an account")
+        # tkinter will create a new label telling the user they have already signed up with this account
         email_already_exists_label.place(x=140, y=170)
+        # tells the system where to put this label, this will go directly below all the email rules
         email_already_exists_label.config(foreground="orange")
+        # sets the colour of the text for this label to orange
+        # telling the user their is a minor issue with their details
         verified = False
+        # calls the verified variable and sets it to false stopping the user from registering incorrect details
     if actual_code != user_code:
+        # fetches the code sent via email and matches with the code entered by the user
         code_label_failure = Label(register_screen, text="code incorrect")
+        # tells the user they have mistyped their code
         code_label_failure.place(x=200, y=227)
+        # places this label just below the code entry box
         code_label_failure.config(foreground="red")
+        # tells the user this a major issue they need to fix
         verified = False
+        # the verified status of the variable is set to false,
+        # preventing the user from registering incorrect information
     else:
+        # if the user has copied the code correctly
         code_label_success = Label(register_screen, text="  code correct")
+        # system tells user code is correct
         code_label_success.place(x=200, y=227)
+        # system places label at same place as code incorrect to ensure only one message appears at a time
         code_label_success.config(foreground="green")
+        # configures the label to green showing the user the code is correct
     conn.commit()
     # commits any changes the users inputs have made to the database
     conn.close()
+    # closes our connection for the database
     return verified
+    # indicates the verified variable has been used in this function and is now finished being adapted
 
 
 def register():
@@ -220,7 +258,6 @@ def register():
     register_screen.geometry("500x600")
     # gives the starting size for the Tkinter user interface
     register_screen.resizable(False, False)
-
     # limits the user from resizing the interface
 
     def sign_up(email_address_db, password_db, actual_code, user_code):
@@ -237,15 +274,20 @@ def register():
             # creates a clause using a parameter from our function
             # the function will only get here if the user has been verified
             if email_address_db == "admin":
+                # this checks if the user is trying to sign up as a user or an admin
                 accessLevel = "admin"
+                # where the accessLevel is admin if the email address was admin
             else:
+                # however if the email address was not admin
                 accessLevel = "userAccount"
-
+                # the system will correctly assume they are a user trying to create an account
             selectQuery = "SELECT userID FROM users ORDER BY userID DESC LIMIT 1"
-
+            # creates a new variable and checks the database calling from the users table selecting the userID field
+            # and ordering it descending to ensure the database can be read from efficiently
             c.execute(selectQuery)
-
+            # executes the selectQuery command
             highestID = c.fetchone()
+            
             if highestID is not None:
                 highestID = highestID[0]
                 newID = int(highestID) + 1
@@ -1090,6 +1132,7 @@ def login():
 
                         def show_rooms_for_devices():
                             return
+
                         rooms_for_lights_button = Button(home_automation_system_control_devices_window, text="Rooms",
                                                          command=show_rooms_for_devices)
                         rooms_for_lights_button.place(x=45, y=100)
