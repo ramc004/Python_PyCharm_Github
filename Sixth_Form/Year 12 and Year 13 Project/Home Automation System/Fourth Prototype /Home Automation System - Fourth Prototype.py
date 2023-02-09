@@ -13,9 +13,9 @@ import random
 import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
-
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
-database_name = 'Home Automation System Database.db'
+
+database_name = 'Home Automation System'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
 # we are creating a variable called proceed, and setting it equal to our tkinter window
@@ -81,13 +81,12 @@ if not MyAdmin:
     c.execute(createAdminQuery)
     # executes the admin query to ensure the above database statement follows through
 register_verify = False
-
-
 # creates a variable called register_verify outside any functions allowing us to call it from anywhere
 # sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
 
 def check_verification(email_address, password, actual_code, user_code, register_screen):
+    """"""
     conn = sqlite3.connect(database_name)
     # connects to sqlite3 using a variable name of conn short for connection
     # finds the variable database_name and calls our database file from above
@@ -1008,25 +1007,39 @@ def login():
                         device_brand_entry_box = Entry(home_automation_system_prompt_window)
                         device_brand_entry_box.place(x=45, y=270)
                         enter_button_device_brand = Button(home_automation_system_prompt_window, text="Enter")
-                        enter_button_device_brand.place(x=350, y=260)
+                        enter_button_device_brand.place(x=250, y=268)
                         device_adding_description_label_first_line = Label(home_automation_system_prompt_window,
-                                                                           text="Download the             app and "
-                                                                                "follow "
-                                                                                "their instructions to add the device")
+                                                                           text="Download the corresponding app and "
+                                                                                "follow their instructions to add the "
+                                                                                "device")
                         device_adding_description_label_first_line.place(x=25, y=300)
                         device_adding_description_label_second_line = Label(home_automation_system_prompt_window,
                                                                             text="You can then click next to connect it"
                                                                                  " via this system")
                         device_adding_description_label_second_line.place(x=25, y=320)
-                        device_brand_entry_box.get()
-                        actual_device_name_entered = Label(home_automation_system_prompt_window,
-                                                           text=device_brand_entry_box.get())
-                        actual_device_name_entered.place(x=75, y=300)
 
                     yes_button_to_add_device_question = Button(home_automation_system_prompt_window,
                                                                text="Yes",
                                                                command=yes_button_to_add_device_question_command)
                     yes_button_to_add_device_question.place(x=75, y=100)
+
+                    def voice_assistant_button_pressed_prompt_window():
+                        return
+
+                    voice_assistant_prompt_window = Button(home_automation_system_prompt_window,
+                                                           text="Voice Assistant",
+                                                           command=voice_assistant_button_pressed_prompt_window)
+                    voice_assistant_prompt_window.place(x=350, y=500)
+
+                    def next_button():
+                        adding_devices_window = Tk()
+                        adding_devices_window.title("Searching for Devices")
+                        adding_devices_window.geometry("500x600")
+                        adding_devices_window.resizable(False, False)
+
+                    next_button = Button(home_automation_system_prompt_window, text="Next",
+                                         command=next_button)
+                    next_button.place(x=230, y=550)
 
                     def no_button_to_add_device_question_command():
                         home_automation_system_prompt_window.destroy()
@@ -1034,6 +1047,20 @@ def login():
                         home_automation_system_control_devices_window.title("Home Automation System Control Devices")
                         home_automation_system_control_devices_window.geometry("500x600")
                         home_automation_system_control_devices_window.resizable(False, False)
+
+                        def show_rooms_for_devices():
+                            return
+                        rooms_for_lights_button = Button(home_automation_system_control_devices_window, text="Rooms",
+                                                         command=show_rooms_for_devices)
+                        rooms_for_lights_button.place(x=45, y=100)
+
+                        def voice_assistant_control_window_button_pressed():
+                            return
+
+                        voice_assistant_control_devices = Button(home_automation_system_control_devices_window,
+                                                                 text="Voice Assistant",
+                                                                 command=voice_assistant_control_window_button_pressed)
+                        voice_assistant_control_devices.place(x=350, y=500)
 
                     no_button_to_add_device_question = Button(home_automation_system_prompt_window,
                                                               text="No",
