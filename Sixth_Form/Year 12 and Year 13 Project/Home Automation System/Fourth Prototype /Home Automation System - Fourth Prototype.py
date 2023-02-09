@@ -86,48 +86,88 @@ register_verify = False
 
 
 def check_verification(email_address, password, actual_code, user_code, register_screen):
-    """"""
+    """this function has been created to ensure the user follows all the rules when trying to register their details
+    i have passed email_address, password, actual_code, user_code and register_screen as parameters
+    to allows us to use them throughout this function"""
     conn = sqlite3.connect(database_name)
     # connects to sqlite3 using a variable name of conn short for connection
     # finds the variable database_name and calls our database file from above
     c = conn.cursor()
     # creates a cursor allowing us to execute sql commands
     verified = True
+    # creates a new variable and as long as each of the rules are follow it will be true
     emoji_label_clause_1_password_check_verification = Label(register_screen)
+    # places a variable for the first emoji to tell the user how there password is wrong
+    # this one is for at least 8 characters
     emoji_label_clause_1_password_check_verification.place(x=125, y=300)
+    # places the label using the place function along the x axis and down the y axis
     emoji_label_clause_4_password_check_verification = Label(register_screen)
+    # this is used to check the user has inputted at least 2 numbers
     emoji_label_clause_4_password_check_verification.place(x=125, y=364)
+    # tells the system where to place the variable inside our register_screen
     emoji_label_clause_3_password_check_verification = Label(register_screen)
+    # checks if the user has entered 1 special character
     emoji_label_clause_3_password_check_verification.place(x=125, y=342)
+    # using a place function built in to tkinter places the variable 125 along and 342 down
     emoji_label_clause_2_password_check_verification = Label(register_screen)
+    # further down this variable is called and configured depending on whether or not the user has used 2 capitals
     emoji_label_clause_2_password_check_verification.place(x=125, y=320)
+    # ensures the emoji is being configured next to the appropriate clause
     if not email_address:
+        # this checks if the email_address field is filled
         no_email_entry = Label(register_screen, text="please enter email")
+        # tells the user to enter an email
         no_email_entry.place(x=150, y=160)
+        # places the label using the place function, ensure it goes just below email box
         no_email_entry.config(foreground="red")
+        # configures this text to the colour red to show the user there is an issue
         verified = False
+        # calls the 'verified' variable and sets it to false to ensure it doesn't let them sign up
     else:
+        # however if an email had been entered
         email_has_been_entered = Label(register_screen, text="you entered an email, you are now verified")
+        # the program creates a new variable
+        # using the label function placing text telling the user they have entered an email
         email_has_been_entered.place(x=140, y=170)
+        # tells the system how to place the variable made above
         email_has_been_entered.config(foreground="green")
+        # configures the text message to green telling the user they have followed this rule
     if not password:
+        # if the user has not entered anything into the password entry box
         no_password_entry = Label(register_screen, text="  please enter password")
+        # creates a new variable as a label and text telling user to enter a password
         no_password_entry.place(x=150, y=385)
+        # this places the variable above using the x axis and the y axis
         no_password_entry.config(foreground="red")
+        # sets the colour of the please enter password text to red showing the user they're doing something wrong
         verified = False
+        # calls the verified variable and sets it to false where no password was entered
     else:
+        # but if the user does enter a password that follows the rules and also an email and a correct code
         password_has_been_entered = Label(register_screen, text="you entered a password")
+        # it will a new you entered a password label
         password_has_been_entered.place(x=150, y=385)
+        # it then places this label beneath the password clauses
         password_has_been_entered.config(foreground="green")
+        # sets the foreground of the variable to green to show the user they have been successful
         successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
+        # message telling user they are free to go and log in to the system
         successful_sign_up.place(x=75, y=500)
+        # places the successful message on the screen using the place function
         successful_sign_up.config(foreground="green")
+        # by colouring the text green informs the user they have followed all the necessary rules
     if len(password) < 8:
+        # where password's length is less than 8 characters
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
+        # sets the emoji to a cross using the emoji library
         verified = False
+        # calls the verified variable and sets it false blocking the user from successfully signing up
     else:
+        # if the user's inputted password is 8 or more characters then they have followed this rule
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
+        # the system will then overlay a tick emoji overriding the cross emoji
     if not re.search(r'[A-Z]{1,}', password):
+        # 
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         verified = False
     else:
