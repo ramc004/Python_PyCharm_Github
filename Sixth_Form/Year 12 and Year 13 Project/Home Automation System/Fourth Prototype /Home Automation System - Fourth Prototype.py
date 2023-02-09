@@ -521,37 +521,39 @@ def register():
     check_rules_button_email_address.place(x=355, y=125)
     # tells the system where to place the check rules button
     check_clause_1_email_address = Label(register_screen, text="Contains account name")
-    
+    # creates a variable and sets it equal to a label inside the register_screen with text
     check_clause_1_email_address.place(x=150, y=100)
-
+    # places the first clause inside our tkinter window below the email address entry box
     check_clause_2_email_address = Label(register_screen, text="'@' sign")
-
+    # this puts a label next to the tick or cross clause to show how the user has put an @ sign or not
     check_clause_2_email_address.place(x=150, y=120)
-
+    # places the clause inside our tkinter window
     check_clause_3_email_address = Label(register_screen, text="Domain name")
-
+    # makes a new variable and sets it equal to another clause telling the user how to input information
     check_clause_3_email_address.place(x=150, y=140)
-
+    # directs the system how to place the label
     password_label = Label(register_screen, text='Password')
-
+    # tells the user what they need to put in the entry boxes
     password_label.place(x=80, y=250)
-
+    # places the text from our label inside our tkinter window
     password_entry = Entry(register_screen, show='*')
-
+    # creates another variable and sets it equal to another entry box where the users password can be inputted
+    # to ensure security the users password will stay safe we star out whatever they type in to the password box
     password_entry.place(x=150, y=250)
+    # places these stars inside the tkinter window
 
     def show_password():
         """this defines a function which allows the users password to be shown where check box is ticked"""
         if password_entry.cget('show') == '*':
-
+            # tells the system to not show stars where the check box is not selected
             password_entry.config(show='')
-
+            # instead show the actual password the user is entering
         else:
-
+            # but if the user has selected the show password box
             password_entry.config(show='*')
-
+            # the system will show stars in place of their password
     show_password_check_box = Checkbutton(register_screen, text='Show Password', command=show_password)
-
+    
     show_password_check_box.place(x=85, y=277)
 
     check_clause_1_password = Label(register_screen, text="At least 8 characters")
