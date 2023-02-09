@@ -13,7 +13,6 @@ import random
 import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
-
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 
 database_name = 'Home Automation System.db'
@@ -82,8 +81,6 @@ if not MyAdmin:
     c.execute(createAdminQuery)
     # executes the admin query to ensure the above database statement follows through
 register_verify = False
-
-
 # creates a variable called register_verify outside any functions allowing us to call it from anywhere
 # sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
@@ -553,59 +550,62 @@ def register():
             password_entry.config(show='*')
             # the system will show stars in place of their password
     show_password_check_box = Checkbutton(register_screen, text='Show Password', command=show_password)
-    
+    # creates the check button box putting text next to the box
     show_password_check_box.place(x=85, y=277)
-
+    # places the button in the tkinter window
     check_clause_1_password = Label(register_screen, text="At least 8 characters")
-
+    # password clause telling the user they have to enter 8 characters
     check_clause_1_password.place(x=150, y=300)
-
+    # places this label in our tkinter window
     check_clause_2_password = Label(register_screen, text="At least 2 capital letters")
-
+    # creates a variable for a label housed in the register_screen telling the user to enter 2 capital letters
     check_clause_2_password.place(x=150, y=320)
-
+    # tells the program where to put the 2 clause
     check_clause_3_password = Label(register_screen, text="At least 1 special character")
-
+    # creates a new variable for a new clause
+    # sets it equal to a label which shall be put inside the register_screen with some text
     check_clause_3_password.place(x=150, y=340)
-
+    # lets the system know where the label should be placed
     check_clause_4_password = Label(register_screen, text="At least 2 numbers")
-
+    # creates a new variable and lets it equal to a label placed inside the register_screen with text
     check_clause_4_password.place(x=150, y=360)
-
+    # places our variable created above using the 'x' and the 'y' axis
     emoji_label_clause_1_password = Label(register_screen)
-
+    # creates a clause telling the user what to put in their password
     emoji_label_clause_1_password.place(x=125, y=300)
-
+    # places the clause in the tkinter window using the place function
     emoji_label_clause_2_password = Label(register_screen)
-
+    # creates a second password clause and places this label in our register_screen tkinter window
     emoji_label_clause_2_password.place(x=125, y=325)
-
+    # tells the system where to place the above label created
     emoji_label_clause_3_password = Label(register_screen)
-
+    # this will inform the user if there password conforms to the third rule
     emoji_label_clause_3_password.place(x=125, y=355)
-
+    # places this beneath the password entry box
     emoji_label_clause_4_password = Label(register_screen)
-
+    # informs the user they have or haven't followed a specific rule
     emoji_label_clause_4_password.place(x=125, y=370)
-
+    # places this rule inside the tkinter window
     emoji_label_clause_1_email_address = Label(register_screen)
-
+    # email rules are displayed on the register screen
     emoji_label_clause_1_email_address.place(x=125, y=100)
-
+    # places these rules using a place function
     emoji_label_clause_2_email_address = Label(register_screen)
-
+    # creates a new variable and sets it equal to a label telling the system to put in the register screen
     emoji_label_clause_2_email_address.place(x=125, y=120)
-
+    # places this label telling the user about the email address on the screen
     emoji_label_clause_3_email_address = Label(register_screen)
-
+    # a new variable is made and then set equal to a label which is set to be put inside the register_screen window
     emoji_label_clause_3_email_address.place(x=125, y=140)
-
+    # places the final email clause on the screen just above the six digit code entry box
     sign_up_button = Button(register_screen, text='Sign Up',
                             command=lambda: sign_up(email_address_entry_register_screen.get(),
                                                     password_entry.get(), code, verify_box_entry.get()))
-
+    # creates a new variable and sets it equal to a button and allows a command to be run through this button
+    # this allowed me to pass parameters through this function
+    # meaning they can be used throughout
     sign_up_button.place(x=350, y=430)
-
+    # places the button using the x and y axis
     conn.commit()
     # commits any changes the users inputs have made to the database
     conn.close()
@@ -628,25 +628,27 @@ def login():
     login_screen.resizable(False, False)
     # gives the window a fixed size
     email_address_entry_login_screen = Entry(login_screen)
-
+    # creates an entry box inside the login_screen
     email_address_entry_login_screen.place(x=150, y=50)
-
+    # places this entry box 150 across and 50 down
     email_address_text_login_screen = Label(login_screen, text="Email address")
-
+    # tells the user which information they need to enter with text
     email_address_text_login_screen.place(x=56.2, y=52)
+    # places email address text next to the email address box
 
     def check_email_address():
-        """"""
+        """similar function to that from the register screen
+        activated when the user clicks the check rules button adjacent to the email address rules"""
         email_login = email_address_entry_login_screen.get()
-
+        # creates a new variable and sets it equal to the email address the user has inputted
         if "@" in email_login:
-
+            # where the users email inputted contains an @ sign
             emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # configures a tick to be placed next to the second email clause
         else:
-
+            # but if the users email doesn't contain an @ sign
             emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # configures the label with text to be a cross showing the user they need to fix this rule
         if "gmail.com" in email_login \
                 or "yahoo.com" in email_login or "outlook.com" in email_login or "richardchalloner.com" in email_login \
                 or "icloud.com" in email_login or "mail.com" in email_login or "email.com" in email_login \
@@ -654,13 +656,13 @@ def login():
                 or "tutanota.de" in email_login or "tutamail.com" in email_login or "tuta.io" in email_login \
                 or "keemail.me" in email_login or "zohomail.eu" in email_login or "tmmwj.com" in email_login \
                 or "gmx.com" in email_login or "gmx.co.uk" in email_login or "yahoo.co.uk" in email_login:
-
+            # as long the user's email has one of the above domain names
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # the system will put a tick next to the clause saying contains domain name
         else:
-
+            # but if the user's email doesn't have one of the above domains
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # the system will display directing the user to add a domain name
         if "caleb" in email_login \
                 or "fish" in email_login or "admin" in email_login or "hannah" in email_login \
                 or "mark" in email_login or "niki" in email_login or "sean" in email_login \
@@ -698,102 +700,109 @@ def login():
                 or "matthew" in email_login or "mary" in email_login or "martha" in email_login \
                 or "peter" in email_login or "tamar" in email_login or "darius" in email_login \
                 or "edith" in email_login or "elise" in email_login or "adam" in email_login:
-
+            # if the above names or in the user's email
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # the user will be presented with a green tick
         else:
-
+            # where the user hasn't got an account name
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # the program will tell them by showing a red cross
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
-
+    # creates a variable connecting it to a button inside the login_screen with text and a command
+    # the command wil check which rules pass or fail
     check_rules_button_email_address_login.place(x=355, y=105)
-
+    # connects back to the variable created and places this 355 along the x axis and 105 down the y axis
     check_clause_1_email_address_login = Label(login_screen, text="Contains account name")
-
+    # puts text on screen telling the user contains account name
     check_clause_1_email_address_login.place(x=150, y=80)
-
+    # places the above 'contains account name' text inside our window
     check_clause_2_email_address_login = Label(login_screen, text="'@' sign")
-
+    # creates a new variable for the email clause telling the user whether or not they have an @ sign in the email
     check_clause_2_email_address_login.place(x=150, y=100)
-
+    # places our @ sign text in our login_screen window
     check_clause_3_email_address_login = Label(login_screen, text="Domain name")
-
+    # makes a new label in tkinter inside our login_screen where its text will be Domain name
     check_clause_3_email_address_login.place(x=150, y=120)
-
+    # tells the system where to place the domain name text
     password_label_login = Label(login_screen, text='Password')
-
+    # creates a new label telling the user what information to enter into each entry box
     password_label_login.place(x=80, y=190)
-
+    # places the password information next to the password entry box
     password_entry_login = Entry(login_screen, show='*')
-
+    # creates a new variable and sets it equal to an entry box showing stars in place of whatever the user enters
     password_entry_login.place(x=150, y=190)
+    # directs the program to where the entry box is to be placed inside the login_screen
 
     def show_password():
         """this defines a function which allows the users password to be shown where check box is ticked"""
         if password_entry_login.cget('show') == '*':
-
+            # this says that if check button ticked password will be shown and stars will be hidden
             password_entry_login.config(show='')
-
+            # by configuring the stars to instead show whatever is being entered
         else:
-
+            # if the checkbutton is not ticked then password will stay starred
             password_entry_login.config(show='*')
-
+            # by configuring the password_entry with stars
     show_password_check_box_login = Checkbutton(login_screen, text='Show Password', command=show_password)
-
+    # creates a variable and sets it equal to a checkbutton which will have text of show password
+    # has a command linking to the above function telling the system how to behave
+    # whether or not the check box is ticked
     show_password_check_box_login.place(x=85, y=227)
+    # places the checkButton along the x axis and down the y axis
 
     def check_password():
-
+        """function to ensure password on login screen follows the rules to create a secure password """
         password_length_login = password_entry_login.get()
-
+        # creates a new variable and sets it equal to whichever password the user has chosen by using the get function
         if len(password_length_login) >= 8:
-
+            # where the password has a length of 8 or more characters
             emoji_label_clause_1_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # configure the clause emoji to a tick
         else:
-
+            # however if the user's password is 7 characters or less
             emoji_label_clause_1_password_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # sets the emoji to a cross informing the user they need to re-check their password
         password_caps_login = password_entry_login.get()
-
+        # creates another new variable and sets it equal to the password entered by the user
         if re.search(r'[A-Z]{1,}', password_caps_login):
-
+            # using the re library searches through the users password entered
+            # ensures there is 1 or more capital letter
             emoji_label_clause_2_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # places a tick emoji on the screen following the place instructions created
         else:
-
+            # but if the user has not put capital letters in their password
             emoji_label_clause_2_password_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # emoji will reflect this by being a red cross
         password_numbers_login = password_entry_login.get()
-
+        # new variable now equal to the information entered into the password entry box
         if re.search(r'[1234567890]{2,}', password_numbers_login):
-
+            # calls the re library and using the built in search function, searches through the user's entered password
             emoji_label_clause_4_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # either changes the cross to a tick or shows the user a tick
         else:
-
+            # where the user's password doesn't follow this rule
             emoji_label_clause_4_password_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # adapts the emoji to show a cross emoji
         password_special_chars_login = password_entry_login.get()
-
+        # creates another variable and sets it equal to the users password entered
         if re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}'
                 , password_special_chars_login):
-
+            # as long as it contains 1 or more special characters from the above special characters list
             emoji_label_clause_3_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-
+            # emoji next to the special characters clause will be a tick
         else:
-
+            # but if the user's password has no special characters
             emoji_label_clause_3_password_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-
+            # then the system will be forced to configure a cross instead
     check_rules_button_password_login = Button(login_screen, text="check rules", command=check_password)
-
+    # creates a check rules button to allow the user to see how they may need to adapt their password
+    # where they are not being logged in
     check_rules_button_password_login.place(x=355, y=260)
-
+    # allows the system to know where i want the check rules button to go
     check_clause_1_password_login = Label(login_screen, text="At least 8 characters")
-
+    # creates another variable telling the user the first clause they must follow for their password
     check_clause_1_password_login.place(x=150, y=250)
-
+    # shows the user how they need to place 
     check_clause_2_password_login = Label(login_screen, text="At least 2 capital letters")
 
     check_clause_2_password_login.place(x=150, y=270)
@@ -868,7 +877,6 @@ def login():
     conn.commit()
     # commits any changes the users inputs have made to the database
     conn.close()
-
     # closes the connection for the database
 
     def log_in(email_address_log_in, password_db_log_in, nickname, date_of_birth):
