@@ -802,101 +802,122 @@ def login():
     check_clause_1_password_login = Label(login_screen, text="At least 8 characters")
     # creates another variable telling the user the first clause they must follow for their password
     check_clause_1_password_login.place(x=150, y=250)
-    # shows the user how they need to place 
+    # shows the user how they need to place this label inside our tkinter window using the place function
     check_clause_2_password_login = Label(login_screen, text="At least 2 capital letters")
-
+    # creates another variable where it will show a label on the login screen with text
     check_clause_2_password_login.place(x=150, y=270)
-
+    # this will place the password clause 20 below the above clause
     check_clause_3_password_login = Label(login_screen, text="At least 1 special character")
-
+    # creates a new variable and gives it a label that will have text saying at least 1 special character
+    # hopefully informing the user the information they have to input into their password
     check_clause_3_password_login.place(x=150, y=290)
-
+    # informs the system where to place the third password clause
     check_clause_4_password_login = Label(login_screen, text="At least 2 numbers")
-
+    # final clause for password made be creating a variable setting it equal label with text in login screen
     check_clause_4_password_login.place(x=150, y=310)
-
+    # places the label inside the login screen
     emoji_label_clause_1_password_login = Label(login_screen)
-
+    # creates another variable this time set for the emoji
     emoji_label_clause_1_password_login.place(x=125, y=250)
-
+    # places it next to the corresponding clause
     emoji_label_clause_2_password_login = Label(login_screen)
-
+    # creates a variable setting it equal to a label to be placed inside the login screen
     emoji_label_clause_2_password_login.place(x=125, y=270)
-
+    # this label is to be placed using the place function following the x and y axis
     emoji_label_clause_3_password_login = Label(login_screen)
-
+    # creates the third clause for the password label emoji
     emoji_label_clause_3_password_login.place(x=125, y=290)
-
+    # tells the program where to put this third clause
     emoji_label_clause_4_password_login = Label(login_screen)
-
+    # final clause emoji label for password
     emoji_label_clause_4_password_login.place(x=125, y=310)
-
+    # lets the system know to place the label in login screen according to the x and y axis
     emoji_label_clause_1_email_address_login = Label(login_screen)
-
+    # new emoji label, this time for the email address equal to a label placed inside the login screen
     emoji_label_clause_1_email_address_login.place(x=125, y=80)
-
+    # places this label inside our tkinter window following the place rules set
     emoji_label_clause_2_email_address_login = Label(login_screen)
-
+    # creates a new variable and sets it equal to a label
+    # this is to be used for the second clause saying whether or not the user has fulfilled the rules
     emoji_label_clause_2_email_address_login.place(x=125, y=100)
-
+    # allows the program to know it has to place this emoji label next to and in line with the second clause
     emoji_label_clause_3_email_address_login = Label(login_screen)
-
+    # final email clause informing the user about the details inside their email
     emoji_label_clause_3_email_address_login.place(x=125, y=120)
-
+    # this will be beside the clause corresponding to the text, allowing the user to know how to adapt their password
     optional_details_text_description = Label(login_screen,
                                               text="the details below are optional or just keep from before")
-
+    # on the log in screen there are some optional data entry boxes this label is telling the user how they work
     optional_details_text_description.place(x=100, y=365)
-
+    # places the information about optional details inside our tkinter window 100 along and 365 down
     nickname_entry_label = Label(login_screen, text="Nickname")
-
+    # tells the user using a label what they need to enter, in this case, a nickname
     nickname_entry_label.place(x=80, y=390)
-
+    # places this label next to the nickname entry box and below the optional details information
     nickname_entry = Entry(login_screen)
-
+    # creates an entry box on the login screen for the user to input their desired nickname if they choose to
     nickname_entry.place(x=150, y=390)
-
+    # informs the system where this entry box needs to be placed, next to the nickname label
     date_of_birth_entry = Entry(login_screen)
-
+    # another one of the optional fields is date of birth
     date_of_birth_entry.place(x=150, y=480)
-
+    # tells the user how to place the date of birth entry box
     date_of_birth_entry_label = Label(login_screen, text="Date of Birth")
-
+    # applies a label on the login screen saying date of birth
     date_of_birth_entry_label.place(x=63, y=480)
-
+    # places this label next to the date of birth entry box
     date_of_birth_entry_label_description = Label(login_screen, text="Enter like this: YYYY/MM/DD")
-
+    # makes another label telling the user how to input the date, this helps the database accept their date of birth
     date_of_birth_entry_label_description.place(x=65, y=455)
+    # places the description on how the user must enter their information
     login_button = Button(login_screen, text='Log in',
                           command=lambda: log_in(email_address_entry_login_screen.get()
                                                  , password_entry_login.get(), nickname_entry.get(),
                                                  date_of_birth_entry.get()))
-
+    # makes a button with text of log in and command of log_in,
+    # when button pressed the system will run through the log_in function passing through all the named parameters
     login_button.place(x=350, y=550)
-
+    # tells the system where to put the login button, near the bottom of the window
     conn.commit()
     # commits any changes the users inputs have made to the database
     conn.close()
     # closes the connection for the database
 
     def log_in(email_address_log_in, password_db_log_in, nickname, date_of_birth):
+        """this function informs the user of the fields the user has inputted
+        and whether or not they match the saved information by connecting to a and reading from the database"""
         conn = sqlite3.connect(database_name)
         # creates a database with a name of 'User Login Page Database' or connects to a database with this name
         c = conn.cursor()
         # creates a cursor
         getPasswordQuery = "SELECT password FROM users WHERE email_address == '%s'" % email_address_log_in
+        # creates a new variable and sets it equal to a sql command checking if the users email address entered
+        # can be found inside the database
         c.execute(getPasswordQuery)
+        # execute the above command allow us to call and use it throughout
         savedPassword = c.fetchone()
+        # ensures only one password at a time is fetched
         if savedPassword is None:
+            # where the user has entered an email which wasn't found in the database
             email_does_exist_label = Label(login_screen, text="email doesn't exist")
+            # a label is created and placed inside the login screen saying email doesn't exist
             email_does_exist_label.place(x=160, y=140)
+            # this tells the program where the text needs to go
             email_does_exist_label.config(foreground="red")
+            # configures the colour of the text to be red to ensure the user knows there is an issue with details given
         else:
+            # where the email does exist in the database
             savedPassword = savedPassword[0]
+            # new variable is set up calling the savedPassword variable meaning when system is searching
+            # its start place will be at 0 and it will only search and fetch one password at a time
             email_does_exist_label = Label(login_screen, text="       email is correct")
+            # the system will then inform the user the email is correct
             email_does_exist_label.place(x=160, y=140)
+            # places the 'email is correct' text inside the login screen
             email_does_exist_label.config(foreground="green")
+            # configures the text to green to show the user they have followed this rule
             if password_db_log_in == savedPassword:
+                # 
                 password_correct = Label(login_screen, text="        password is correct")
                 password_correct.place(x=160, y=330)
                 password_correct.config(foreground="green")
