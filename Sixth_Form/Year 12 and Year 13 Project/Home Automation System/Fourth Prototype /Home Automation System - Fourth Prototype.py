@@ -14,7 +14,17 @@ import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
+import speech_recognition as sr
+#
+import requests
+#
+from bs4 import BeautifulSoup
+#
 
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+#
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
@@ -917,45 +927,89 @@ def login():
             email_does_exist_label.config(foreground="green")
             # configures the text to green to show the user they have followed this rule
             if password_db_log_in == savedPassword:
-                # 
+                # as long as the users password entered
+                # when trying to log in matches the password saved linking to email typed in
                 password_correct = Label(login_screen, text="        password is correct")
                 password_correct.place(x=160, y=330)
                 password_correct.config(foreground="green")
+                # creates a new variable to be used informing the user their password is correct
+                # connects this to a label function in tkinter which will go inside the login_screen
+                # gives our label some text saying password is correct
+                # with some space at front to ensure the password is wrong label doesn't overlay
                 if nickname:
+                    # where the user has decided to enter into the optional field
                     updateNicknameQuery = "UPDATE users SET nickname = '%s' WHERE email_address == '%s'" % (
                         nickname, email_address_log_in)
+                    # new variable created and set equal to a sql statement
+                    # adapts the users table specifically the nickname column corresponding to the email entered
                     c.execute(updateNicknameQuery)
+                    # executes the command into our database
                     nickname_has_been_entered = Label(login_screen, text="nickname has been entered     ")
+                    # tells the user they have entered a nickname
                     nickname_has_been_entered.place(x=150, y=420)
+                    # places our label above along the x and y axis
                     nickname_has_been_entered.config(foreground="blue")
+                    # configures the text of the label to blue
+                    # this is to the show the user they have filled an optional piece of data
                 else:
+                    # however if the user hasn't entered a nickname
                     nickname_has_not_been_entered = Label(login_screen, text="nickname has not been entered")
+                    # the program will create a new label connecting to a new variable
+                    # with text informing the user they have not inputted a nickname
                     nickname_has_not_been_entered.place(x=150, y=420)
+                    # places the label created above using the x and y axis variable
                     nickname_has_not_been_entered.config(foreground="orange")
+                    # allows the system to give a specific colour of orange to the labels text
+                    # orange shows the user that they are allowed to move on without filling box
                 if date_of_birth:
+                    # where user has entered a date of birth
                     updateDOBQuery = "UPDATE users SET date_of_birth = '%s' WHERE email_address == '%s'" % (
                         date_of_birth, email_address_log_in)
+                    # another new variable is set equal to a new sql command
+                    # updating users table wherever the email address is in the table for their date of birth
                     c.execute(updateDOBQuery)
+                    # using our cursor uses the execute function within sql to execute the command created above
                     date_of_birth_has_been_entered = Label(login_screen, text="date of birth has been entered    ")
+                    # creates a label informing the user they gave
                     date_of_birth_has_been_entered.place(x=145, y=510)
+                    # tells the system where to put the label just created
                     date_of_birth_has_been_entered.config(foreground="blue")
+                    # configures the text to be blue to show the user their date of birth has beren added
                 else:
+                    # where the user hasn't entered a date of birth
                     date_of_birth_not_entered = Label(login_screen, text="date of birth has not been entered")
+                    # program will make a new variable connecting it to a new label to be put on login_screen with text
                     date_of_birth_not_entered.place(x=140, y=510)
+                    # tells program where to put this new label
                     date_of_birth_not_entered.config(foreground="orange")
+                    # gives the label a colour by connecting to the variable
                 getAccessLevelQuery = "SELECT accessLevel FROM users WHERE email_address == '%s'" % email_address_log_in
+                # only lets a user put a date of birth and nickname
                 c.execute(getAccessLevelQuery)
+                # executes the command above
                 access_Level = c.fetchone()
+                # forces program to fetch only one piece of data at a time
                 access_Level = access_Level[0]
+                # sets the access level search from 0 so this is where it starts
 
                 if access_Level == "admin":
+                    # the following code is where the admin account is trying update users' information
+                    # where the access level has been fetched and found to be admin
                     adminPage = Tk()
+                    # creates a new variable and sets it equal to a new tkinter window
                     adminPage.title("Admin Page")
+                    # gives this new tkinter page a title of admin page
                     adminPage.geometry("500x700")
+                    # calling the variable created for the tkinter page just created gives it a starting size
                     adminPage.resizable(False, False)
+                    # stops the user from resizing the window
                     admin_email_previous = Label(adminPage, text="enter email with information to be changed below")
+                    # creates a new variable for the admin user to input
+                    # connects it to the adminPage and gives it some text
                     admin_email_previous.place(x=100, y=25)
+                    # tells program where to place specific label
                     admin_email_previous_entry = Entry(adminPage)
+                    # 
                     admin_email_previous_entry.place(x=165, y=45)
                     admin_email_change = Label(adminPage, text="enter new email")
                     admin_email_change.place(x=62, y=115)
@@ -979,6 +1033,7 @@ def login():
                         admin_Date_of_birth_change_entry.get(), adminPage))
                     change_button.place(x=350, y=565)
                 elif access_Level == "userAccount":
+                    # stop commenting for now when get here and move to line 1193
                     home_automation_system_prompt_window = Tk()
                     home_automation_system_prompt_window.title("Home Automation System Adding Devices")
                     home_automation_system_prompt_window.geometry("500x600")
@@ -1011,7 +1066,80 @@ def login():
                     yes_button_to_add_device_question.place(x=75, y=100)
 
                     def voice_assistant_button_pressed_prompt_window():
-                        return
+                        """"""
+                        def find_weather():
+                            """"""
+                            url = "https://www.google.co.uk/search?q=weather"
+                            #
+                            find_weather_result = requests.get(url, headers=headers)
+                            #
+                            soup = BeautifulSoup(find_weather_result.text, "html.parser")
+                            #
+                            temperature = soup.select("#wob_tm")[0].getText().strip()
+                            #
+                            weather_description = soup.select("#wob_dc")[0].getText().strip()
+                            #
+                            return temperature, weather_description
+                            #
+
+                        def do_maths(maths_question):
+                            """"""
+                            maths_question = maths_question.replace(" ", "+")
+                            #
+                            url = "https://www.google.co.uk/search?q=%s" % maths_question
+                            #
+                            do_maths_result = requests.get(url, headers=headers)
+                            #
+                            soup = BeautifulSoup(do_maths_result.text, "html.parser")
+                            #
+                            answer = soup.select("#cwos")[0].getText().strip()
+                            #
+                            return answer
+                            #
+
+                        r = sr.Recognizer()
+                        # variable used to recognise speech
+
+                        with sr.Microphone() as source:
+                            #
+                            r.adjust_for_ambient_noise(source, duration=0.2)
+                            #
+                            print("Speak now")
+                            #
+                            audio = r.listen(source)
+                            #
+                            speech = r.recognize_google(audio)
+                            #
+                            print("You said: " + speech)
+                            #
+                            if "weather" in speech:
+                                #
+                                tempValue, description = find_weather()
+                                #
+                                print(tempValue + " degree celsius", description)
+                                #
+                            else:
+                                #
+                                print("I am not sure how to help you, click on voice assistant again to retry")
+                                #
+                            if "calculator" in speech:
+                                #
+                                r.adjust_for_ambient_noise(source, duration=0.2)
+                                #
+                                print("Ask your question")
+                                #
+                                questionAudio = r.listen(source)
+                                #
+                                question = r.recognize_google(questionAudio)
+                                #
+                                result = do_maths(question)
+                                #
+                                print(result)
+                                #
+                            else:
+                                #
+                                print("I am not sure how to help you, click on voice assistant again to retry")
+                                #
 
                     voice_assistant_prompt_window = Button(home_automation_system_prompt_window,
                                                            text="Voice Assistant",
@@ -1064,49 +1192,83 @@ def login():
 
 
 def change_information(oldEmail, newEmail, newPassword, newNickname, newDOB, adminPage):
+    """"""
     conn = sqlite3.connect(database_name)
+    #
     c = conn.cursor()
     # creates a cursor
     if oldEmail:
+        #
         getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % oldEmail
+        #
         c.execute(getUserIDQuery)
+        #
         id = c.fetchone()
-
+        #
         if id:
+            #
             id = id[0]
+            #
             email_is_valid = Label(adminPage, text="email is valid")
+            #
             email_is_valid.place(x=190, y=75)
+            #
             email_is_valid.config(foreground="green")
-
+            #
             if newEmail:
+                #
                 changeEmailQuery = "UPDATE users SET email_address = '%s' WHERE userID == '%s'" % (
                     newEmail, id)
+                #
                 c.execute(changeEmailQuery)
+                #
             if newPassword:
+                #
                 changePasswordQuery = "UPDATE users SET password = '%s' WHERE userID == '%s'" % (
                     newPassword, id)
+                #
                 c.execute(changePasswordQuery)
+                #
             if newNickname:
+                #
                 changeNicknameQuery = "UPDATE users SET nickname = '%s' WHERE userID == '%s'" % (
                     newNickname, id)
+                #
                 c.execute(changeNicknameQuery)
+                #
             if newDOB:
+                #
                 changeDOBQuery = "UPDATE users SET date_of_birth = '%s' WHERE userID == '%s'" % (
                     newDOB, id)
+                #
                 c.execute(changeDOBQuery)
+                #
             fields_updated = Label(adminPage, text="fields have been updated if edited")
+            #
             fields_updated.place(x=150, y=250)
+            #
             fields_updated.config(foreground="green")
+            #
         else:
+            #
             previous_email_not_found = Label(adminPage, text="previous email not found")
+            #
             previous_email_not_found.place(x=175, y=75)
+            #
             previous_email_not_found.config(foreground="red")
+            #
     else:
+        #
         previous_email_not_found = Label(adminPage, text=" you haven't entered an email")
+        #
         previous_email_not_found.place(x=175, y=75)
+        #
         previous_email_not_found.config(foreground="red")
+        #
     conn.commit()
+    #
     conn.close()
+    #
 
 
 def no():
@@ -1177,9 +1339,9 @@ label2 = Label(frame2, image=img2)
 label2.place(x=35, y=20)
 # tells the system how to place our image using the pack function
 Button(text="Yes", height="2", width="30", command=yes).place(x=84, y=125)
-
+#
 Button(text="No", height="2", width="30", command=no).place(x=84, y=175)
-
+#
 proceed.resizable(False, False)
 # fixes the size of the window
 conn.commit()
