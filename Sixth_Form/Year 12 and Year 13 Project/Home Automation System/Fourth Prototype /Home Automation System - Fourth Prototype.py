@@ -99,10 +99,10 @@ def check_verification(email_address, password, actual_code, user_code, register
     """this function has been created to ensure the user follows all the rules when trying to register their details
     i have passed email_address, password, actual_code, user_code and register_screen as parameters
     to allows us to use them throughout this function"""
-    conn = sqlite3.connect(database_name)
-    # connects to sqlite3 using a variable name of conn short for connection
+    connection_check_verification = sqlite3.connect(database_name)
+    # connects to sqlite3 using a variable name of connection short for connection
     # finds the variable database_name and calls our database file from above
-    c = conn.cursor()
+    cursor_check_verification = connection_check_verification.cursor()
     # creates a cursor allowing us to execute sql commands
     verified = True
     # creates a new variable and as long as each of the rules are follow it will be true
@@ -176,7 +176,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # if the user's inputted password is 8 or more characters then they have followed this rule
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # the system will then overlay a tick emoji overriding the cross emoji
-    if not re.search(r'[A-Z]{1,}', password):
+    if not re.search(r'[A-Z]{+}', password):
         # using the re library to check the user has entered 2 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # calls the variable from above and places the cross emoji
@@ -186,7 +186,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # where the user has entered 2 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji to a tick to show the user they have followed this rule
-    if not re.search(r'[1234567890]{1,}', password):
+    if not re.search(r'[1234567890]{+}', password):
         # if user doesn't have 2 or more number in their password
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # the system will find where we placed this variable from above and configure it to a cross
@@ -196,7 +196,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # if they have entered 2 or more numbers
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji next to the final clause to a tick
-    if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}', password):
+    if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{+}', password):
         # where the user hasn't entered 1 or more special characters
         emoji_label_clause_3_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # sets the label to a cross telling the user they have not followed this rule
@@ -208,9 +208,9 @@ def check_verification(email_address, password, actual_code, user_code, register
         # the system shows this by changing the cross into a tick
     findEmailQuery = "SELECT userID FROM users WHERE email_address == '%s'" % email_address
     # this selects the email addresses from the database and ensures they haven't entered an email that already links
-    c.execute(findEmailQuery)
+    cursor_check_verification.execute(findEmailQuery)
     # executes our command searching for email addresses
-    emailID = c.fetchone()
+    emailID = cursor_check_verification.fetchone()
     # creates a new variable and forces only one piece of data at a time to be compared
     if emailID:
         # where the emailID entered by user is already saved to database
@@ -242,9 +242,9 @@ def check_verification(email_address, password, actual_code, user_code, register
         # system places label at same place as code incorrect to ensure only one message appears at a time
         code_label_success.config(foreground="green")
         # configures the label to green showing the user the code is correct
-    conn.commit()
+    connection_check_verification.commit()
     # commits any changes the users inputs have made to the database
-    conn.close()
+    connection_check_verification.close()
     # closes our connection for the database
     return verified
     # indicates the verified variable has been used in this function and is now finished being adapted
@@ -253,11 +253,9 @@ def check_verification(email_address, password, actual_code, user_code, register
 def register():
     """this function creates a new window which allows the user to register their details
      and saves them to the database"""
-    conn = sqlite3.connect(database_name)
+    connection_register = sqlite3.connect(database_name)
     # connects to sqlite3 using a variable name of conn short for connection
     # finds the variable database_name and calls our database file from above
-    c = conn.cursor()
-    # creates a cursor allowing us to execute sql commands
     register_screen = Tk()
     # creates a new Tkinter user interface
     register_screen.title("Register")
@@ -272,10 +270,10 @@ def register():
         I have passed is_verified, email_address_db, password_db as parameters through this function
         we are then able to call any of these parameters throughout our program
         """
-        conn = sqlite3.connect(database_name)
+        connection_sign_up = sqlite3.connect(database_name)
         # connects to sqlite3 using a variable name of conn short for connection
         # finds the variable database_name and calls our database file from above
-        c = conn.cursor()
+        cursor_sign_up = connection_sign_up.cursor()
         # creates a cursor allowing us to execute sql commands
         if check_verification(email_address_db, password_db, actual_code, user_code, register_screen):
             # creates a clause using a parameter from our function
@@ -291,9 +289,9 @@ def register():
             selectQuery = "SELECT userID FROM users ORDER BY userID DESC LIMIT 1"
             # creates a new variable and checks the database calling from the users table selecting the userID field
             # and ordering it descending to ensure the database can be read from efficiently
-            c.execute(selectQuery)
+            cursor_sign_up.execute(selectQuery)
             # executes the selectQuery command
-            highestID = c.fetchone()
+            highestID = cursor_sign_up.fetchone()
             # creates a new variable and only allows one piece of data to be fetched at a time
             if highestID is not None:
                 # where there are other users already saved to the database
@@ -345,11 +343,11 @@ def register():
                         VALUES
                         (%d,"%s","%s","%s")""" % (newID, email_address_db, password_db, accessLevel)
                 # creates a new variable and tells sql to insert the information into the database
-                c.execute(insertQuery)
+                cursor_sign_up.execute(insertQuery)
                 # executes the query to ensure the database will be updated when committed
-        conn.commit()
+        connection_sign_up.commit()
         # commits any changes the users inputs have made to the database
-        conn.close()
+        connection_sign_up.close()
         # closes the database connection until reopened
     email_address_entry_register_screen = Entry(register_screen)
     # creates a new variable and sets it equal to an entry box placing it in the register_screen
@@ -616,19 +614,17 @@ def register():
     # meaning they can be used throughout
     sign_up_button.place(x=350, y=430)
     # places the button using the x and y axis
-    conn.commit()
+    connection_register.commit()
     # commits any changes the users inputs have made to the database
-    conn.close()
+    connection_register.close()
     # closes the connection for the database
 
 
 def login():
     """defines another function with the name of login
     this will allow the user to log in with credentials they used to register with"""
-    conn = sqlite3.connect(database_name)
+    connection_login = sqlite3.connect(database_name)
     # creates a database with a name of 'User Login Page Database' or connects to a database with this name
-    c = conn.cursor()
-    # creates a cursor
     login_screen = Tk()
     # creates another interface, this time for the login screen
     login_screen.title("Login")
@@ -774,7 +770,7 @@ def login():
             # sets the emoji to a cross informing the user they need to re-check their password
         password_caps_login = password_entry_login.get()
         # creates another new variable and sets it equal to the password entered by the user
-        if re.search(r'[A-Z]{1,}', password_caps_login):
+        if re.search(r'[A-Z]{+}', password_caps_login):
             # using the re library searches through the users password entered
             # ensures there is 1 or more capital letter
             emoji_label_clause_2_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
@@ -795,8 +791,8 @@ def login():
             # adapts the emoji to show a cross emoji
         password_special_chars_login = password_entry_login.get()
         # creates another variable and sets it equal to the users password entered
-        if re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}'
-                , password_special_chars_login):
+        if re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆'
+                     r'˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{+}', password_special_chars_login):
             # as long as it contains 1 or more special characters from the above special characters list
             emoji_label_clause_3_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # emoji next to the special characters clause will be a tick
@@ -880,32 +876,33 @@ def login():
     # makes another label telling the user how to input the date, this helps the database accept their date of birth
     date_of_birth_entry_label_description.place(x=65, y=455)
     # places the description on how the user must enter their information
-    login_button = Button(login_screen, text='Log in',
-                          command=lambda: log_in(email_address_entry_login_screen.get()
-                                                 , password_entry_login.get(), nickname_entry.get(),
+    login_button = Button(login_screen,
+                          text='Log in',
+                          command=lambda: log_in(email_address_entry_login_screen.get(),
+                                                 password_entry_login.get(), nickname_entry.get(),
                                                  date_of_birth_entry.get()))
     # makes a button with text of log in and command of log_in,
     # when button pressed the system will run through the log_in function passing through all the named parameters
     login_button.place(x=350, y=550)
     # tells the system where to put the login button, near the bottom of the window
-    conn.commit()
+    connection_login.commit()
     # commits any changes the users inputs have made to the database
-    conn.close()
+    connection_login.close()
     # closes the connection for the database
 
     def log_in(email_address_log_in, password_db_log_in, nickname, date_of_birth):
         """this function informs the user of the fields the user has inputted
         and whether or not they match the saved information by connecting to a and reading from the database"""
-        conn = sqlite3.connect(database_name)
+        connection_log_in = sqlite3.connect(database_name)
         # creates a database with a name of 'User Login Page Database' or connects to a database with this name
-        c = conn.cursor()
+        cursor_log_in = connection_log_in.cursor()
         # creates a cursor
         getPasswordQuery = "SELECT password FROM users WHERE email_address == '%s'" % email_address_log_in
         # creates a new variable and sets it equal to a sql command checking if the users email address entered
         # can be found inside the database
-        c.execute(getPasswordQuery)
+        cursor_log_in.execute(getPasswordQuery)
         # execute the above command allow us to call and use it throughout
-        savedPassword = c.fetchone()
+        savedPassword = cursor_log_in.fetchone()
         # ensures only one password at a time is fetched
         if savedPassword is None:
             # where the user has entered an email which wasn't found in the database
@@ -942,7 +939,7 @@ def login():
                         nickname, email_address_log_in)
                     # new variable created and set equal to a sql statement
                     # adapts the users table specifically the nickname column corresponding to the email entered
-                    c.execute(updateNicknameQuery)
+                    cursor_log_in.execute(updateNicknameQuery)
                     # executes the command into our database
                     nickname_has_been_entered = Label(login_screen, text="nickname has been entered     ")
                     # tells the user they have entered a nickname
@@ -967,7 +964,7 @@ def login():
                         date_of_birth, email_address_log_in)
                     # another new variable is set equal to a new sql command
                     # updating users table wherever the email address is in the table for their date of birth
-                    c.execute(updateDOBQuery)
+                    cursor_log_in.execute(updateDOBQuery)
                     # using our cursor uses the execute function within sql to execute the command created above
                     date_of_birth_has_been_entered = Label(login_screen, text="date of birth has been entered    ")
                     # creates a label informing the user they gave
@@ -985,9 +982,9 @@ def login():
                     # gives the label a colour by connecting to the variable
                 getAccessLevelQuery = "SELECT accessLevel FROM users WHERE email_address == '%s'" % email_address_log_in
                 # only lets a user put a date of birth and nickname
-                c.execute(getAccessLevelQuery)
+                cursor_log_in.execute(getAccessLevelQuery)
                 # executes the command above
-                access_Level = c.fetchone()
+                access_Level = cursor_log_in.fetchone()
                 # forces program to fetch only one piece of data at a time
                 access_Level = access_Level[0]
                 # sets the access level search from 0 so this is where it starts
@@ -999,7 +996,7 @@ def login():
                     # creates a new variable and sets it equal to a new tkinter window
                     adminPage.title("Admin Page")
                     # gives this new tkinter page a title of admin page
-                    adminPage.geometry("500x700")
+                    adminPage.geometry("500x400")
                     # calling the variable created for the tkinter page just created gives it a starting size
                     adminPage.resizable(False, False)
                     # stops the user from resizing the window
@@ -1038,46 +1035,73 @@ def login():
                     # places the entry box slightly after the label
                     # so it doesn't overlap but is also inline with the rest
                     admin_Date_of_birth_change = Label(adminPage, text="enter new date of birth")
-                    #
+                    # creates a new label and places it in the adminPage with text
                     admin_Date_of_birth_change.place(x=20, y=205)
+                    # places this label to be below the nickname label
+                    # and at the beginning of the window because of the length of text
                     admin_Date_of_birth_change_entry = Entry(adminPage)
+                    # creates the entry box for the admin to input the new date of birth
                     admin_Date_of_birth_change_entry.place(x=175, y=205)
+                    # places the entry box next to the label so the admin knows which information to put where
                     change_button = Button(adminPage, text='Change information', command=lambda: change_information(
                         admin_email_previous_entry.get(), admin_email_change_entry.get(),
                         admin_password_change_entry.get(), admin_nickname_change_entry.get(),
                         admin_Date_of_birth_change_entry.get(), adminPage))
-                    change_button.place(x=350, y=565)
+                    # creates a variable setting it equal to a button for the admin to click
+                    # when button is clicked it will check if email entered at top exists
+                    # and then execute the defined sql statements
+                    # it also passes through the above variables as get
+                    # able to receive the details the admin has input
+                    change_button.place(x=330, y=300)
+                    # places the button at the bottom and on the right so it is the last command the user does
+                    # however can be done in any order
                 elif access_Level == "userAccount":
-                    # stop commenting for now when get here and move to line 1193
+                    # where if a non admin account has logged in
                     home_automation_system_prompt_window = Tk()
+                    # a new tkinter page will be created and set equal to a new variable
                     home_automation_system_prompt_window.title("Home Automation System Adding Devices")
+                    # gives this new tkinter window a title to inform the user what stage of my system they are at
                     home_automation_system_prompt_window.geometry("500x600")
+                    # gives the user a starting size using the geometry function built into tkinter
                     home_automation_system_prompt_window.resizable(False, False)
+                    # creates limits for the window at the original size
                     add_device_question = Label(home_automation_system_prompt_window,
                                                 text="Would you like to add a device?")
+
                     add_device_question.place(x=45, y=45)
 
                     def yes_button_to_add_device_question_command():
+                        """"""
                         device_brand_question_label = Label(home_automation_system_prompt_window,
                                                             text="What brand is the device you would like to pair?")
+
                         device_brand_question_label.place(x=20, y=250)
+
                         device_brand_entry_box = Entry(home_automation_system_prompt_window)
+
                         device_brand_entry_box.place(x=45, y=270)
+
                         enter_button_device_brand = Button(home_automation_system_prompt_window, text="Enter")
+
                         enter_button_device_brand.place(x=250, y=268)
+
                         device_adding_description_label_first_line = Label(home_automation_system_prompt_window,
                                                                            text="Download the corresponding app and "
                                                                                 "follow their instructions to add the "
                                                                                 "device")
+
                         device_adding_description_label_first_line.place(x=25, y=300)
+
                         device_adding_description_label_second_line = Label(home_automation_system_prompt_window,
                                                                             text="You can then click next to connect it"
                                                                                  " via this system")
+
                         device_adding_description_label_second_line.place(x=25, y=320)
 
                     yes_button_to_add_device_question = Button(home_automation_system_prompt_window,
                                                                text="Yes",
                                                                command=yes_button_to_add_device_question_command)
+
                     yes_button_to_add_device_question.place(x=75, y=100)
 
                     def voice_assistant_button_pressed_prompt_window():
@@ -1159,23 +1183,34 @@ def login():
                     voice_assistant_prompt_window = Button(home_automation_system_prompt_window,
                                                            text="Voice Assistant",
                                                            command=voice_assistant_button_pressed_prompt_window)
+
                     voice_assistant_prompt_window.place(x=350, y=500)
 
                     def next_button():
+                        """"""
                         adding_devices_window = Tk()
+
                         adding_devices_window.title("Searching for Devices")
+
                         adding_devices_window.geometry("500x600")
+
                         adding_devices_window.resizable(False, False)
 
                     next_button = Button(home_automation_system_prompt_window, text="Next",
                                          command=next_button)
+
                     next_button.place(x=230, y=550)
 
                     def no_button_to_add_device_question_command():
+
                         home_automation_system_prompt_window.destroy()
+
                         home_automation_system_control_devices_window = Tk()
+
                         home_automation_system_control_devices_window.title("Home Automation System Control Devices")
+
                         home_automation_system_control_devices_window.geometry("500x600")
+
                         home_automation_system_control_devices_window.resizable(False, False)
 
                         def show_rooms_for_devices():
@@ -1183,6 +1218,7 @@ def login():
 
                         rooms_for_lights_button = Button(home_automation_system_control_devices_window, text="Rooms",
                                                          command=show_rooms_for_devices)
+
                         rooms_for_lights_button.place(x=45, y=100)
 
                         def voice_assistant_control_window_button_pressed():
@@ -1191,112 +1227,127 @@ def login():
                         voice_assistant_control_devices = Button(home_automation_system_control_devices_window,
                                                                  text="Voice Assistant",
                                                                  command=voice_assistant_control_window_button_pressed)
+                        
                         voice_assistant_control_devices.place(x=350, y=500)
 
                     no_button_to_add_device_question = Button(home_automation_system_prompt_window,
                                                               text="No",
                                                               command=no_button_to_add_device_question_command)
-                    no_button_to_add_device_question.place(x=155, y=100)
 
+                    no_button_to_add_device_question.place(x=155, y=100)
             else:
+                # where users entered password doesn't match the password they registered with
                 password_does_not_match = Label(login_screen, text="password does not match")
+                # python will create a new variable
+                # connect it to a label place the label in the login screen
+                # put text of password doesn't match
                 password_does_not_match.place(x=160, y=330)
+                # tells system where to place the above label
                 password_does_not_match.config(foreground="red")
-        conn.commit()
-        conn.close()
+                # configures the colour of the text from the label to red
+                # informing the user they have to retry this field
+        connection_log_in.commit()
+        # connects back to our connection and commits any changes to our database
+        connection_log_in.close()
+        # closes the connection to our database until reopened
 
 
 def change_information(oldEmail, newEmail, newPassword, newNickname, newDOB, adminPage):
-    """"""
-    conn = sqlite3.connect(database_name)
-    #
-    c = conn.cursor()
-    # creates a cursor
+    """creates the change information function passing through the each new fields plus oldEmail
+    this function will be what the created button above actually executes"""
+    connection_change_information = sqlite3.connect(database_name)
+    # creates a new variable and using sqlite3 connects back up to the database created at the start of program
+    cursor_change_information = connection_change_information.cursor()
+    # creates a cursor to be used to execute sql commands
     if oldEmail:
-        #
+        # where oldEmail has been entered
         getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % oldEmail
-        #
-        c.execute(getUserIDQuery)
-        #
-        id = c.fetchone()
-        #
+        # new variable created set equal to a sql command
+        # sql command finds the userID from our users table created
+        # wherever the email address saved in db is equal to oldEmail inputted by admin
+        cursor_change_information.execute(getUserIDQuery)
+        # connects to our cursor created above and allows the command to be executed
+        id = cursor_change_information.fetchone()
+        # forces system to fetch one piece of data at a time
         if id:
-            #
+            # where id has been inputted and exists inside database
             id = id[0]
-            #
-            email_is_valid = Label(adminPage, text="email is valid")
-            #
+            # set the id to equal to the first id to allow the program to know which record it is working with
+            email_is_valid = Label(adminPage, text="email is valid", width=30)
+            # creates a new label placing it inside the adminPage and puts some text with it
             email_is_valid.place(x=190, y=75)
-            #
+            # places the label just below the entry box to show admin which details are correct
             email_is_valid.config(foreground="green")
-            #
+            # configures labels text to green showing them this is correct
             if newEmail:
-                #
+                # where new email has been entered
                 changeEmailQuery = "UPDATE users SET email_address = '%s' WHERE userID == '%s'" % (
                     newEmail, id)
-                #
-                c.execute(changeEmailQuery)
-                #
+                # new variable made, set to a sql command
+                # updates the new email entered wherever the id matches
+                cursor_change_information.execute(changeEmailQuery)
+                # executes our above sql statement
             if newPassword:
-                #
+                # where new password entry box has been filled
                 changePasswordQuery = "UPDATE users SET password = '%s' WHERE userID == '%s'" % (
                     newPassword, id)
-                #
-                c.execute(changePasswordQuery)
-                #
+                # sql command to update users new password as long as email entered matched
+                cursor_change_information.execute(changePasswordQuery)
+                # executes above sql command connecting to a cursor
             if newNickname:
-                #
+                # where the admin has decided they want to adapt the nickname for the email they have inputted
                 changeNicknameQuery = "UPDATE users SET nickname = '%s' WHERE userID == '%s'" % (
                     newNickname, id)
-                #
-                c.execute(changeNicknameQuery)
-                #
+                # updates the nickname the admin has inputted where the id is equal to the email record
+                cursor_change_information.execute(changeNicknameQuery)
+                # executes this command using a built in execute function
             if newDOB:
-                #
+                # where the admin has inputted a date of birth they would like to link with the email inputted
                 changeDOBQuery = "UPDATE users SET date_of_birth = '%s' WHERE userID == '%s'" % (
                     newDOB, id)
-                #
-                c.execute(changeDOBQuery)
-                #
+                # updates the date of birth inputted where the userID found matches the email
+                cursor_change_information.execute(changeDOBQuery)
+                # executes the changeDOBquery command
             fields_updated = Label(adminPage, text="fields have been updated if edited")
-            #
+            # creates a new variable equal to a built in function to make a label
+            # inside adminPage tkinter window with text telling user what is going on
             fields_updated.place(x=150, y=250)
-            #
+            # directs system where to put this label inside the tkinter window following the place function
             fields_updated.config(foreground="green")
-            #
+            # configures the text inside the label to be green to show the user the information has been changed
         else:
-            #
-            previous_email_not_found = Label(adminPage, text="previous email not found")
-            #
+            # however if inputted email in entry box exists but doesn't match any id in db
+            fields_updated_email_not_valid = Label(adminPage, text="", width=30)
+            # blank label created
+            fields_updated_email_not_valid.place(x=150, y=250)
+            # placed to block 'fields have been updated' label
+            previous_email_not_found = Label(adminPage, text="previous email not found", width=30)
+            # label created to be put inside adminPage with text and set width to allow for no overlap between labels
             previous_email_not_found.place(x=175, y=75)
-            #
+            # places the label using built in place function
             previous_email_not_found.config(foreground="red")
-            #
+            # configures this labels text to be red to show the admin they need to change details
     else:
-        #
-        previous_email_not_found = Label(adminPage, text=" you haven't entered an email")
-        #
+        # where nothing was entered in previous email box
+        fields_updated_email_not_valid = Label(adminPage, text="", width=30)
+        # makes a blank label with a fixed width to overlap when needed
+        fields_updated_email_not_valid.place(x=150, y=250)
+        # places this blank label in a position to overlay when email entry box is empty
+        previous_email_not_found = Label(adminPage, text="you haven't entered an email", width=30)
+        # creates a tkinter label informing the admin they haven't entered an email
         previous_email_not_found.place(x=175, y=75)
-        #
+        # places the new label in our tkinter window
         previous_email_not_found.config(foreground="red")
-        #
-    conn.commit()
-    #
-    conn.close()
-    #
+        # colours the text from the label red letting admin know that if they want anything to be saved enter email
+    connection_change_information.commit()
+    # connects to the connection created above and commits any changes
+    connection_change_information.close()
+    # closes the connection with the database
 
 
 def no():
     """this defines our function with the name of yes
     this takes the user to the main screen """
-    conn = sqlite3.connect(database_name)
-    # creates a database with a name of 'User Login Page Database' or connects to a database with this name
-    c = conn.cursor()
-    # creates a cursor
-    conn.commit()
-    # commits any changes the users inputs have made to the database
-    conn.close()
-    # closes the connection for the database
     proceed.destroy()
     # closes the window since the user has decided to they would not like to proceed
 
@@ -1304,10 +1355,6 @@ def no():
 def yes():
     """this defines a function with a name of yes which directs the user to the new window
     which will allow the user to login and/or register"""
-    conn = sqlite3.connect(database_name)
-    # creates a database with a name of 'User Login Page Database' or connects to a database with this name
-    c = conn.cursor()
-    # creates a cursor
     login_and_register_user_screen = Tk()
     # creates a new tkinter window allowing the user to login or register
     login_and_register_user_screen.title('Register and Login screen')
@@ -1326,10 +1373,6 @@ def yes():
     # which allows the user to login
     login_button.place(x=100, y=125)
     # tells the system to place my login button along the x and y axes
-    conn.commit()
-    # commits any changes the users inputs have made to the database
-    conn.close()
-    # closes the connection for the database
 
 
 frame = Frame(proceed, width=420, height=55)
@@ -1354,9 +1397,9 @@ label2 = Label(frame2, image=img2)
 label2.place(x=35, y=20)
 # tells the system how to place our image using the pack function
 Button(text="Yes", height="2", width="30", command=yes).place(x=84, y=125)
-#
+# creates a new button in our original tkinter window requesting for the users response
 Button(text="No", height="2", width="30", command=no).place(x=84, y=175)
-#
+# button saying no which will point the program to thew no function
 proceed.resizable(False, False)
 # fixes the size of the window
 conn.commit()
