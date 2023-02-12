@@ -14,6 +14,15 @@ import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
+
+with open("email_register_domain.txt", "r") as file_register_and_login_names:
+    # opens file with file name and speech marks allows us to read from file and sets it equal to a variable
+    domain = file_register_and_login_names.read().splitlines()
+    # creates a new variable and sets equal to the file just opened and tells the system to read from the file and split
+with open("names_register.txt", "r") as file_register_and_login_domains:
+    # opens new file for names
+    names = file_register_and_login_domains.read().splitlines()
+    # creates new variable and splits the line
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
@@ -367,11 +376,11 @@ def register():
         emailSender = "ramcaleb50@gmail.com"
         # creates an emailSender variable to called later, and sets this to an email address,
         # this will be the email address the code is sent by
-        file = open("fp.txt", "r")
+        file_code = open("fp.txt", "r")
         # creates a variable and tells it to open a file and allows the system to read from the file
-        emailPassword = file.read()
+        emailPassword = file_code.read()
         # sets the emailPassword, which will be called below, equal to reading the file
-        file.close()
+        file_code.close()
         # closes our file opened from above
         subject = "Code Verification Email"
         # sets another variable which will be called below to code verification email
@@ -448,16 +457,7 @@ def register():
             # on the other hand if the user has not inputted an @ sign in their email
             emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
             # then the emoji library will work with tkinter and configure the text to a cross
-        if "gmail.com" in email_register \
-                or "yahoo.com" in email_register or "outlook.com" in email_register \
-                or "richardchalloner.com" in email_register or "icloud.com" in email_register \
-                or "mail.com" in email_register or "email.com" in email_register \
-                or "aol.com" in email_register or "proton.me" in email_register \
-                or "tutanota.com" in email_register or "tutanota.de" in email_register \
-                or "tutamail.com" in email_register or "tuta.io" in email_register \
-                or "keemail.me" in email_register or "zohomail.eu" in email_register \
-                or "tmmwj.com" in email_register or "gmx.com" in email_register \
-                or "gmx.co.uk" in email_register or "yahoo.co.uk" in email_register:
+        if email_register in domain:
             # this ensure they are trying to send the email to an existing email address with a correct domain
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # as long as the user's email address contains one of the above domains then a tick will be shown
@@ -465,43 +465,7 @@ def register():
             # however if they do not have any domain that exists in the list above
             emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
             # this changes the text from a tick to a cross where there is no existing domain
-        if "caleb" in email_register \
-                or "fish" in email_register or "hannah" in email_register or "mark" in email_register \
-                or "niki" in email_register or "sean" in email_register or "katherine" in email_register \
-                or "kat" in email_register or "alyssa" in email_register or "katy" in email_register \
-                or "isaac" in email_register or "esther" in email_register or "ben" in email_register \
-                or "connor" in email_register or "daisy" in email_register or "josh" in email_register \
-                or "zoey" in email_register or "valentina" in email_register or "stacy" in email_register \
-                or "george" in email_register or "graham" in email_register or "isabella" in email_register \
-                or "bella" in email_register or "ella" in email_register or "grace" in email_register \
-                or "ellis" in email_register or "emmanuel" in email_register or "christian" in email_register \
-                or "finn" in email_register or "fin" in email_register or "rachael" in email_register \
-                or "liv" in email_register or "olivia" in email_register or "elaine" in email_register \
-                or "bert" in email_register or "nilusha" in email_register or "andy" in email_register \
-                or "emma" in email_register or "emily" in email_register or "amelia" in email_register \
-                or "charlotte" in email_register or "sophia" in email_register or "mia" in email_register \
-                or "ava" in email_register or "eva" in email_register or "keira" in email_register \
-                or "kiera" in email_register or "harper" in email_register or "jessie" in email_register \
-                or "alex" in email_register or "liam" in email_register or "noah" in email_register \
-                or "elijah" in email_register or "oliver" in email_register or "ollie" in email_register \
-                or "lucas" in email_register or "luke" in email_register or "james" in email_register \
-                or "alexia" in email_register or "aaron" in email_register or "william" in email_register \
-                or "will" in email_register or "jo" in email_register or "joseph" in email_register \
-                or "benjamin" in email_register or "henry" in email_register or "laura" in email_register \
-                or "theo" in email_register or "daniel" in email_register or "marios" in email_register \
-                or "mario" in email_register or "benjy" in email_register or "arthur" in email_register \
-                or "john" in email_register or "tim" in email_register or "javier" in email_register \
-                or "xavier" in email_register or "eve" in email_register or "niamh" in email_register \
-                or "niam" in email_register or "alannah" in email_register or "reshee" in email_register \
-                or "amelie" in email_register or "nishtha" in email_register or "sofia" in email_register \
-                or "abi" in email_register or "abigail" in email_register or "penelope" in email_register \
-                or "brooke" in email_register or "brook" in email_register or "brooklyn" in email_register \
-                or "sophie" in email_register or "laila" in email_register or "jaimie" in email_register \
-                or "claudia" in email_register or "elena" in email_register or "eleanor" in email_register \
-                or "ram" in email_register or "mat" in email_register or "matt" in email_register \
-                or "matthew" in email_register or "mary" in email_register or "martha" in email_register \
-                or "peter" in email_register or "tamar" in email_register or "darius" in email_register \
-                or "edith" in email_register or "elise" in email_register or "adam" in email_register:
+        if email_register in names:
             # checks their email has some form of name in its email
             emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # this will adapt a tick next door to the clause to do with account name
@@ -536,7 +500,7 @@ def register():
     password_entry.place(x=150, y=250)
     # places these stars inside the tkinter window
 
-    def show_password():
+    def show_password_register():
         """this defines a function which allows the users password to be shown where check box is ticked"""
         if password_entry.cget('show') == '*':
             # tells the system to not show stars where the check box is not selected
@@ -546,7 +510,7 @@ def register():
             # but if the user has selected the show password box
             password_entry.config(show='*')
             # the system will show stars in place of their password
-    show_password_check_box = Checkbutton(register_screen, text='Show Password', command=show_password)
+    show_password_check_box = Checkbutton(register_screen, text='Show Password', command=show_password_register)
     # creates the check button box putting text next to the box
     show_password_check_box.place(x=85, y=277)
     # places the button in the tkinter window
@@ -644,13 +608,7 @@ def login():
             # but if the users email doesn't contain an @ sign
             emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
             # configures the label with text to be a cross showing the user they need to fix this rule
-        if "gmail.com" in email_login \
-                or "yahoo.com" in email_login or "outlook.com" in email_login or "richardchalloner.com" in email_login \
-                or "icloud.com" in email_login or "mail.com" in email_login or "email.com" in email_login \
-                or "aol.com" in email_login or "proton.me" in email_login or "tutanota.com" in email_login \
-                or "tutanota.de" in email_login or "tutamail.com" in email_login or "tuta.io" in email_login \
-                or "keemail.me" in email_login or "zohomail.eu" in email_login or "tmmwj.com" in email_login \
-                or "gmx.com" in email_login or "gmx.co.uk" in email_login or "yahoo.co.uk" in email_login:
+        if email_login in domain:
             # as long the user's email has one of the above domain names
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # the system will put a tick next to the clause saying contains domain name
@@ -658,43 +616,7 @@ def login():
             # but if the user's email doesn't have one of the above domains
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
             # the system will display directing the user to add a domain name
-        if "caleb" in email_login \
-                or "fish" in email_login or "admin" in email_login or "hannah" in email_login \
-                or "mark" in email_login or "niki" in email_login or "sean" in email_login \
-                or "katherine" in email_login or "kat" in email_login or "alyssa" in email_login \
-                or "katy" in email_login or "isaac" in email_login or "esther" in email_login or "ben" \
-                in email_login or "connor" in email_login or "daisy" in email_login or "josh" in email_login \
-                or "zoey" in email_login or "valentina" in email_login or "stacy" in email_login \
-                or "george" in email_login or "graham" in email_login or "isabella" in email_login \
-                or "bella" in email_login or "ella" in email_login or "grace" in email_login \
-                or "emmanuel" in email_login or "christian" in email_login or "finn" in email_login \
-                or "fin" in email_login or "rachael" in email_login or "liv" in email_login \
-                or "olivia" in email_login or "elaine" in email_login or "bert" in email_login \
-                or "nilusha" in email_login or "andy" in email_login or "emma" in email_login \
-                or "emily" in email_login or "amelia" in email_login or "ellis" in email_login \
-                or "charlotte" in email_login or "sophia" in email_login or "mia" in email_login \
-                or "ava" in email_login or "eva" in email_login or "keira" in email_login \
-                or "kiera" in email_login or "harper" in email_login or "jessie" in email_login \
-                or "alex" in email_login or "liam" in email_login or "noah" in email_login \
-                or "elijah" in email_login or "oliver" in email_login or "ollie" in email_login \
-                or "lucas" in email_login or "luke" in email_login or "james" in email_login \
-                or "alexia" in email_login or "aaron" in email_login or "william" in email_login \
-                or "will" in email_login or "jo" in email_login or "joseph" in email_login \
-                or "benjamin" in email_login or "henry" in email_login or "laura" in email_login \
-                or "theo" in email_login or "daniel" in email_login or "marios" in email_login \
-                or "mario" in email_login or "benjy" in email_login or "arthur" in email_login \
-                or "john" in email_login or "tim" in email_login or "javier" in email_login \
-                or "xavier" in email_login or "eve" in email_login or "niamh" in email_login \
-                or "niam" in email_login or "alannah" in email_login or "reshee" in email_login \
-                or "amelie" in email_login or "nishtha" in email_login or "sofia" in email_login \
-                or "abi" in email_login or "abigail" in email_login or "penelope" in email_login \
-                or "brooke" in email_login or "brook" in email_login or "brooklyn" in email_login \
-                or "sophie" in email_login or "laila" in email_login or "jaimie" in email_login \
-                or "claudia" in email_login or "elena" in email_login or "eleanor" in email_login \
-                or "ram" in email_login or "mat" in email_login or "matt" in email_login \
-                or "matthew" in email_login or "mary" in email_login or "martha" in email_login \
-                or "peter" in email_login or "tamar" in email_login or "darius" in email_login \
-                or "edith" in email_login or "elise" in email_login or "adam" in email_login:
+        if email_login in names:
             # if the above names or in the user's email
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # the user will be presented with a green tick
@@ -728,7 +650,7 @@ def login():
     password_entry_login.place(x=150, y=190)
     # directs the program to where the entry box is to be placed inside the login_screen
 
-    def show_password():
+    def show_password_login():
         """this defines a function which allows the users password to be shown where check box is ticked"""
         if password_entry_login.cget('show') == '*':
             # this says that if check button ticked password will be shown and stars will be hidden
@@ -738,7 +660,7 @@ def login():
             # if the checkbutton is not ticked then password will stay starred
             password_entry_login.config(show='*')
             # by configuring the password_entry with stars
-    show_password_check_box_login = Checkbutton(login_screen, text='Show Password', command=show_password)
+    show_password_check_box_login = Checkbutton(login_screen, text='Show Password', command=show_password_login)
     # creates a variable and sets it equal to a checkbutton which will have text of show password
     # has a command linking to the above function telling the system how to behave
     # whether or not the check box is ticked
@@ -1164,14 +1086,14 @@ def change_information(oldEmail, newEmail, newPassword, newNickname, newDOB, adm
     # closes the connection with the database
 
 
-def no():
+def no_button_in_first_window():
     """this defines our function with the name of yes
     this takes the user to the main screen """
     proceed.destroy()
     # closes the window since the user has decided to they would not like to proceed
 
 
-def yes():
+def yes_button_in_first_window():
     """this defines a function with a name of yes which directs the user to the new window
     which will allow the user to login and/or register"""
     login_and_register_user_screen = Tk()
@@ -1215,9 +1137,9 @@ label2 = Label(frame2, image=img2)
 # creates a new variable for our next image
 label2.place(x=35, y=20)
 # tells the system how to place our image using the pack function
-Button(text="Yes", height="2", width="30", command=yes).place(x=84, y=125)
+Button(text="Yes", height="2", width="30", command=yes_button_in_first_window).place(x=84, y=125)
 # creates a new button in our original tkinter window requesting for the users response
-Button(text="No", height="2", width="30", command=no).place(x=84, y=175)
+Button(text="No", height="2", width="30", command=no_button_in_first_window).place(x=84, y=175)
 # button saying no which will point the program to thew no function
 proceed.resizable(False, False)
 # fixes the size of the window
