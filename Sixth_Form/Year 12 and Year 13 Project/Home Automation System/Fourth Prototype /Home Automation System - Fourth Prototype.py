@@ -1017,17 +1017,28 @@ def login():
                     admin_email_change.place(x=62, y=115)
                     # using the built in place function tells the system where to put the label along the axis
                     admin_email_change_entry = Entry(adminPage)
-                    #
+                    # new entry box for the user to type information into
                     admin_email_change_entry.place(x=175, y=115)
+                    # tells program where in the adminPage window to place this entry box
                     admin_password_change = Label(adminPage, text="enter new password")
+                    # creates the label for the password box, telling the user to enter new password
                     admin_password_change.place(x=35, y=145)
+                    # using the built in place function from tkinter puts our label along the axes
                     admin_password_change_entry = Entry(adminPage)
+                    # creates a new variable, sets it equal to entry window, a function allowing input into a box
                     admin_password_change_entry.place(x=175, y=145)
+                    # tells the system how and where to place the entry box in the adminPage
                     admin_nickname_change = Label(adminPage, text="enter new nickname")
+                    # tells the admin user which information to put where by creating a new label
                     admin_nickname_change.place(x=35, y=175)
+                    # places this label in line with the nickname entry box below
                     admin_nickname_change_entry = Entry(adminPage)
+                    # creates the entry box for which the admin can put the new nickname
                     admin_nickname_change_entry.place(x=175, y=175)
+                    # places the entry box slightly after the label
+                    # so it doesn't overlap but is also inline with the rest
                     admin_Date_of_birth_change = Label(adminPage, text="enter new date of birth")
+                    #
                     admin_Date_of_birth_change.place(x=20, y=205)
                     admin_Date_of_birth_change_entry = Entry(adminPage)
                     admin_Date_of_birth_change_entry.place(x=175, y=205)
