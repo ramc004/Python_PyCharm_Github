@@ -1009,11 +1009,15 @@ def login():
                     admin_email_previous.place(x=100, y=25)
                     # tells program where to place specific label
                     admin_email_previous_entry = Entry(adminPage)
-                    # 
+                    # creates a new variable connecting to a tkinter function to make an entry box inside adminPage
                     admin_email_previous_entry.place(x=165, y=45)
+                    # tells the system where to put this entry box
                     admin_email_change = Label(adminPage, text="enter new email")
+                    # creates a new label with text telling the admin which details they need to put where
                     admin_email_change.place(x=62, y=115)
+                    # using the built in place function tells the system where to put the label along the axis
                     admin_email_change_entry = Entry(adminPage)
+                    #
                     admin_email_change_entry.place(x=175, y=115)
                     admin_password_change = Label(adminPage, text="enter new password")
                     admin_password_change.place(x=35, y=145)
@@ -1092,9 +1096,12 @@ def login():
                             #
                             soup = BeautifulSoup(do_maths_result.text, "html.parser")
                             #
-                            answer = soup.select("#cwos")[0].getText().strip()
-                            #
-                            return answer
+                            answer = soup.select("#cwos")
+                            if answer:
+                                answer = answer[0].getText().strip()
+                                return answer
+                            else:
+                                return None
                             #
 
                         r = sr.Recognizer()
@@ -1117,12 +1124,7 @@ def login():
                                 tempValue, description = find_weather()
                                 #
                                 print(tempValue + " degree celsius", description)
-                                #
-                            else:
-                                #
-                                print("I am not sure how to help you, click on voice assistant again to retry")
-                                #
-                            if "calculator" in speech:
+                            elif "calculator" in speech:
                                 #
                                 r.adjust_for_ambient_noise(source, duration=0.2)
                                 #
@@ -1133,8 +1135,10 @@ def login():
                                 question = r.recognize_google(questionAudio)
                                 #
                                 result = do_maths(question)
-                                #
-                                print(result)
+                                if result:
+                                    print(result)
+                                else:
+                                    print("Couldn't find an answer, click on voice assistant again to retry")
                                 #
                             else:
                                 #
