@@ -125,9 +125,9 @@ def check_verification(email_address, password, actual_code, user_code, register
     # ensures the emoji is being configured next to the appropriate clause
     if not email_address:
         # this checks if the email_address field is filled
-        no_email_entry = Label(register_screen, text="                             please enter email")
+        no_email_entry = Label(register_screen, text="please enter email", width=75)
         # tells the user to enter an email
-        no_email_entry.place(x=150, y=170)
+        no_email_entry.place(x=0, y=170)
         # places the label using the place function, ensure it goes just below email box
         no_email_entry.config(foreground="red")
         # configures this text to the colour red to show the user there is an issue
@@ -135,7 +135,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # calls the 'verified' variable and sets it to false to ensure it doesn't let them sign up
     else:
         # however if an email had been entered
-        email_has_been_entered = Label(register_screen, text="you entered an email, you are now verified")
+        email_has_been_entered = Label(register_screen, text="you entered an email")
         # the program creates a new variable
         # using the label function placing text telling the user they have entered an email
         email_has_been_entered.place(x=140, y=170)
@@ -176,7 +176,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # if the user's inputted password is 8 or more characters then they have followed this rule
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # the system will then overlay a tick emoji overriding the cross emoji
-    if not re.search(r'[A-Z]{+}', password):
+    if not re.search(r'[A-Z]{1,}', password):
         # using the re library to check the user has entered 2 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # calls the variable from above and places the cross emoji
@@ -186,7 +186,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # where the user has entered 2 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji to a tick to show the user they have followed this rule
-    if not re.search(r'[1234567890]{+}', password):
+    if not re.search(r'[1234567890]{1,}', password):
         # if user doesn't have 2 or more number in their password
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # the system will find where we placed this variable from above and configure it to a cross
@@ -196,7 +196,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # if they have entered 2 or more numbers
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji next to the final clause to a tick
-    if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{+}', password):
+    if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}', password):
         # where the user hasn't entered 1 or more special characters
         emoji_label_clause_3_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # sets the label to a cross telling the user they have not followed this rule
@@ -225,7 +225,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # calls the verified variable and sets it to false stopping the user from registering incorrect details
     if actual_code != user_code:
         # fetches the code sent via email and matches with the code entered by the user
-        code_label_failure = Label(register_screen, text="code incorrect")
+        code_label_failure = Label(register_screen, text="code incorrect, not verified")
         # tells the user they have mistyped their code
         code_label_failure.place(x=200, y=227)
         # places this label just below the code entry box
@@ -236,7 +236,7 @@ def check_verification(email_address, password, actual_code, user_code, register
         # preventing the user from registering incorrect information
     else:
         # if the user has copied the code correctly
-        code_label_success = Label(register_screen, text="  code correct")
+        code_label_success = Label(register_screen, text="code correct, now verified")
         # system tells user code is correct
         code_label_success.place(x=200, y=227)
         # system places label at same place as code incorrect to ensure only one message appears at a time
@@ -378,11 +378,11 @@ def register():
         emailSender = "ramcaleb50@gmail.com"
         # creates an emailSender variable to called later, and sets this to an email address,
         # this will be the email address the code is sent by
-        file = open("fp.txt", "r")
+        file_code = open("fp.txt", "r")
         # creates a variable and tells it to open a file and allows the system to read from the file
-        emailPassword = file.read()
+        emailPassword = file_code.read()
         # sets the emailPassword, which will be called below, equal to reading the file
-        file.close()
+        file_code.close()
         # closes our file opened from above
         subject = "Code Verification Email"
         # sets another variable which will be called below to code verification email
@@ -397,40 +397,123 @@ def register():
         # adds a subject onto the email to tell the user why they are receiving this email
         email.set_content("Your code is: " + code)
         # gives the user their code by using the built in function set_content
-        if emailSender and emailPassword and emailRecipient:
+        if emailSender and emailPassword:
             # as long the emailPassword, emailSender and the emailRecipient exists
-            sent_label = Label(register_screen, text="Email sent!", width=20)
-            # creates a label, placing it inside the register_screen with text of email sent
-            # fixes the width of this label
-            sent_label.place(x=320, y=103)
-            # places this label just underneath the verify button
-            sent_label.config(foreground="green")
-            # sets the colour of the label to green to show the user has successfully sent the email
-            why_clause_email_sent = Label(register_screen, text="click button above to see why")
-            # informs the user to click the button so they can see why their email wasn't set
-            why_clause_email_sent.place(x=315, y=152)
-            # places this clause just below the verify button
-            why_clause_email_sent.config(foreground="green")
-            # configures the label to green
             server.login(emailSender, emailPassword)
             # using the built-in function passes through the emailSender and the emailPassword logging the user in
-            server.sendmail(emailSender, emailRecipient, email.as_string())
-            # using the sendmail function it fetches the emailSender, emailRecipient and the email the user has entered
-            server.quit()
-            # now the email has been sent, we can close the server
+            if emailRecipient:
+                # where the user has inputted some sort form of an email address
+                if "@" in emailRecipient:
+                    # as long the user's inputted email address contains an @ sign
+                    emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                    # connects to our label created above and configures it using text
+                    # and the emoji library to a green tick
+                    name_register_split_with_sign, domain_register_split_with_sign = emailRecipient.split("@")
+                    # using two variable names splits the email address the user has inputted before and after @ sign
+                    name_register = open("names_register.txt", "r").read().splitlines()
+                    # creates a new variable
+                    # setting it equal to opening a file and tells the system to read from the file
+                    # splits the lines of each of the names
+                    domain_register = open("email_register_domain.txt", "r").read().splitlines()
+                    # splits the lines of each of the domains found inside the email_register_domain.txt file
+                    if name_register_split_with_sign in name_register:
+                        # this ensure they are trying to send the email to an existing email address
+                        # with a correct name
+                        emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                        # as long as the user's email address contains one of the above account name
+                        # then a tick will be shown
+                    else:
+                        # however if they do not have any name that exists in the list above
+                        emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                        # this changes the text from a tick to a cross where there is no existing name
+                    if domain_register_split_with_sign in domain_register:
+                        # checks their email has some form of domain in its email
+                        emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                        # this will adapt a tick next door to the clause to do with domain name
+                    else:
+                        # but if the user's entered email address does not have one of the above names
+                        emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                        # the previous mark, tick, will change to a cross
+                    if name_register_split_with_sign in name_register \
+                            and domain_register_split_with_sign in domain_register:
+                        # as long as the user's inputted email has a domain and a name which where found inside the file
+                        emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                        # adapts the cross to ticks because rules had been fulfilled
+                        emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                        # adapts the cross to a tick for the third clause
+                        server.sendmail(emailSender, emailRecipient, email.as_string())
+                        # using the sendmail function it fetches the emailSender, emailRecipient
+                        # and the email the user has entered
+                        sent_label = Label(register_screen, text="Email sent!", width=20)
+                        # creates a label, placing it inside the register_screen with text of email sent
+                        # fixes the width of this label
+                        sent_label.place(x=320, y=121)
+                        # places this label just underneath the verify button
+                        sent_label.config(foreground="green")
+                        # sets the colour of the label to green to show the user has successfully sent the email
+                        server.quit()
+                        # now the email has been sent, we can close the server
+                    else:
+                        # although if the user has not entered an email
+                        not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+                        # it will make a new variable and set it equal to a label with text, Email has failed to send
+                        not_sent_label.place(x=310, y=124)
+                        # places label just above the verify button
+                        not_sent_label.config(foreground="red")
+                        # colours the label orange warning the user they haven't followed the rules
+                        emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                        emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                else:
+                    # where there wasn't an @ sign inside the user's inputted email
+                    emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                    # changes the @ sign label from blank or tick to a cross
+                    with open("names_register.txt", "r") as file_register_domains:
+                        # opens new file for names
+                        name_register = file_register_domains.read().splitlines()
+                        # opens file with file name and speech marks allows us to read from file
+                        # and sets it equal to the variable name_register
+                    with open("email_register_domain.txt", "r") as file_register_names:
+                        # opens file with file name and speech marks allows us to read from file
+                        # and sets it equal to a variable
+                        domain_register = file_register_names.read().splitlines()
+                        # creates a new variable and sets equal to the file just opened
+                        # tells the system to read from the file and split
+                    if emailRecipient in name_register:
+                        # checks their email has some form of name in its email
+                        emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                        # this will adapt a tick next door to the clause to do with account name
+                    else:
+                        # but if the user's entered email address does not have one of the above names
+                        emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                        # the previous mark, tick, will change to a cross
+                    if emailRecipient in domain_register:
+                        # this ensure they are trying to send the email to an existing email address
+                        # with a correct domain
+                        emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                        # as long as the user's email address contains one of the above domains
+                        # then a tick will be shown
+                    else:
+                        # however if they do not have any domain that exists in the list above
+                        emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                        # this changes the text from a tick to a cross where there is no existing domain
+            else:
+                emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                # although if the user has not entered an email
+                not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+                # it will make a new variable and set it equal to a label with text, Email has failed to send
+                not_sent_label.place(x=310, y=124)
+                # places label just above the verify button
+                not_sent_label.config(foreground="red")
+                # colours the label orange warning the user they haven't followed the rules
         else:
             # although if the user has not entered an email
-            not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+            system_failure_email_sending = Label(register_screen, text="System is down, try later", width=20)
             # it will make a new variable and set it equal to a label with text, Email has failed to send
-            why_clause_email_not_sent = Label(register_screen, text="click button above to see why")
-            # creates another variable telling the user how to tell what they haven't included
-            why_clause_email_not_sent.place(x=315, y=152)
-            # tells the system where to place the label
-            why_clause_email_not_sent.config(foreground="orange")
-            # configures the text to orange showing the user they need to follow the rules
-            not_sent_label.place(x=320, y=103)
+            system_failure_email_sending.place(x=320, y=103)
             # places label just above the verify button
-            not_sent_label.config(foreground="orange")
+            system_failure_email_sending.config(foreground="orange")
             # colours the label orange warning the user they haven't followed the rules
     email_address_verify_button = Button(register_screen, text="Verify", command=send_email)
     # creates a button in the register_screen with text of verify and puts a command of send_email
@@ -445,86 +528,6 @@ def register():
     # creates a label inside our tkinter window with text
     verify_button_arrow.place(x=388, y=50)
     # places this label in between the description and the verify button
-
-    def check_email_address():
-        """this ensure the user's email address follows all the rules"""
-        email_register = email_address_entry_register_screen.get()
-        # creates a new variable and sets it equal to whatever the user entered inside the email address entry box
-        # this is using the get function built in to python
-        if "@" in email_register:
-            # as long as the user's email has an @ sign inside of it
-            emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
-            # configures the label to be a tick showing the user they have followed this rule
-        else:
-            # on the other hand if the user has not inputted an @ sign in their email
-            emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
-            # then the emoji library will work with tkinter and configure the text to a cross
-        if "gmail.com" in email_register \
-                or "yahoo.com" in email_register or "outlook.com" in email_register \
-                or "richardchalloner.com" in email_register or "icloud.com" in email_register \
-                or "mail.com" in email_register or "email.com" in email_register \
-                or "aol.com" in email_register or "proton.me" in email_register \
-                or "tutanota.com" in email_register or "tutanota.de" in email_register \
-                or "tutamail.com" in email_register or "tuta.io" in email_register \
-                or "keemail.me" in email_register or "zohomail.eu" in email_register \
-                or "tmmwj.com" in email_register or "gmx.com" in email_register \
-                or "gmx.co.uk" in email_register or "yahoo.co.uk" in email_register:
-            # this ensure they are trying to send the email to an existing email address with a correct domain
-            emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
-            # as long as the user's email address contains one of the above domains then a tick will be shown
-        else:
-            # however if they do not have any domain that exists in the list above
-            emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
-            # this changes the text from a tick to a cross where there is no existing domain
-        if "caleb" in email_register \
-                or "fish" in email_register or "hannah" in email_register or "mark" in email_register \
-                or "niki" in email_register or "sean" in email_register or "katherine" in email_register \
-                or "kat" in email_register or "alyssa" in email_register or "katy" in email_register \
-                or "isaac" in email_register or "esther" in email_register or "ben" in email_register \
-                or "connor" in email_register or "daisy" in email_register or "josh" in email_register \
-                or "zoey" in email_register or "valentina" in email_register or "stacy" in email_register \
-                or "george" in email_register or "graham" in email_register or "isabella" in email_register \
-                or "bella" in email_register or "ella" in email_register or "grace" in email_register \
-                or "ellis" in email_register or "emmanuel" in email_register or "christian" in email_register \
-                or "finn" in email_register or "fin" in email_register or "rachael" in email_register \
-                or "liv" in email_register or "olivia" in email_register or "elaine" in email_register \
-                or "bert" in email_register or "nilusha" in email_register or "andy" in email_register \
-                or "emma" in email_register or "emily" in email_register or "amelia" in email_register \
-                or "charlotte" in email_register or "sophia" in email_register or "mia" in email_register \
-                or "ava" in email_register or "eva" in email_register or "keira" in email_register \
-                or "kiera" in email_register or "harper" in email_register or "jessie" in email_register \
-                or "alex" in email_register or "liam" in email_register or "noah" in email_register \
-                or "elijah" in email_register or "oliver" in email_register or "ollie" in email_register \
-                or "lucas" in email_register or "luke" in email_register or "james" in email_register \
-                or "alexia" in email_register or "aaron" in email_register or "william" in email_register \
-                or "will" in email_register or "jo" in email_register or "joseph" in email_register \
-                or "benjamin" in email_register or "henry" in email_register or "laura" in email_register \
-                or "theo" in email_register or "daniel" in email_register or "marios" in email_register \
-                or "mario" in email_register or "benjy" in email_register or "arthur" in email_register \
-                or "john" in email_register or "tim" in email_register or "javier" in email_register \
-                or "xavier" in email_register or "eve" in email_register or "niamh" in email_register \
-                or "niam" in email_register or "alannah" in email_register or "reshee" in email_register \
-                or "amelie" in email_register or "nishtha" in email_register or "sofia" in email_register \
-                or "abi" in email_register or "abigail" in email_register or "penelope" in email_register \
-                or "brooke" in email_register or "brook" in email_register or "brooklyn" in email_register \
-                or "sophie" in email_register or "laila" in email_register or "jaimie" in email_register \
-                or "claudia" in email_register or "elena" in email_register or "eleanor" in email_register \
-                or "ram" in email_register or "mat" in email_register or "matt" in email_register \
-                or "matthew" in email_register or "mary" in email_register or "martha" in email_register \
-                or "peter" in email_register or "tamar" in email_register or "darius" in email_register \
-                or "edith" in email_register or "elise" in email_register or "adam" in email_register:
-            # checks their email has some form of name in its email
-            emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":check_mark_button:")}')
-            # this will adapt a tick next door to the clause to do with account name
-        else:
-            # but if the user's entered email address does not have one of the above names
-            emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
-            # the previous mark, tick, will change to a cross
-    check_rules_button_email_address = Button(register_screen, text="check rules", command=check_email_address)
-    # creates a variable and sets it equal to a button placed in the register_screen with text being check rules
-    # it will then run through the above rules adapting the text to a tick or a cross
-    check_rules_button_email_address.place(x=355, y=125)
-    # tells the system where to place the check rules button
     check_clause_1_email_address = Label(register_screen, text="Contains account name")
     # creates a variable and sets it equal to a label inside the register_screen with text
     check_clause_1_email_address.place(x=150, y=100)
@@ -547,7 +550,7 @@ def register():
     password_entry.place(x=150, y=250)
     # places these stars inside the tkinter window
 
-    def show_password():
+    def show_password_register():
         """this defines a function which allows the users password to be shown where check box is ticked"""
         if password_entry.cget('show') == '*':
             # tells the system to not show stars where the check box is not selected
@@ -557,7 +560,7 @@ def register():
             # but if the user has selected the show password box
             password_entry.config(show='*')
             # the system will show stars in place of their password
-    show_password_check_box = Checkbutton(register_screen, text='Show Password', command=show_password)
+    show_password_check_box = Checkbutton(register_screen, text='Show Password', command=show_password_register)
     # creates the check button box putting text next to the box
     show_password_check_box.place(x=85, y=277)
     # places the button in the tkinter window
@@ -565,7 +568,7 @@ def register():
     # password clause telling the user they have to enter 8 characters
     check_clause_1_password.place(x=150, y=300)
     # places this label in our tkinter window
-    check_clause_2_password = Label(register_screen, text="At least 2 capital letters")
+    check_clause_2_password = Label(register_screen, text="At least 1 capital letter")
     # creates a variable for a label housed in the register_screen telling the user to enter 2 capital letters
     check_clause_2_password.place(x=150, y=320)
     # tells the program where to put the 2 clause
@@ -647,72 +650,91 @@ def login():
         activated when the user clicks the check rules button adjacent to the email address rules"""
         email_login = email_address_entry_login_screen.get()
         # creates a new variable and sets it equal to the email address the user has inputted
-        if "@" in email_login:
-            # where the users email inputted contains an @ sign
-            emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-            # configures a tick to be placed next to the second email clause
+        if email_login:
+            # where the user has inputted some sort form of an email address
+            if "@" in email_login:
+                # as long the user's inputted email address contains an @ sign
+                emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                # connects to our label created above and configures it using text
+                # and the emoji library to a green tick
+                name_register_split_with_sign, domain_register_split_with_sign = email_login.split("@")
+                # using two variable names splits the email address the user has inputted before and after @ sign
+                name_register = open("names_register.txt", "r").read().splitlines()
+                # creates a new variable
+                # setting it equal to opening a file and tells the system to read from the file
+                # splits the lines of each of the names
+                domain_register = open("email_register_domain.txt", "r").read().splitlines()
+                # splits the lines of each of the domains found inside the email_register_domain.txt file
+                if name_register_split_with_sign in name_register:
+                    # this ensure they are trying to send the email to an existing email address
+                    # with a correct name
+                    emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                    # as long as the user's email address contains one of the above account name
+                    # then a tick will be shown
+                else:
+                    # however if they do not have any name that exists in the list above
+                    emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
+                    # this changes the text from a tick to a cross where there is no existing name
+                if domain_register_split_with_sign in domain_register:
+                    # checks their email has some form of domain in its email
+                    emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                    # this will adapt a tick next door to the clause to do with domain name
+                else:
+                    # but if the user's entered email address does not have one of the above names
+                    emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
+                    # the previous mark, tick, will change to a cross
+                if name_register_split_with_sign in name_register \
+                        and domain_register_split_with_sign in domain_register:
+                    # as long as the user's inputted email has a domain and a name which where found inside the file
+                    emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                    # adapts the cross to ticks because rules had been fulfilled
+                    emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                    # adapts the cross to a tick for the third clause
+                else:
+                    # although if the user has not entered an email
+                    emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
+                    emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
+            else:
+                # where there wasn't an @ sign inside the user's inputted email
+                emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
+                # changes the @ sign label from blank or tick to a cross
+                with open("names_register.txt", "r") as file_register_domains:
+                    # opens new file for names
+                    name_register = file_register_domains.read().splitlines()
+                    # opens file with file name and speech marks allows us to read from file
+                    # and sets it equal to the variable name_register
+                with open("email_register_domain.txt", "r") as file_register_names:
+                    # opens file with file name and speech marks allows us to read from file
+                    # and sets it equal to a variable
+                    domain_register = file_register_names.read().splitlines()
+                    # creates a new variable and sets equal to the file just opened
+                    # tells the system to read from the file and split
+                if email_login in name_register:
+                    # checks their email has some form of name in its email
+                    emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                    # this will adapt a tick next door to the clause to do with account name
+                else:
+                    # but if the user's entered email address does not have one of the above names
+                    emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
+                    # the previous mark, tick, will change to a cross
+                if email_login in domain_register:
+                    # this ensure they are trying to send the email to an existing email address
+                    # with a correct domain
+                    emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
+                    # as long as the user's email address contains one of the above domains
+                    # then a tick will be shown
+                else:
+                    # however if they do not have any domain that exists in the list above
+                    emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
+                    # this changes the text from a tick to a cross where there is no existing domain
         else:
-            # but if the users email doesn't contain an @ sign
+            # where no email has been entered
             emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-            # configures the label with text to be a cross showing the user they need to fix this rule
-        if "gmail.com" in email_login \
-                or "yahoo.com" in email_login or "outlook.com" in email_login or "richardchalloner.com" in email_login \
-                or "icloud.com" in email_login or "mail.com" in email_login or "email.com" in email_login \
-                or "aol.com" in email_login or "proton.me" in email_login or "tutanota.com" in email_login \
-                or "tutanota.de" in email_login or "tutamail.com" in email_login or "tuta.io" in email_login \
-                or "keemail.me" in email_login or "zohomail.eu" in email_login or "tmmwj.com" in email_login \
-                or "gmx.com" in email_login or "gmx.co.uk" in email_login or "yahoo.co.uk" in email_login:
-            # as long the user's email has one of the above domain names
-            emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-            # the system will put a tick next to the clause saying contains domain name
-        else:
-            # but if the user's email doesn't have one of the above domains
+            # 2nd clause cross adapted to red
             emoji_label_clause_3_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-            # the system will display directing the user to add a domain name
-        if "caleb" in email_login \
-                or "fish" in email_login or "admin" in email_login or "hannah" in email_login \
-                or "mark" in email_login or "niki" in email_login or "sean" in email_login \
-                or "katherine" in email_login or "kat" in email_login or "alyssa" in email_login \
-                or "katy" in email_login or "isaac" in email_login or "esther" in email_login or "ben" \
-                in email_login or "connor" in email_login or "daisy" in email_login or "josh" in email_login \
-                or "zoey" in email_login or "valentina" in email_login or "stacy" in email_login \
-                or "george" in email_login or "graham" in email_login or "isabella" in email_login \
-                or "bella" in email_login or "ella" in email_login or "grace" in email_login \
-                or "emmanuel" in email_login or "christian" in email_login or "finn" in email_login \
-                or "fin" in email_login or "rachael" in email_login or "liv" in email_login \
-                or "olivia" in email_login or "elaine" in email_login or "bert" in email_login \
-                or "nilusha" in email_login or "andy" in email_login or "emma" in email_login \
-                or "emily" in email_login or "amelia" in email_login or "ellis" in email_login \
-                or "charlotte" in email_login or "sophia" in email_login or "mia" in email_login \
-                or "ava" in email_login or "eva" in email_login or "keira" in email_login \
-                or "kiera" in email_login or "harper" in email_login or "jessie" in email_login \
-                or "alex" in email_login or "liam" in email_login or "noah" in email_login \
-                or "elijah" in email_login or "oliver" in email_login or "ollie" in email_login \
-                or "lucas" in email_login or "luke" in email_login or "james" in email_login \
-                or "alexia" in email_login or "aaron" in email_login or "william" in email_login \
-                or "will" in email_login or "jo" in email_login or "joseph" in email_login \
-                or "benjamin" in email_login or "henry" in email_login or "laura" in email_login \
-                or "theo" in email_login or "daniel" in email_login or "marios" in email_login \
-                or "mario" in email_login or "benjy" in email_login or "arthur" in email_login \
-                or "john" in email_login or "tim" in email_login or "javier" in email_login \
-                or "xavier" in email_login or "eve" in email_login or "niamh" in email_login \
-                or "niam" in email_login or "alannah" in email_login or "reshee" in email_login \
-                or "amelie" in email_login or "nishtha" in email_login or "sofia" in email_login \
-                or "abi" in email_login or "abigail" in email_login or "penelope" in email_login \
-                or "brooke" in email_login or "brook" in email_login or "brooklyn" in email_login \
-                or "sophie" in email_login or "laila" in email_login or "jaimie" in email_login \
-                or "claudia" in email_login or "elena" in email_login or "eleanor" in email_login \
-                or "ram" in email_login or "mat" in email_login or "matt" in email_login \
-                or "matthew" in email_login or "mary" in email_login or "martha" in email_login \
-                or "peter" in email_login or "tamar" in email_login or "darius" in email_login \
-                or "edith" in email_login or "elise" in email_login or "adam" in email_login:
-            # if the above names or in the user's email
-            emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
-            # the user will be presented with a green tick
-        else:
-            # where the user hasn't got an account name
+            # using emoji library adapts 3 clause to red
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
-            # the program will tell them by showing a red cross
+            # connecting to a label made below changes the label to a cross mark
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
     # creates a variable connecting it to a button inside the login_screen with text and a command
     # the command wil check which rules pass or fail
@@ -739,7 +761,7 @@ def login():
     password_entry_login.place(x=150, y=190)
     # directs the program to where the entry box is to be placed inside the login_screen
 
-    def show_password():
+    def show_password_login():
         """this defines a function which allows the users password to be shown where check box is ticked"""
         if password_entry_login.cget('show') == '*':
             # this says that if check button ticked password will be shown and stars will be hidden
@@ -749,7 +771,7 @@ def login():
             # if the checkbutton is not ticked then password will stay starred
             password_entry_login.config(show='*')
             # by configuring the password_entry with stars
-    show_password_check_box_login = Checkbutton(login_screen, text='Show Password', command=show_password)
+    show_password_check_box_login = Checkbutton(login_screen, text='Show Password', command=show_password_login)
     # creates a variable and sets it equal to a checkbutton which will have text of show password
     # has a command linking to the above function telling the system how to behave
     # whether or not the check box is ticked
@@ -770,7 +792,7 @@ def login():
             # sets the emoji to a cross informing the user they need to re-check their password
         password_caps_login = password_entry_login.get()
         # creates another new variable and sets it equal to the password entered by the user
-        if re.search(r'[A-Z]{+}', password_caps_login):
+        if re.search(r'[A-Z]{1,}', password_caps_login):
             # using the re library searches through the users password entered
             # ensures there is 1 or more capital letter
             emoji_label_clause_2_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
@@ -792,7 +814,7 @@ def login():
         password_special_chars_login = password_entry_login.get()
         # creates another variable and sets it equal to the users password entered
         if re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆'
-                     r'˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{+}', password_special_chars_login):
+                     r'˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}', password_special_chars_login):
             # as long as it contains 1 or more special characters from the above special characters list
             emoji_label_clause_3_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # emoji next to the special characters clause will be a tick
@@ -809,7 +831,7 @@ def login():
     # creates another variable telling the user the first clause they must follow for their password
     check_clause_1_password_login.place(x=150, y=250)
     # shows the user how they need to place this label inside our tkinter window using the place function
-    check_clause_2_password_login = Label(login_screen, text="At least 2 capital letters")
+    check_clause_2_password_login = Label(login_screen, text="At least 1 capital letters")
     # creates another variable where it will show a label on the login screen with text
     check_clause_2_password_login.place(x=150, y=270)
     # this will place the password clause 20 below the above clause
@@ -1106,6 +1128,7 @@ def login():
 
                     def voice_assistant_button_pressed_prompt_window():
                         """"""
+
                         def find_weather():
                             """"""
                             url = "https://www.google.co.uk/search?q=weather"
@@ -1202,7 +1225,6 @@ def login():
                     next_button.place(x=230, y=550)
 
                     def no_button_to_add_device_question_command():
-
                         home_automation_system_prompt_window.destroy()
 
                         home_automation_system_control_devices_window = Tk()
@@ -1227,7 +1249,7 @@ def login():
                         voice_assistant_control_devices = Button(home_automation_system_control_devices_window,
                                                                  text="Voice Assistant",
                                                                  command=voice_assistant_control_window_button_pressed)
-                        
+
                         voice_assistant_control_devices.place(x=350, y=500)
 
                     no_button_to_add_device_question = Button(home_automation_system_prompt_window,
@@ -1345,14 +1367,14 @@ def change_information(oldEmail, newEmail, newPassword, newNickname, newDOB, adm
     # closes the connection with the database
 
 
-def no():
+def user_does_not_want_to_proceed():
     """this defines our function with the name of yes
     this takes the user to the main screen """
     proceed.destroy()
     # closes the window since the user has decided to they would not like to proceed
 
 
-def yes():
+def yes_button_in_first_window():
     """this defines a function with a name of yes which directs the user to the new window
     which will allow the user to login and/or register"""
     login_and_register_user_screen = Tk()
@@ -1368,10 +1390,11 @@ def yes():
     # which allows the user to register
     register_button.place(x=100, y=75)
     # tells the system to place my register button along the x and y axes
-    login_button = Button(login_and_register_user_screen, text="Login", height="2", width="30", command=login)
+    login_button_yes_window = Button(login_and_register_user_screen, text="Login", height="2", width="30",
+                                     command=login)
     # creates a variable that creates a button and places it inside our new tkinter interface
     # which allows the user to login
-    login_button.place(x=100, y=125)
+    login_button_yes_window.place(x=100, y=125)
     # tells the system to place my login button along the x and y axes
 
 
@@ -1396,9 +1419,9 @@ label2 = Label(frame2, image=img2)
 # creates a new variable for our next image
 label2.place(x=35, y=20)
 # tells the system how to place our image using the pack function
-Button(text="Yes", height="2", width="30", command=yes).place(x=84, y=125)
+Button(text="Yes", height="2", width="30", command=yes_button_in_first_window).place(x=84, y=125)
 # creates a new button in our original tkinter window requesting for the users response
-Button(text="No", height="2", width="30", command=no).place(x=84, y=175)
+Button(text="No", height="2", width="30", command=user_does_not_want_to_proceed).place(x=84, y=175)
 # button saying no which will point the program to thew no function
 proceed.resizable(False, False)
 # fixes the size of the window
