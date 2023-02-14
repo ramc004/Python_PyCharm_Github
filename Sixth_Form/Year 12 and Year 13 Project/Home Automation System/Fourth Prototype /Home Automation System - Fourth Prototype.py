@@ -20,6 +20,9 @@ import requests
 #
 from bs4 import BeautifulSoup
 #
+import spotipy
+
+from spotipy.oauth2 import SpotifyOAuth
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -1244,7 +1247,80 @@ def login():
                         rooms_for_lights_button.place(x=45, y=100)
 
                         def voice_assistant_control_window_button_pressed():
-                            return
+
+                            def find_weather():
+                                """"""
+                                url = "https://www.google.co.uk/search?q=weather"
+                                #
+                                find_weather_result = requests.get(url, headers=headers)
+                                #
+                                soup = BeautifulSoup(find_weather_result.text, "html.parser")
+                                #
+                                temperature = soup.select("#wob_tm")[0].getText().strip()
+                                #
+                                weather_description = soup.select("#wob_dc")[0].getText().strip()
+                                #
+                                return temperature, weather_description
+                                #
+
+                            def do_maths(maths_question):
+                                """"""
+                                maths_question = maths_question.replace(" ", "+")
+                                #
+                                url = "https://www.google.co.uk/search?q=%s" % maths_question
+                                #
+                                do_maths_result = requests.get(url, headers=headers)
+                                #
+                                soup = BeautifulSoup(do_maths_result.text, "html.parser")
+                                #
+                                answer = soup.select("#cwos")
+                                if answer:
+                                    answer = answer[0].getText().strip()
+                                    return answer
+                                else:
+                                    return None
+                                #
+
+                            r = sr.Recognizer()
+                            # variable used to recognise speech
+
+                            with sr.Microphone() as source:
+                                #
+                                r.adjust_for_ambient_noise(source, duration=0.2)
+                                #
+                                print("Speak now")
+                                #
+                                audio = r.listen(source)
+                                #
+                                speech = r.recognize_google(audio)
+                                #
+                                print("You said: " + speech)
+                                #
+                                if "weather" in speech:
+                                    #
+                                    tempValue, description = find_weather()
+                                    #
+                                    print(tempValue + " degree celsius", description)
+                                elif "calculator" in speech:
+                                    #
+                                    r.adjust_for_ambient_noise(source, duration=0.2)
+                                    #
+                                    print("Ask your question")
+                                    #
+                                    questionAudio = r.listen(source)
+                                    #
+                                    question = r.recognize_google(questionAudio)
+                                    #
+                                    result = do_maths(question)
+                                    if result:
+                                        print(result)
+                                    else:
+                                        print("Couldn't find an answer, click on voice assistant again to retry")
+                                    #
+                                else:
+                                    #
+                                    print("I am not sure how to help you, click on voice assistant again to retry")
+                                    #
 
                         voice_assistant_control_devices = Button(home_automation_system_control_devices_window,
                                                                  text="Voice Assistant",
