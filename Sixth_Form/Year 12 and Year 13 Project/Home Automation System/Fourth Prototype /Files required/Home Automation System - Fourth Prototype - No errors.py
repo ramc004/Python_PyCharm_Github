@@ -1280,7 +1280,6 @@ def login():
 
                                 else:
                                     print("I am not sure how to help you, click on voice assistant again to retry")
-                                sp.volume(int(currVolume))
                         except Exception as e:
                             sp.volume(int(currVolume))
                             print(e)
@@ -1416,43 +1415,46 @@ def login():
                                 currVolume = song["device"]["volume_percent"]
                                 print(currVolume)
                                 sp.volume(int(10))
-                            with sr.Microphone() as source:
-                                #
-                                r.adjust_for_ambient_noise(source, duration=0.2)
-                                #
-                                print("Speak now")
-                                #
-                                audio = r.listen(source)
-                                #
-                                speech = r.recognize_google(audio)
-                                #
-                                print("You said: " + speech)
-                                #
-                                if "weather" in speech:
-                                    #
-                                    tempValue, description = find_weather()
-                                    #
-                                    print(tempValue + " degree celsius", description)
-                                elif "calculator" in speech:
+                            try:
+                                with sr.Microphone() as source:
                                     #
                                     r.adjust_for_ambient_noise(source, duration=0.2)
                                     #
-                                    print("Ask your question")
+                                    print("Speak now")
                                     #
-                                    questionAudio = r.listen(source)
+                                    audio = r.listen(source)
                                     #
-                                    question = r.recognize_google(questionAudio)
+                                    speech = r.recognize_google(audio)
                                     #
-                                    result = do_maths(question)
-                                    if result:
-                                        print(result)
+                                    print("You said: " + speech)
+                                    #
+                                    if "weather" in speech:
+                                        #
+                                        tempValue, description = find_weather()
+                                        #
+                                        print(tempValue + " degree celsius", description)
+                                    elif "calculator" in speech:
+                                        #
+                                        r.adjust_for_ambient_noise(source, duration=0.2)
+                                        #
+                                        print("Ask your question")
+                                        #
+                                        questionAudio = r.listen(source)
+                                        #
+                                        question = r.recognize_google(questionAudio)
+                                        #
+                                        result = do_maths(question)
+                                        if result:
+                                            print(result)
+                                        else:
+                                            print("Couldn't find an answer, click on voice assistant again to retry")
+                                    elif "Spotify" in speech:
+                                        do_spotify_command()
                                     else:
-                                        print("Couldn't find an answer, click on voice assistant again to retry")
-                                elif "Spotify" in speech:
-                                    do_spotify_command()
-                                else:
-                                    print("I am not sure how to help you, click on voice assistant again to retry")
+                                        print("I am not sure how to help you, click on voice assistant again to retry")
+                            except Exception as e:
                                 sp.volume(int(currVolume))
+                                print(e)
 
                         voice_assistant_control_devices = Button(home_automation_system_control_devices_window,
                                                                  text="Voice Assistant",
