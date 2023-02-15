@@ -14,15 +14,23 @@ import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
-import speech_recognition as sr
-#
 import requests
-#
 from bs4 import BeautifulSoup
-#
 import spotipy
-
 from spotipy.oauth2 import SpotifyOAuth
+import speech_recognition as sr
+
+scope = "user-modify-playback-state, user-read-playback-state"
+clientIDFile = open("logins.txt", "r")
+clientID = clientIDFile.read()
+clientIDFile.close()
+clientSecretFile = open("secret.txt", "r")
+clientSecret = clientSecretFile.read()
+clientSecretFile.close()
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope,
+                                               client_id=clientID,
+                                               client_secret=clientSecret,
+                                               redirect_uri="http://localhost:8350/callback/"))
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -94,6 +102,8 @@ if not MyAdmin:
     c.execute(createAdminQuery)
     # executes the admin query to ensure the above database statement follows through
 register_verify = False
+
+
 # creates a variable called register_verify outside any functions allowing us to call it from anywhere
 # sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
@@ -266,6 +276,7 @@ def register():
     register_screen.geometry("500x600")
     # gives the starting size for the Tkinter user interface
     register_screen.resizable(False, False)
+
     # limits the user from resizing the interface
 
     def sign_up(email_address_db, password_db, actual_code, user_code):
@@ -352,6 +363,7 @@ def register():
         # commits any changes the users inputs have made to the database
         connection_sign_up.close()
         # closes the database connection until reopened
+
     email_address_entry_register_screen = Entry(register_screen)
     # creates a new variable and sets it equal to an entry box placing it in the register_screen
     email_address_entry_register_screen.place(x=150, y=70)
@@ -369,6 +381,7 @@ def register():
     verify_text.place(x=13, y=203)
     # places this label next to the verify box so the user knows where to put the information
     code = str(random.randint(100000, 999999))
+
     # using the random function which uses an algorithm to cycle through numbers and creates a six digit code
 
     def send_email():
@@ -518,6 +531,7 @@ def register():
             # places label just above the verify button
             system_failure_email_sending.config(foreground="orange")
             # colours the label orange warning the user they haven't followed the rules
+
     email_address_verify_button = Button(register_screen, text="Verify", command=send_email)
     # creates a button in the register_screen with text of verify and puts a command of send_email
     # where this button is clicked the email will be sent
@@ -551,6 +565,7 @@ def register():
     # creates another variable and sets it equal to another entry box where the users password can be inputted
     # to ensure security the users password will stay safe we star out whatever they type in to the password box
     password_entry.place(x=150, y=250)
+
     # places these stars inside the tkinter window
 
     def show_password_register():
@@ -563,6 +578,7 @@ def register():
             # but if the user has selected the show password box
             password_entry.config(show='*')
             # the system will show stars in place of their password
+
     show_password_check_box = Checkbutton(register_screen, text='Show Password', command=show_password_register)
     # creates the check button box putting text next to the box
     show_password_check_box.place(x=85, y=277)
@@ -646,6 +662,7 @@ def login():
     email_address_text_login_screen = Label(login_screen, text="Email address")
     # tells the user which information they need to enter with text
     email_address_text_login_screen.place(x=56.2, y=52)
+
     # places email address text next to the email address box
 
     def check_email_address():
@@ -738,6 +755,7 @@ def login():
             # using emoji library adapts 3 clause to red
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
             # connecting to a label made below changes the label to a cross mark
+
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
     # creates a variable connecting it to a button inside the login_screen with text and a command
     # the command wil check which rules pass or fail
@@ -762,6 +780,7 @@ def login():
     password_entry_login = Entry(login_screen, show='*')
     # creates a new variable and sets it equal to an entry box showing stars in place of whatever the user enters
     password_entry_login.place(x=150, y=190)
+
     # directs the program to where the entry box is to be placed inside the login_screen
 
     def show_password_login():
@@ -774,11 +793,13 @@ def login():
             # if the checkbutton is not ticked then password will stay starred
             password_entry_login.config(show='*')
             # by configuring the password_entry with stars
+
     show_password_check_box_login = Checkbutton(login_screen, text='Show Password', command=show_password_login)
     # creates a variable and sets it equal to a checkbutton which will have text of show password
     # has a command linking to the above function telling the system how to behave
     # whether or not the check box is ticked
     show_password_check_box_login.place(x=85, y=227)
+
     # places the checkButton along the x axis and down the y axis
 
     def check_password():
@@ -825,6 +846,7 @@ def login():
             # but if the user's password has no special characters
             emoji_label_clause_3_password_login.config(text=f'{emoji.emojize(":cross_mark:")}')
             # then the system will be forced to configure a cross instead
+
     check_rules_button_password_login = Button(login_screen, text="check rules", command=check_password)
     # creates a check rules button to allow the user to see how they may need to adapt their password
     # where they are not being logged in
@@ -913,6 +935,7 @@ def login():
     connection_login.commit()
     # commits any changes the users inputs have made to the database
     connection_login.close()
+
     # closes the connection for the database
 
     def log_in(email_address_log_in, password_db_log_in, nickname, date_of_birth):
@@ -1132,6 +1155,52 @@ def login():
                     def voice_assistant_button_pressed_prompt_window():
                         """"""
 
+                        def do_spotify_command():
+
+                            r_spotify = sr.Recognizer()
+                            with sr.Microphone() as source_spotify:
+                                r_spotify.adjust_for_ambient_noise(source_spotify, duration=0.2)
+                                print("What would you like to do with spotify")
+                                audio_spotify = r_spotify.listen(source_spotify)
+                                speech_spotify = r_spotify.recognize_google(audio_spotify)
+                                if "change volume" in speech_spotify:
+                                    r_volume = sr.Recognizer()
+                                    # variable used to recognise speech
+                                    with sr.Microphone() as source_volume:
+                                        r_volume.adjust_for_ambient_noise(source_volume, duration=0.2)
+                                        print("What would you like the new percentage of playback to be?")
+                                        volume_change = r_volume.listen(source_volume)
+                                        speech_volume = r_volume.recognize_google(volume_change)
+                                        sp.volume(int(speech_volume))
+                                        print(
+                                            "Your volume has been changed to " + speech_volume +
+                                            "%, if this is the wrong volume please retry")
+                                elif "play" in speech_spotify:
+                                    sp.start_playback()
+                                elif "pause" in speech_spotify:
+                                    sp.pause_playback()
+                                elif "song" in speech_spotify:
+                                    r_song = sr.Recognizer()
+                                    with sr.Microphone() as song_user:
+                                        r_song.adjust_for_ambient_noise(song_user, duration=0.2)
+                                        print("Which song would you like to play?")
+                                        song_audio = r_spotify.listen(song_user)
+                                        song_user = r_spotify.recognize_google(song_audio)
+                                        print("You said: " + song_user + ", " +
+                                              song_user + " is playing, if this wasn't the song you wanted to play,"
+                                                          " please retry")
+                                        results = sp.search(q=song_user, type='track')
+                                        track_uri = results['tracks']['items'][0]['uri']
+                                        sp.start_playback(uris=[track_uri])
+                                elif "shuffle" in speech_spotify:
+                                    sp.shuffle(True)
+                                elif "skip" or "next" in speech_spotify:
+                                    sp.next_track()
+                                elif "previous" or "go back" in speech_spotify:
+                                    sp.previous_track()
+                                else:
+                                    print("retry")
+
                         def find_weather():
                             """"""
                             url = "https://www.google.co.uk/search?q=weather"
@@ -1167,44 +1236,54 @@ def login():
 
                         r = sr.Recognizer()
                         # variable used to recognise speech
-
-                        with sr.Microphone() as source:
-                            #
-                            r.adjust_for_ambient_noise(source, duration=0.2)
-                            #
-                            print("Speak now")
-                            #
-                            audio = r.listen(source)
-                            #
-                            speech = r.recognize_google(audio)
-                            #
-                            print("You said: " + speech)
-                            #
-                            if "weather" in speech:
-                                #
-                                tempValue, description = find_weather()
-                                #
-                                print(tempValue + " degree celsius", description)
-                            elif "calculator" in speech:
+                        song = sp.current_playback()
+                        currVolume = 0
+                        if song:
+                            currVolume = song["device"]["volume_percent"]
+                            print(currVolume)
+                            sp.volume(int(10))
+                        try:
+                            with sr.Microphone() as source:
                                 #
                                 r.adjust_for_ambient_noise(source, duration=0.2)
                                 #
-                                print("Ask your question")
+                                print("Speak now")
                                 #
-                                questionAudio = r.listen(source)
+                                audio = r.listen(source)
                                 #
-                                question = r.recognize_google(questionAudio)
+                                speech = r.recognize_google(audio)
                                 #
-                                result = do_maths(question)
-                                if result:
-                                    print(result)
+                                print("You said: " + speech)
+                                #
+                                if "Spotify" in speech:
+                                    do_spotify_command()
+                                elif "weather" in speech:
+                                    #
+                                    tempValue, description = find_weather()
+                                    #
+                                    print(tempValue + " degree celsius", description)
+                                elif "calculator" in speech:
+                                    #
+                                    r.adjust_for_ambient_noise(source, duration=0.2)
+                                    #
+                                    print("Ask your question")
+                                    #
+                                    questionAudio = r.listen(source)
+                                    #
+                                    question = r.recognize_google(questionAudio)
+                                    #
+                                    result = do_maths(question)
+                                    if result:
+                                        print(result)
+                                    else:
+                                        print("Couldn't find an answer, click on voice assistant again to retry")
+
                                 else:
-                                    print("Couldn't find an answer, click on voice assistant again to retry")
-                                #
-                            else:
-                                #
-                                print("I am not sure how to help you, click on voice assistant again to retry")
-                                #
+                                    print("I am not sure how to help you, click on voice assistant again to retry")
+                                sp.volume(int(currVolume))
+                        except Exception as e:
+                            sp.volume(int(currVolume))
+                            print(e)
 
                     voice_assistant_prompt_window = Button(home_automation_system_prompt_window,
                                                            text="Voice Assistant",
@@ -1248,6 +1327,55 @@ def login():
 
                         def voice_assistant_control_window_button_pressed():
 
+                            def do_spotify_command():
+                                r_spotify = sr.Recognizer()
+                                with sr.Microphone() as source_spotify:
+                                    r_spotify.adjust_for_ambient_noise(source_spotify, duration=0.2)
+                                    print("What would you like to do with spotify")
+                                    audio_spotify = r_spotify.listen(source_spotify)
+                                    speech_spotify = r_spotify.recognize_google(audio_spotify)
+                                    if "change volume" in speech_spotify:
+                                        r_volume = sr.Recognizer()
+                                        # variable used to recognise speech
+                                        with sr.Microphone() as source_volume:
+                                            r_volume.adjust_for_ambient_noise(source_volume, duration=0.2)
+                                            print("What would you like the new percentage of playback to be?")
+                                            volume_change = r_volume.listen(source_volume)
+                                            speech_volume = r_volume.recognize_google(volume_change)
+                                            sp.volume(int(speech_volume))
+                                            print(
+                                                "Your volume has been changed to " + speech_volume +
+                                                "%, if this is the wrong volume please retry")
+                                    elif "play" in speech_spotify:
+                                        sp.start_playback()
+                                    elif "pause" in speech_spotify:
+                                        # doesn't work because can hear music in background
+                                        # maybe there's a way to ignore speakers??
+                                        # and only receive input from microphone
+                                        sp.pause_playback()
+                                    elif "song" in speech_spotify:
+                                        r_song = sr.Recognizer()
+                                        with sr.Microphone() as song_user:
+                                            r_song.adjust_for_ambient_noise(song_user, duration=0.2)
+                                            print("Which song would you like to play?")
+                                            song_audio = r_spotify.listen(song_user)
+                                            song_user = r_spotify.recognize_google(song_audio)
+                                            print("You said: " +
+                                                  song_user + ", " + song_user + " is playing,"
+                                                                                 " if this wasn't the song you wanted "
+                                                                                 "to play, please retry")
+                                            results = sp.search(q=song_user, type='track')
+                                            track_uri = results['tracks']['items'][0]['uri']
+                                            sp.start_playback(uris=[track_uri])
+                                    elif "shuffle" in speech_spotify:
+                                        sp.shuffle(True)
+                                    elif "skip" or "next" in speech_spotify:
+                                        sp.next_track()
+                                    elif "previous" or "go back" in speech_spotify:
+                                        sp.previous_track()
+                                    else:
+                                        print("retry")
+
                             def find_weather():
                                 """"""
                                 url = "https://www.google.co.uk/search?q=weather"
@@ -1279,11 +1407,15 @@ def login():
                                     return answer
                                 else:
                                     return None
-                                #
 
                             r = sr.Recognizer()
                             # variable used to recognise speech
-
+                            song = sp.current_playback()
+                            currVolume = 0
+                            if song:
+                                currVolume = song["device"]["volume_percent"]
+                                print(currVolume)
+                                sp.volume(int(10))
                             with sr.Microphone() as source:
                                 #
                                 r.adjust_for_ambient_noise(source, duration=0.2)
@@ -1316,11 +1448,11 @@ def login():
                                         print(result)
                                     else:
                                         print("Couldn't find an answer, click on voice assistant again to retry")
-                                    #
+                                elif "Spotify" in speech:
+                                    do_spotify_command()
                                 else:
-                                    #
                                     print("I am not sure how to help you, click on voice assistant again to retry")
-                                    #
+                                sp.volume(int(currVolume))
 
                         voice_assistant_control_devices = Button(home_automation_system_control_devices_window,
                                                                  text="Voice Assistant",
