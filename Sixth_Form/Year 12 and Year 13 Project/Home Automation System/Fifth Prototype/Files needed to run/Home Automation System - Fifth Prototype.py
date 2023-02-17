@@ -57,7 +57,6 @@ proceed = Tk()
 proceed.title('A Level Computer Science Project')
 # we are calling our variable root and defining more of its attributes giving our tkinter window a title
 proceed.geometry("450x300")
-isStudyLight1Checked = IntVar()
 # gives some restrictions for our tkinter window of 400x300
 conn = sqlite3.connect(database_name)
 # connects to sqlite3 using a variable name of conn short for connection
@@ -1487,18 +1486,24 @@ def login():
                         create_rooms_window.resizable(False, False)
                         question_label = Label(create_rooms_window, text="Name of device")
                         question_label.place(x=30, y=50)
-                        bananas_rooms_yes_or_no = Checkbutton(create_rooms_window, text="bananas",)
+                        isBananasChecked = IntVar(create_rooms_window)
+                        bananas_rooms_yes_or_no = Checkbutton(create_rooms_window, text="bananas",
+                                                              variable=isBananasChecked)
                         bananas_rooms_yes_or_no.place(x=30, y=150)
-                        transformer_rooms_yes_or_no = Checkbutton(create_rooms_window, text="transformer",)
+                        isTransformerChecked = IntVar(create_rooms_window)
+                        transformer_rooms_yes_or_no = Checkbutton(create_rooms_window, text="transformer",
+                                                                  variable=isTransformerChecked)
                         transformer_rooms_yes_or_no.place(x=30, y=125)
-
+                        isStudyLight1Checked = IntVar(create_rooms_window)
                         study_light_1_rooms_yes_or_no = Checkbutton(create_rooms_window, text="study light 1",
                                                                     variable=isStudyLight1Checked)
                         study_light_1_rooms_yes_or_no.place(x=30, y=100)
-                        study_light_2_yes_or_no = Checkbutton(create_rooms_window, text="study light 2")
+                        isStudyLight2Checked = IntVar(create_rooms_window)
+                        study_light_2_yes_or_no = Checkbutton(create_rooms_window, text="study light 2",
+                                                              variable=isStudyLight2Checked)
                         study_light_2_yes_or_no.place(x=30, y=75)
-                        response_entry = Entry(create_rooms_window)
-                        response_entry.place(x=70, y=50)
+                        name_of_room_created_entry = Entry(create_rooms_window)
+                        name_of_room_created_entry.place(x=70, y=50)
 
                         def ok_button_rooms_command():
                             bulbList = []
