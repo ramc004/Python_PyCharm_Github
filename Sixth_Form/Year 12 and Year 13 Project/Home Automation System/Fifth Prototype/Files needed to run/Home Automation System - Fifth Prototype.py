@@ -47,7 +47,7 @@ scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
                          "Dazzling": '06464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000',
                          "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e800000000464602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'
                          }
-
+roomDict = {}
 #
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
@@ -1119,13 +1119,109 @@ def login():
                     # where if a non admin account has logged in
                     home_automation_system_window = Tk()
                     # a new tkinter page will be created and set equal to a new variable
-                    home_automation_system_window.title("Home Automation System Adding Devices")
+                    home_automation_system_window.title("Home Automation System Controlling Devices")
                     # gives this new tkinter window a title to inform the user what stage of my system they are at
                     home_automation_system_window.geometry("500x600")
                     # gives the user a starting size using the geometry function built into tkinter
                     home_automation_system_window.resizable(False, False)
-
                     # creates limits for the window at the original size
+
+                    roomButtons = []
+
+                    def room_more_controls():
+                        return
+
+                    def placeBulbLabels(roomName, the_window):
+                        x = 100
+                        # where first button will be placed
+                        y = 100
+
+                        bulbs = roomDict[roomName]
+                        for bulb in bulbs:
+                            newLabel = Label(the_window, text="Test")
+                            newLabel.place(x=x, y=y)
+                            x = (x + 50) % 300
+                            # moves each button along by 50 pixels - when it gets to 300 pixels, it goes down by 50
+                            if x < 100:
+                                x = 100
+                                y = y + 50
+
+                    def OnButtonRoom(roomName):
+                        bulbs = roomDict[roomName]
+
+                        for bulb in bulbs:
+                            bulb.turn_on()
+
+                    def OffButtonRoom(roomName):
+                        bulbs = roomDict[roomName]
+
+                        for bulb in bulbs:
+                            bulb.turn_off()
+
+                    def room_slider_control(roomName, value):
+                        bulbs = roomDict[roomName]
+
+                        for bulb in bulbs:
+                            bulb.set_brightness(int(value))
+
+                    def choose_colour_room(roomName, colour_picker):
+                        try:
+                            color_code = colour_picker.askcolor(title="Choose Colour")
+                            (r, g, b) = color_code[0]
+                            bulbs = roomDict[roomName]
+                            for bulb in bulbs:
+                                bulb.set_colour(r, g, b)
+                        except:
+                            print("You cancelled colour picker")
+
+                    def loadRoomPage(roomName):
+                        load_room_page = Tk()
+                        load_room_page.title("Home Automation System Controlling Devices")
+                        load_room_page.geometry("500x600")
+                        load_room_page.resizable(False, False)
+                        roomName_button = Button(load_room_page, text=roomName, command=lambda: room_more_controls)
+                        roomName_button.place(x=215, y=45)
+                        placeBulbLabels(roomName, load_room_page)
+                        on_button_rooms = Button(load_room_page, text="On", command=lambda: OnButtonRoom(roomName))
+                        on_button_rooms.place(x=30, y=75)
+                        off_button_rooms = Button(load_room_page, text="Off", command=lambda: OffButtonRoom(roomName))
+                        off_button_rooms.place(x=50, y=75)
+                        slider_room_page = Scale(
+                            load_room_page,
+                            from_=10,
+                            to=1000,
+                            orient='horizontal',
+                            command=lambda value: room_slider_control(roomName, value))
+                        slider_room_page.place(x=30, y=100)
+                        room_colour_picker = Button(load_room_page,
+                                                    text="Select colour",
+                                                    command=lambda: choose_colour_room(roomName, room_colour_picker))
+                        room_colour_picker.place(x=40, y=125)
+
+
+
+
+
+
+                    def deleteButtons():
+                        for button in roomButtons:
+                            button.destroy()
+
+                    def refreshButtons():
+                        deleteButtons()
+                        x = 180
+                        y = 100
+
+                        rooms = roomDict.keys()
+                        for room in rooms:
+                            newButton = Button(home_automation_system_window, text=room
+                                               , command=lambda: loadRoomPage(room))
+                            newButton.place(x=x, y=y)
+                            roomButtons.append(newButton)
+                            x = (x + 125) % 380
+                            if x < 180:
+                                x = 180
+                                y = y + 25
 
                     def voice_assistant_button_pressed():
                         """"""
@@ -1505,16 +1601,23 @@ def login():
                         name_of_room_created_entry = Entry(create_rooms_window)
                         name_of_room_created_entry.place(x=70, y=50)
 
-                        def ok_button_rooms_command():
+                        def ok_button_rooms_command(room_name):
                             bulbList = []
-                            print(isStudyLight1Checked.get())
                             if isStudyLight1Checked.get() == 1:
                                 bulbList.append(study_light_1)
-                                print("Checked:", bulbList)
-                            else:
-                                print("Not Checked")
+                            if isStudyLight2Checked.get():
+                                bulbList.append(study_light_2)
+                            if isTransformerChecked.get():
+                                bulbList.append(Transformer)
+                            if isBananasChecked.get():
+                                bulbList.append(Bananas)
 
-                        ok_button_rooms = Button(create_rooms_window, text="Ok", command=ok_button_rooms_command)
+                            roomDict[room_name] = bulbList
+                            refreshButtons()
+                            create_rooms_window.destroy()
+
+                        ok_button_rooms = Button(create_rooms_window, text="Ok",
+                                                 command=lambda: ok_button_rooms_command(name_of_room_created_entry.get()))
                         ok_button_rooms.place(x=350, y=150)
                         return
 

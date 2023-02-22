@@ -10,3 +10,7 @@ while True:
     # See if any data is available
     data = study_light_2.receive()
     print('Received Payload: %r' % data)
+
+
+isStudyLight1Checked = IntVar()
+isStudyLight1Checked = IntVar(create_rooms_window)
