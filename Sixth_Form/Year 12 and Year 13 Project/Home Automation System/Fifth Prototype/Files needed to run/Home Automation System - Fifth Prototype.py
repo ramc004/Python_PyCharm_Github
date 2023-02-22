@@ -1198,11 +1198,6 @@ def login():
                                                     command=lambda: choose_colour_room(roomName, room_colour_picker))
                         room_colour_picker.place(x=40, y=125)
 
-
-
-
-
-
                     def deleteButtons():
                         for button in roomButtons:
                             button.destroy()
