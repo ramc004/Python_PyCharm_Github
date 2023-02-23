@@ -1119,7 +1119,7 @@ def login():
                     # where if a non admin account has logged in
                     home_automation_system_window = Tk()
                     # a new tkinter page will be created and set equal to a new variable
-                    home_automation_system_window.title("Home Automation System Rooms For Devices")
+                    home_automation_system_window.title("Home Automation System HomePage")
                     # gives this new tkinter window a title to inform the user what stage of my system they are at
                     home_automation_system_window.geometry("500x600")
                     # gives the user a starting size using the geometry function built into tkinter
@@ -1176,7 +1176,7 @@ def login():
 
                     def loadRoomPage(roomName):
                         load_room_page = Tk()
-                        load_room_page.title("Home Automation System Controlling Devices")
+                        load_room_page.title("Home Automation System Rooms For Devices")
                         load_room_page.geometry("500x600")
                         load_room_page.resizable(False, False)
                         roomName_button = Button(load_room_page, text=roomName, command=lambda: room_more_controls)
@@ -1376,7 +1376,7 @@ def login():
 
                     def more_controls(bulb, bulbName):
                         more_controls_window = Tk()
-                        more_controls_window.title("Home Automation System Adding Devices")
+                        more_controls_window.title("Home Automation System More Controls For Devices")
                         more_controls_window.geometry("500x600")
                         more_controls_window.resizable(False, False)
 
@@ -1573,7 +1573,7 @@ def login():
 
                     def create_rooms_for_devices():
                         create_rooms_window = Tk()
-                        create_rooms_window.title("Adding devices to a room")
+                        create_rooms_window.title("Adding Devices To A Room")
                         create_rooms_window.geometry("450x300")
                         create_rooms_window.resizable(False, False)
                         question_label = Label(create_rooms_window, text="Name of device")
