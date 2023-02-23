@@ -1119,7 +1119,7 @@ def login():
                     # where if a non admin account has logged in
                     home_automation_system_window = Tk()
                     # a new tkinter page will be created and set equal to a new variable
-                    home_automation_system_window.title("Home Automation System Controlling Devices")
+                    home_automation_system_window.title("Home Automation System Rooms For Devices")
                     # gives this new tkinter window a title to inform the user what stage of my system they are at
                     home_automation_system_window.geometry("500x600")
                     # gives the user a starting size using the geometry function built into tkinter
@@ -1180,25 +1180,26 @@ def login():
                         load_room_page.geometry("500x600")
                         load_room_page.resizable(False, False)
                         roomName_button = Button(load_room_page, text=roomName, command=lambda: room_more_controls)
-                        roomName_button.place(x=215, y=45)
+                        roomName_button.place(x=195, y=45)
                         placeBulbLabels(roomName, load_room_page)
                         on_button_rooms = Button(load_room_page, text="On", command=lambda: OnButtonRoom(roomName))
-                        on_button_rooms.place(x=30, y=75)
+                        on_button_rooms.place(x=35, y=75)
                         off_button_rooms = Button(load_room_page, text="Off", command=lambda: OffButtonRoom(roomName))
-                        off_button_rooms.place(x=50, y=75)
+                        off_button_rooms.place(x=95, y=75)
                         slider_room_page = Scale(
                             load_room_page,
                             from_=10,
                             to=1000,
                             orient='horizontal',
                             command=lambda value: room_slider_control(roomName, value))
-                        slider_room_page.place(x=30, y=100)
+                        slider_room_page.place(x=65, y=130)
                         room_colour_picker = Button(load_room_page,
                                                     text="Select colour",
                                                     command=lambda: choose_colour_room(roomName, room_colour_picker))
-                        room_colour_picker.place(x=40, y=125)
+                        room_colour_picker.place(x=65, y=175)
 
                     def deleteButtons():
+                        roomButtons.clear()
                         for button in roomButtons:
                             button.destroy()
 
