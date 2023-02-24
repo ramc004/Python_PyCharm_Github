@@ -48,7 +48,7 @@ scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
                          "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e800000000464602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'
                          }
 roomDict = {}
-#
+loggedInUserID = None
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
@@ -81,6 +81,15 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
 # these fields are only optional meaning they can be empty inside the database
 # if they do enter a nickname it will be stored as text
 # if they enter a date_of_birth then it will be stored as a DATE which allows the user to enter their dob simply
+c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (
+  userID int not null,
+  roomName text not null,
+  studyLight1 BOOLEAN not null,
+  studyLight2 BOOLEAN not null,
+  bananas BOOLEAN not null,
+  transformer BOOLEAN not null,
+  PRIMARY KEY (userID,roomName)
+)""")
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
 # creates a variable called findAdminQuery
 # this will select the userID from our table but only where they are not a customer
@@ -1049,6 +1058,14 @@ def login():
                 access_Level = access_Level[0]
                 # sets the access level search from 0 so this is where it starts
 
+                getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % email_address_log_in
+                cursor_log_in.execute(getUserIDQuery)
+                id = cursor_log_in.fetchone()
+                if id:
+                    id = int(id[0])
+                    global loggedInUserID
+                    loggedInUserID = id
+
                 if access_Level == "admin":
                     # the following code is where the admin account is trying update users' information
                     # where the access level has been fetched and found to be admin
@@ -1117,6 +1134,48 @@ def login():
                     # however can be done in any order
                 elif access_Level == "userAccount":
                     # where if a non admin account has logged in
+                    study_light_1 = tinytuya.BulbDevice(dev_id='bfaa556f9ac6334e9ajnec',
+                                                        address='192.168.1.159',
+                                                        local_key='622ab2625722d80a',
+                                                        version=3.3)
+
+                    study_light_2 = tinytuya.BulbDevice(dev_id='bf57d83388422ac905nl4q',
+                                                        address='192.168.1.147',
+                                                        local_key='ed75d11af9d56a62',
+                                                        version=3.3)
+
+                    Transformer = tinytuya.BulbDevice(dev_id='bf95a987949dd79c645dw7',
+                                                      address='192.168.1.155',
+                                                      local_key='021d37949f73862e',
+                                                      version=3.3)
+                    Bananas = tinytuya.BulbDevice(dev_id='bf8e3b5d5202077a15d42q',
+                                                  address='192.168.1.129',
+                                                  local_key='9d8233fcceacb8e6',
+                                                  version=3.3)
+
+                    getRoomsQuery = "SELECT roomName,studyLight1,studyLight2,bananas,transformer FROM UserRooms WHERE userID = %d" % id
+                    cursor_log_in.execute(getRoomsQuery)
+                    roomList = cursor_log_in.fetchall()
+                    if roomList:
+                        roomList = roomList[0:]
+
+                        for room in roomList:
+                            print(room)
+                            roomName = room[0]
+                            bulbBooleans = room[1:]
+                            bulbList = []
+
+                            if bulbBooleans[0] == 1:
+                                bulbList.append(study_light_1)
+                            if bulbBooleans[1] == 1:
+                                bulbList.append(study_light_2)
+                            if bulbBooleans[2] == 1:
+                                bulbList.append(Bananas)
+                            if bulbBooleans[3] == 1:
+                                bulbList.append(Transformer)
+
+                            roomDict[roomName] = [bulbList]
+
                     home_automation_system_window = Tk()
                     # a new tkinter page will be created and set equal to a new variable
                     home_automation_system_window.title("Home Automation System HomePage")
@@ -1128,23 +1187,81 @@ def login():
 
                     roomButtons = []
 
-                    def room_more_controls():
-                        return
+                    def room_more_controls(roomName):
+                        room_more_controls_window = Tk()
+                        room_more_controls_window.title("Home Automation System Rooms More Controls")
+                        room_more_controls_window.geometry("500x600")
+                        room_more_controls_window.resizable(False, False)
+                        more_controls_button_on = Button(room_more_controls_window,
+                                                         text="On",
+                                                         command=lambda: OnButtonRoom(roomName))
+                        more_controls_button_on.place(x=95, y=205)
 
-                    def placeBulbLabels(roomName, the_window):
-                        x = 100
-                        # where first button will be placed
-                        y = 100
+                        more_controls_button_off = Button(room_more_controls_window,
+                                                          text="Off",
+                                                          command=lambda: OffButtonRoom(roomName))
+                        more_controls_button_off.place(x=155, y=205)
 
-                        bulbs = roomDict[roomName]
-                        for bulb in bulbs:
-                            newLabel = Label(the_window, text="Test")
-                            newLabel.place(x=x, y=y)
-                            x = (x + 50) % 300
-                            # moves each button along by 50 pixels - when it gets to 300 pixels, it goes down by 50
-                            if x < 100:
-                                x = 100
-                                y = y + 50
+                        more_controls_colour_picker = Button(room_more_controls_window,
+                                                             text="Select colour",
+                                                             command=lambda: choose_colour_room(roomName))
+                        more_controls_colour_picker.place(x=95, y=275)
+
+                        more_controls_name_of_bulb = Label(room_more_controls_window, text=roomName)
+                        more_controls_name_of_bulb.place(x=95, y=175)
+                        slider_more_controls = Scale(
+                            room_more_controls_window,
+                            from_=10,
+                            to=1000,
+                            orient='horizontal',
+                            command=lambda value: room_slider_control(roomName, value))
+                        slider_more_controls.place(x=100, y=232)
+                        scenes_more_controls = Label(room_more_controls_window, text="Scenes")
+                        scenes_more_controls.place(x=225, y=320)
+
+                        def set_Scene(sceneBulb, scene):
+                            sceneBulb.set_mode("scene")
+                            scene_code = scene_code_dictionary[scene]
+                            sceneBulb.set_value(25, scene_code)
+
+                        scenes_reading = Button(room_more_controls_window,
+                                                text="Reading", command=lambda: setRoomScenes(roomName, "Reading"))
+                        scenes_reading.place(x=50, y=350)
+
+                        scenes_night = Button(room_more_controls_window,
+                                              text="Night", command=lambda: setRoomScenes(roomName, "Night"))
+                        scenes_night.place(x=220, y=350)
+
+                        scenes_leisure = Button(room_more_controls_window,
+                                                text="Leisure", command=lambda: setRoomScenes(roomName, "Leisure"))
+                        scenes_leisure.place(x=380, y=350)
+
+                        scenes_working = Button(room_more_controls_window,
+                                                text="Working", command=lambda: setRoomScenes(roomName, "Working"))
+                        scenes_working.place(x=50, y=400)
+
+                        scenes_soft = Button(room_more_controls_window,
+                                             text="Soft", command=lambda: setRoomScenes(roomName, "Soft"))
+                        scenes_soft.place(x=220, y=400)
+
+                        scenes_colourful = Button(room_more_controls_window,
+                                                  text="Colourful",
+                                                  command=lambda: setRoomScenes(roomName, "Colourful"))
+                        scenes_colourful.place(x=380, y=400)
+
+                        scenes_dazzling = Button(room_more_controls_window,
+                                                 text="Dazzling", command=lambda: setRoomScenes(roomName, "Dazzling"))
+                        scenes_dazzling.place(x=120, y=450)
+
+                        scenes_gorgeous = Button(room_more_controls_window,
+                                                 text="Gorgeous", command=lambda: setRoomScenes(roomName, "Gorgeous"))
+                        scenes_gorgeous.place(x=310, y=450)
+
+                        def setRoomScenes(roomName2, scene):
+                            bulbs = roomDict[roomName2]
+
+                            for bulb in bulbs:
+                                set_Scene(bulb, scene)
 
                     def OnButtonRoom(roomName):
                         bulbs = roomDict[roomName]
@@ -1164,9 +1281,9 @@ def login():
                         for bulb in bulbs:
                             bulb.set_brightness(int(value))
 
-                    def choose_colour_room(roomName, colour_picker):
+                    def choose_colour_room(roomName):
                         try:
-                            color_code = colour_picker.askcolor(title="Choose Colour")
+                            color_code = colorchooser.askcolor(title="Choose Colour")
                             (r, g, b) = color_code[0]
                             bulbs = roomDict[roomName]
                             for bulb in bulbs:
@@ -1179,9 +1296,9 @@ def login():
                         load_room_page.title("Home Automation System Rooms For Devices")
                         load_room_page.geometry("500x600")
                         load_room_page.resizable(False, False)
-                        roomName_button = Button(load_room_page, text=roomName, command=lambda: room_more_controls)
+                        roomName_button = Button(load_room_page, text=roomName,
+                                                 command=lambda: room_more_controls(roomName))
                         roomName_button.place(x=195, y=45)
-                        placeBulbLabels(roomName, load_room_page)
                         on_button_rooms = Button(load_room_page, text="On", command=lambda: OnButtonRoom(roomName))
                         on_button_rooms.place(x=35, y=75)
                         off_button_rooms = Button(load_room_page, text="Off", command=lambda: OffButtonRoom(roomName))
@@ -1195,7 +1312,7 @@ def login():
                         slider_room_page.place(x=65, y=130)
                         room_colour_picker = Button(load_room_page,
                                                     text="Select colour",
-                                                    command=lambda: choose_colour_room(roomName, room_colour_picker))
+                                                    command=lambda: choose_colour_room(roomName))
                         room_colour_picker.place(x=65, y=175)
 
                     def deleteButtons():
@@ -1211,7 +1328,7 @@ def login():
                         rooms = roomDict.keys()
                         for room in rooms:
                             newButton = Button(home_automation_system_window, text=room
-                                               , command=lambda: loadRoomPage(room))
+                                               , command=lambda room=room: loadRoomPage(room))
                             newButton.place(x=x, y=y)
                             roomButtons.append(newButton)
                             x = (x + 125) % 380
@@ -1355,24 +1472,6 @@ def login():
                                                            command=voice_assistant_button_pressed)
 
                     voice_assistant_prompt_window.place(x=350, y=550)
-                    study_light_1 = tinytuya.BulbDevice(dev_id='bfaa556f9ac6334e9ajnec',
-                                                        address='192.168.1.159',
-                                                        local_key='622ab2625722d80a',
-                                                        version=3.3)
-
-                    study_light_2 = tinytuya.BulbDevice(dev_id='bf57d83388422ac905nl4q',
-                                                        address='192.168.1.147',
-                                                        local_key='ed75d11af9d56a62',
-                                                        version=3.3)
-
-                    Transformer = tinytuya.BulbDevice(dev_id='bf95a987949dd79c645dw7',
-                                                      address='192.168.1.155',
-                                                      local_key='021d37949f73862e',
-                                                      version=3.3)
-                    Bananas = tinytuya.BulbDevice(dev_id='bf8e3b5d5202077a15d42q',
-                                                  address='192.168.1.129',
-                                                  local_key='9d8233fcceacb8e6',
-                                                  version=3.3)
 
                     def more_controls(bulb, bulbName):
                         more_controls_window = Tk()
@@ -1598,15 +1697,31 @@ def login():
                         name_of_room_created_entry.place(x=70, y=50)
 
                         def ok_button_rooms_command(room_name):
+                            add_room_connection = sqlite3.connect(database_name)
+                            cursor = add_room_connection.cursor()
                             bulbList = []
+                            bulbBoolean = [0, 0, 0, 0]
                             if isStudyLight1Checked.get() == 1:
                                 bulbList.append(study_light_1)
+                                bulbBoolean[0] = 1
                             if isStudyLight2Checked.get():
                                 bulbList.append(study_light_2)
+                                bulbBoolean[1] = 1
                             if isTransformerChecked.get():
                                 bulbList.append(Transformer)
+                                bulbBoolean[2] = 1
                             if isBananasChecked.get():
                                 bulbList.append(Bananas)
+                                bulbBoolean[3] = 1
+                            insertRoomQuery = "INSERT INTO UserRooms VALUES(%d,'%s',%d,%d,%d,%d) " % (loggedInUserID,
+                                                                                                      room_name,
+                                                                                                      bulbBoolean[0],
+                                                                                                      bulbBoolean[1],
+                                                                                                      bulbBoolean[2],
+                                                                                                      bulbBoolean[3])
+                            cursor.execute(insertRoomQuery)
+                            add_room_connection.commit()
+                            add_room_connection.close()
 
                             roomDict[room_name] = bulbList
                             refreshButtons()
@@ -1615,7 +1730,6 @@ def login():
                         ok_button_rooms = Button(create_rooms_window, text="Ok",
                                                  command=lambda: ok_button_rooms_command(name_of_room_created_entry.get()))
                         ok_button_rooms.place(x=350, y=150)
-                        return
 
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
                                                      command=create_rooms_for_devices)
