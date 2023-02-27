@@ -15,20 +15,34 @@ import smtplib
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 import requests
+
 from bs4 import BeautifulSoup
+
 import spotipy
+
 from spotipy.oauth2 import SpotifyOAuth
+
 import speech_recognition as sr
+
 import tinytuya
+
 from tkinter import colorchooser
 
+
 scope = "user-modify-playback-state, user-read-playback-state"
+
 clientIDFile = open("logins.txt", "r")
+
 clientID = clientIDFile.read()
+
 clientIDFile.close()
+
 clientSecretFile = open("secret.txt", "r")
+
 clientSecret = clientSecretFile.read()
+
 clientSecretFile.close()
+
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope,
                                                client_id=clientID,
                                                client_secret=clientSecret,
@@ -43,12 +57,17 @@ scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
                          "Working": '020e0d0000000000000003e803e8',
                          "Leisure": '030e0d0000000000000001f401f4',
                          "Soft": '04464602007803e803e800000000464602007803e8000a00000000',
-                         "Colourful": '05464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000464601003d03e803e80000000046460100ae03e803e800000000464601011303e803e800000000',
+                         "Colourful": '05464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000'
+                                      '464601003d03e803e80000000046460100ae03e803e800000000464601011303e803e800000000',
                          "Dazzling": '06464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000',
-                         "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e800000000464602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'
+                         "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e8000000004'
+                                     '64602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'
                          }
+
 roomDict = {}
+
 loggedInUserID = None
+
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
@@ -60,16 +79,11 @@ proceed.geometry("450x300")
 # gives some restrictions for our tkinter window of 400x300
 conn = sqlite3.connect(database_name)
 # connects to sqlite3 using a variable name of conn short for connection
-# finds the variable database_name and calls our database file from above
+# finds the variable database_name and sets it equal to the database file from above
 c = conn.cursor()
 # creates a cursor allowing us to execute sql commands
-c.execute("""CREATE TABLE IF NOT EXISTS users (
-        userID int PRIMARY KEY not null,
-        email_address text not null, 
-        password text not null, 
-        accessLevel text, 
-        nickname text, 
-        date_of_birth DATE)""")
+c.execute("""CREATE TABLE IF NOT EXISTS users ( userID int PRIMARY KEY not null, email_address text not null, 
+password text not null, accessLevel text, nickname text,  date_of_birth DATE)""")
 # using the execute command creates our table within our database giving it a name of users
 # only creates the database if it hasn't already been created
 # I have decided to make userID a primary key
@@ -81,15 +95,10 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
 # these fields are only optional meaning they can be empty inside the database
 # if they do enter a nickname it will be stored as text
 # if they enter a date_of_birth then it will be stored as a DATE which allows the user to enter their dob simply
-c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (
-  userID int not null,
-  roomName text not null,
-  studyLight1 BOOLEAN not null,
-  studyLight2 BOOLEAN not null,
-  bananas BOOLEAN not null,
-  transformer BOOLEAN not null,
-  PRIMARY KEY (userID,roomName)
-)""")
+c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (userID int not null, roomName text not null, 
+studyLight1 BOOLEAN not null, studyLight2 BOOLEAN not null, bananas BOOLEAN not null, transformer BOOLEAN not null, 
+PRIMARY KEY (userID,roomName))""")
+
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
 # creates a variable called findAdminQuery
 # this will select the userID from our table but only where they are not a customer
@@ -124,8 +133,6 @@ if not MyAdmin:
     c.execute(createAdminQuery)
     # executes the admin query to ensure the above database statement follows through
 register_verify = False
-
-
 # creates a variable called register_verify outside any functions allowing us to call it from anywhere
 # sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
@@ -160,9 +167,9 @@ def check_verification(email_address, password, actual_code, user_code, register
     # ensures the emoji is being configured next to the appropriate clause
     if not email_address:
         # this checks if the email_address field is filled
-        no_email_entry = Label(register_screen, text="please enter email", width=75)
+        no_email_entry = Label(register_screen, text="please enter email", padx=67)
         # tells the user to enter an email
-        no_email_entry.place(x=0, y=170)
+        no_email_entry.place(x=118, y=170)
         # places the label using the place function, ensure it goes just below email box
         no_email_entry.config(foreground="red")
         # configures this text to the colour red to show the user there is an issue
@@ -170,13 +177,13 @@ def check_verification(email_address, password, actual_code, user_code, register
         # calls the 'verified' variable and sets it to false to ensure it doesn't let them sign up
     else:
         # however if an email had been entered
-        email_has_been_entered = Label(register_screen, text="you entered an email")
+        email_has_been_entered = Label(register_screen, text="you entered an email", padx=64)
         # the program creates a new variable
         # using the label function placing text telling the user they have entered an email
-        email_has_been_entered.place(x=140, y=170)
+        email_has_been_entered.place(x=118, y=170)
         # tells the system how to place the variable made above
-        email_has_been_entered.config(foreground="green")
-        # configures the text message to green telling the user they have followed this rule
+        email_has_been_entered.config(foreground="orange")
+        # configures the text message to pastel yellow telling the user they have followed this rule
     if not password:
         # if the user has not entered anything into the password entry box
         no_password_entry = Label(register_screen, text="  please enter password")
@@ -195,12 +202,6 @@ def check_verification(email_address, password, actual_code, user_code, register
         # it then places this label beneath the password clauses
         password_has_been_entered.config(foreground="green")
         # sets the foreground of the variable to green to show the user they have been successful
-        successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
-        # message telling user they are free to go and log in to the system
-        successful_sign_up.place(x=75, y=500)
-        # places the successful message on the screen using the place function
-        successful_sign_up.config(foreground="green")
-        # by colouring the text green informs the user they have followed all the necessary rules
     if len(password) < 8:
         # where password's length is less than 8 characters
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
@@ -249,9 +250,9 @@ def check_verification(email_address, password, actual_code, user_code, register
     # creates a new variable and forces only one piece of data at a time to be compared
     if emailID:
         # where the emailID entered by user is already saved to database
-        email_already_exists_label = Label(register_screen, text="   this email is already linked to an account")
+        email_already_exists_label = Label(register_screen, text="this email is already linked to an account")
         # tkinter will create a new label telling the user they have already signed up with this account
-        email_already_exists_label.place(x=140, y=170)
+        email_already_exists_label.place(x=118, y=170)
         # tells the system where to put this label, this will go directly below all the email rules
         email_already_exists_label.config(foreground="orange")
         # sets the colour of the text for this label to orange
@@ -260,9 +261,9 @@ def check_verification(email_address, password, actual_code, user_code, register
         # calls the verified variable and sets it to false stopping the user from registering incorrect details
     if actual_code != user_code:
         # fetches the code sent via email and matches with the code entered by the user
-        code_label_failure = Label(register_screen, text="code incorrect, not verified")
+        code_label_failure = Label(register_screen, text="code incorrect, email not verified")
         # tells the user they have mistyped their code
-        code_label_failure.place(x=200, y=227)
+        code_label_failure.place(x=145, y=227)
         # places this label just below the code entry box
         code_label_failure.config(foreground="red")
         # tells the user this a major issue they need to fix
@@ -271,12 +272,26 @@ def check_verification(email_address, password, actual_code, user_code, register
         # preventing the user from registering incorrect information
     else:
         # if the user has copied the code correctly
-        code_label_success = Label(register_screen, text="code correct, now verified")
+        code_label_success = Label(register_screen, text="     code correct, email verified    ")
         # system tells user code is correct
-        code_label_success.place(x=200, y=227)
+        code_label_success.place(x=145, y=227)
         # system places label at same place as code incorrect to ensure only one message appears at a time
         code_label_success.config(foreground="green")
         # configures the label to green showing the user the code is correct
+    if verified:
+        successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
+        # message telling user they are free to go and log in to the system
+        successful_sign_up.place(x=95, y=500)
+        # places the successful message on the screen using the place function
+        successful_sign_up.config(foreground="green")
+        # by colouring the text green informs the user they have followed all the necessary rules
+    else:
+        not_successful_sign_up = Label(register_screen, text="some details have errors, please try again", padx=55)
+        # message telling user they need to check their details before trying to log in
+        not_successful_sign_up.place(x=95, y=500)
+        # places the not successful message on the screen using the place function
+        not_successful_sign_up.config(foreground="red")
+        # by colouring the text red informs the user they have not followed all the necessary rules
     connection_check_verification.commit()
     # commits any changes the users inputs have made to the database
     connection_check_verification.close()
@@ -298,14 +313,12 @@ def register():
     register_screen.geometry("500x600")
     # gives the starting size for the Tkinter user interface
     register_screen.resizable(False, False)
-
     # limits the user from resizing the interface
 
     def sign_up(email_address_db, password_db, actual_code, user_code):
         """this function is used for when the user clicks on the sign_up button
         I have passed is_verified, email_address_db, password_db as parameters through this function
-        we are then able to call any of these parameters throughout our program
-        """
+        we are then able to call any of these parameters throughout our program"""
         connection_sign_up = sqlite3.connect(database_name)
         # connects to sqlite3 using a variable name of conn short for connection
         # finds the variable database_name and calls our database file from above
@@ -341,21 +354,22 @@ def register():
                 # place it as the first id
             if not email_address_db:
                 # where the user has not entered an email
-                no_email_entry = Label(register_screen, text="   please enter email")
+                no_email_entry = Label(register_screen, text="please enter email", padx=67)
                 # creates a variable
                 # sets it equal to Tkinter's label function with text informing the user they need to enter an email
-                no_email_entry.place(x=150, y=160)
+                no_email_entry.place(x=118, y=160)
                 # tells the system where to place this new label function, just below the email clauses
                 no_email_entry.config(foreground="red")
                 # configures the text to red telling the user they need to fix this before moving on
             else:
-                # where the user has entered an email
-                email_has_been_entered = Label(register_screen, text="you entered an email")
-                # new variable created, using text within label to tell user they entered an email
-                email_has_been_entered.place(x=140, y=170)
-                # tells system where to place new variable using the built in place function within tkinter
-                email_has_been_entered.config(foreground="green")
-                # by showing the user green text tells them they have followed this rule
+                # however if an email had been entered
+                email_has_been_entered = Label(register_screen, text="you entered an email", padx=64)
+                # the program creates a new variable
+                # using the label function placing text telling the user they have entered an email
+                email_has_been_entered.place(x=118, y=170)
+                # tells the system how to place the variable made above
+                email_has_been_entered.config(foreground="orange")
+                # configures the text message to green telling the user they have followed this rule
             if not password_db:
                 # where the user has not entered a password
                 no_password_entry = Label(register_screen, text="  please enter password")
@@ -403,7 +417,6 @@ def register():
     verify_text.place(x=13, y=203)
     # places this label next to the verify box so the user knows where to put the information
     code = str(random.randint(100000, 999999))
-
     # using the random function which uses an algorithm to cycle through numbers and creates a six digit code
 
     def send_email():
@@ -416,7 +429,7 @@ def register():
         emailSender = "ramcaleb50@gmail.com"
         # creates an emailSender variable to called later, and sets this to an email address,
         # this will be the email address the code is sent by
-        file_code = open("fp.txt", "r")
+        file_code = open("hello.txt", "r")
         # creates a variable and tells it to open a file and allows the system to read from the file
         emailPassword = file_code.read()
         # sets the emailPassword, which will be called below, equal to reading the file
@@ -448,12 +461,18 @@ def register():
                     # and the emoji library to a green tick
                     name_register_split_with_sign, domain_register_split_with_sign = emailRecipient.split("@")
                     # using two variable names splits the email address the user has inputted before and after @ sign
-                    name_register = open("names_register.txt", "r").read().splitlines()
+                    name_register = open("names.txt", "r").read().splitlines()
                     # creates a new variable
                     # setting it equal to opening a file and tells the system to read from the file
                     # splits the lines of each of the names
                     domain_register = open("email_register_domain.txt", "r").read().splitlines()
                     # splits the lines of each of the domains found inside the email_register_domain.txt file
+                    not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+                    # it will make a new variable and set it equal to a label with text, Email has failed to send
+                    not_sent_label.place(x=310, y=124)
+                    # places label just above the verify button
+                    not_sent_label.config(foreground="red")
+                    # colours the label orange warning the user they haven't followed the rules
                     if name_register_split_with_sign in name_register:
                         # this ensure they are trying to send the email to an existing email address
                         # with a correct name
@@ -502,10 +521,17 @@ def register():
                         emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                         emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                 else:
+
+                    not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+                    # it will make a new variable and set it equal to a label with text, Email has failed to send
+                    not_sent_label.place(x=310, y=124)
+                    # places label just above the verify button
+                    not_sent_label.config(foreground="red")
+                    # colours the label orange warning the user they haven't followed the rules
                     # where there wasn't an @ sign inside the user's inputted email
                     emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                     # changes the @ sign label from blank or tick to a cross
-                    with open("names_register.txt", "r") as file_register_domains:
+                    with open("names.txt", "r") as file_register_domains:
                         # opens new file for names
                         name_register = file_register_domains.read().splitlines()
                         # opens file with file name and speech marks allows us to read from file
@@ -535,10 +561,13 @@ def register():
                         emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                         # this changes the text from a tick to a cross where there is no existing domain
             else:
+
                 emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+
                 emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+
                 emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
-                # although if the user has not entered an email
+
                 not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
                 # it will make a new variable and set it equal to a label with text, Email has failed to send
                 not_sent_label.place(x=310, y=124)
@@ -617,7 +646,7 @@ def register():
     # sets it equal to a label which shall be put inside the register_screen with some text
     check_clause_3_password.place(x=150, y=340)
     # lets the system know where the label should be placed
-    check_clause_4_password = Label(register_screen, text="At least 2 numbers")
+    check_clause_4_password = Label(register_screen, text="At least 1 number")
     # creates a new variable and lets it equal to a label placed inside the register_screen with text
     check_clause_4_password.place(x=150, y=360)
     # places our variable created above using the 'x' and the 'y' axis
@@ -683,7 +712,6 @@ def login():
     email_address_text_login_screen = Label(login_screen, text="Email address")
     # tells the user which information they need to enter with text
     email_address_text_login_screen.place(x=56.2, y=52)
-
     # places email address text next to the email address box
 
     def check_email_address():
@@ -700,7 +728,7 @@ def login():
                 # and the emoji library to a green tick
                 name_register_split_with_sign, domain_register_split_with_sign = email_login.split("@")
                 # using two variable names splits the email address the user has inputted before and after @ sign
-                name_register = open("names_register.txt", "r").read().splitlines()
+                name_register = open("names.txt", "r").read().splitlines()
                 # creates a new variable
                 # setting it equal to opening a file and tells the system to read from the file
                 # splits the lines of each of the names
@@ -739,7 +767,7 @@ def login():
                 # where there wasn't an @ sign inside the user's inputted email
                 emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
                 # changes the @ sign label from blank or tick to a cross
-                with open("names_register.txt", "r") as file_register_domains:
+                with open("names.txt", "r") as file_register_domains:
                     # opens new file for names
                     name_register = file_register_domains.read().splitlines()
                     # opens file with file name and speech marks allows us to read from file
@@ -886,7 +914,7 @@ def login():
     # hopefully informing the user the information they have to input into their password
     check_clause_3_password_login.place(x=150, y=290)
     # informs the system where to place the third password clause
-    check_clause_4_password_login = Label(login_screen, text="At least 2 numbers")
+    check_clause_4_password_login = Label(login_screen, text="At least 1 numbers")
     # final clause for password made be creating a variable setting it equal label with text in login screen
     check_clause_4_password_login.place(x=150, y=310)
     # places the label inside the login screen
@@ -995,7 +1023,7 @@ def login():
             if password_db_log_in == savedPassword:
                 # as long as the users password entered
                 # when trying to log in matches the password saved linking to email typed in
-                password_correct = Label(login_screen, text="        password is correct")
+                password_correct = Label(login_screen, text="           password is correct")
                 password_correct.place(x=160, y=330)
                 password_correct.config(foreground="green")
                 # creates a new variable to be used informing the user their password is correct
@@ -1153,14 +1181,14 @@ def login():
                                                   local_key='9d8233fcceacb8e6',
                                                   version=3.3)
 
-                    getRoomsQuery = "SELECT roomName,studyLight1,studyLight2,bananas,transformer FROM UserRooms WHERE userID = %d" % id
+                    getRoomsQuery = "SELECT roomName," \
+                                    "studyLight1,studyLight2,bananas,transformer FROM UserRooms WHERE userID = %d" % id
                     cursor_log_in.execute(getRoomsQuery)
                     roomList = cursor_log_in.fetchall()
                     if roomList:
                         roomList = roomList[0:]
 
                         for room in roomList:
-                            print(room)
                             roomName = room[0]
                             bulbBooleans = room[1:]
                             bulbList = []
@@ -1187,34 +1215,34 @@ def login():
 
                     roomButtons = []
 
-                    def room_more_controls(roomName):
+                    def room_more_controls(room_Name):
                         room_more_controls_window = Tk()
                         room_more_controls_window.title("Home Automation System Rooms More Controls")
                         room_more_controls_window.geometry("500x600")
                         room_more_controls_window.resizable(False, False)
                         more_controls_button_on = Button(room_more_controls_window,
                                                          text="On",
-                                                         command=lambda: OnButtonRoom(roomName))
+                                                         command=lambda: OnButtonRoom(room_Name))
                         more_controls_button_on.place(x=95, y=205)
 
                         more_controls_button_off = Button(room_more_controls_window,
                                                           text="Off",
-                                                          command=lambda: OffButtonRoom(roomName))
+                                                          command=lambda: OffButtonRoom(room_Name))
                         more_controls_button_off.place(x=155, y=205)
 
                         more_controls_colour_picker = Button(room_more_controls_window,
                                                              text="Select colour",
-                                                             command=lambda: choose_colour_room(roomName))
+                                                             command=lambda: choose_colour_room(room_Name))
                         more_controls_colour_picker.place(x=95, y=275)
 
-                        more_controls_name_of_bulb = Label(room_more_controls_window, text=roomName)
+                        more_controls_name_of_bulb = Label(room_more_controls_window, text=room_Name)
                         more_controls_name_of_bulb.place(x=95, y=175)
                         slider_more_controls = Scale(
                             room_more_controls_window,
                             from_=10,
                             to=1000,
                             orient='horizontal',
-                            command=lambda value: room_slider_control(roomName, value))
+                            command=lambda value: room_slider_control(room_Name, value))
                         slider_more_controls.place(x=100, y=232)
                         scenes_more_controls = Label(room_more_controls_window, text="Scenes")
                         scenes_more_controls.place(x=225, y=320)
@@ -1225,36 +1253,36 @@ def login():
                             sceneBulb.set_value(25, scene_code)
 
                         scenes_reading = Button(room_more_controls_window,
-                                                text="Reading", command=lambda: setRoomScenes(roomName, "Reading"))
+                                                text="Reading", command=lambda: setRoomScenes(room_Name, "Reading"))
                         scenes_reading.place(x=50, y=350)
 
                         scenes_night = Button(room_more_controls_window,
-                                              text="Night", command=lambda: setRoomScenes(roomName, "Night"))
+                                              text="Night", command=lambda: setRoomScenes(room_Name, "Night"))
                         scenes_night.place(x=220, y=350)
 
                         scenes_leisure = Button(room_more_controls_window,
-                                                text="Leisure", command=lambda: setRoomScenes(roomName, "Leisure"))
+                                                text="Leisure", command=lambda: setRoomScenes(room_Name, "Leisure"))
                         scenes_leisure.place(x=380, y=350)
 
                         scenes_working = Button(room_more_controls_window,
-                                                text="Working", command=lambda: setRoomScenes(roomName, "Working"))
+                                                text="Working", command=lambda: setRoomScenes(room_Name, "Working"))
                         scenes_working.place(x=50, y=400)
 
                         scenes_soft = Button(room_more_controls_window,
-                                             text="Soft", command=lambda: setRoomScenes(roomName, "Soft"))
+                                             text="Soft", command=lambda: setRoomScenes(room_Name, "Soft"))
                         scenes_soft.place(x=220, y=400)
 
                         scenes_colourful = Button(room_more_controls_window,
                                                   text="Colourful",
-                                                  command=lambda: setRoomScenes(roomName, "Colourful"))
+                                                  command=lambda: setRoomScenes(room_Name, "Colourful"))
                         scenes_colourful.place(x=380, y=400)
 
                         scenes_dazzling = Button(room_more_controls_window,
-                                                 text="Dazzling", command=lambda: setRoomScenes(roomName, "Dazzling"))
+                                                 text="Dazzling", command=lambda: setRoomScenes(room_Name, "Dazzling"))
                         scenes_dazzling.place(x=120, y=450)
 
                         scenes_gorgeous = Button(room_more_controls_window,
-                                                 text="Gorgeous", command=lambda: setRoomScenes(roomName, "Gorgeous"))
+                                                 text="Gorgeous", command=lambda: setRoomScenes(room_Name, "Gorgeous"))
                         scenes_gorgeous.place(x=310, y=450)
 
                         def setRoomScenes(roomName2, scene):
@@ -1263,56 +1291,56 @@ def login():
                             for bulb in bulbs:
                                 set_Scene(bulb, scene)
 
-                    def OnButtonRoom(roomName):
-                        bulbs = roomDict[roomName]
+                    def OnButtonRoom(room_Name):
+                        bulbs = roomDict[room_Name]
 
                         for bulb in bulbs:
                             bulb.turn_on()
 
-                    def OffButtonRoom(roomName):
-                        bulbs = roomDict[roomName]
+                    def OffButtonRoom(room_Name):
+                        bulbs = roomDict[room_Name]
 
                         for bulb in bulbs:
                             bulb.turn_off()
 
-                    def room_slider_control(roomName, value):
-                        bulbs = roomDict[roomName]
+                    def room_slider_control(room_Name, value):
+                        bulbs = roomDict[room_Name]
 
                         for bulb in bulbs:
                             bulb.set_brightness(int(value))
 
-                    def choose_colour_room(roomName):
+                    def choose_colour_room(room_Name):
                         try:
                             color_code = colorchooser.askcolor(title="Choose Colour")
                             (r, g, b) = color_code[0]
-                            bulbs = roomDict[roomName]
+                            bulbs = roomDict[room_Name]
                             for bulb in bulbs:
                                 bulb.set_colour(r, g, b)
                         except:
-                            print("You cancelled colour picker")
+                            return
 
-                    def loadRoomPage(roomName):
+                    def loadRoomPage(room_Name):
                         load_room_page = Tk()
                         load_room_page.title("Home Automation System Rooms For Devices")
                         load_room_page.geometry("500x600")
                         load_room_page.resizable(False, False)
-                        roomName_button = Button(load_room_page, text=roomName,
-                                                 command=lambda: room_more_controls(roomName))
+                        roomName_button = Button(load_room_page, text=room_Name,
+                                                 command=lambda: room_more_controls(room_Name))
                         roomName_button.place(x=195, y=45)
-                        on_button_rooms = Button(load_room_page, text="On", command=lambda: OnButtonRoom(roomName))
+                        on_button_rooms = Button(load_room_page, text="On", command=lambda: OnButtonRoom(room_Name))
                         on_button_rooms.place(x=35, y=75)
-                        off_button_rooms = Button(load_room_page, text="Off", command=lambda: OffButtonRoom(roomName))
+                        off_button_rooms = Button(load_room_page, text="Off", command=lambda: OffButtonRoom(room_Name))
                         off_button_rooms.place(x=95, y=75)
                         slider_room_page = Scale(
                             load_room_page,
                             from_=10,
                             to=1000,
                             orient='horizontal',
-                            command=lambda value: room_slider_control(roomName, value))
+                            command=lambda value: room_slider_control(room_Name, value))
                         slider_room_page.place(x=65, y=130)
                         room_colour_picker = Button(load_room_page,
                                                     text="Select colour",
-                                                    command=lambda: choose_colour_room(roomName))
+                                                    command=lambda: choose_colour_room(room_Name))
                         room_colour_picker.place(x=65, y=175)
 
                     def deleteButtons():
@@ -1326,15 +1354,18 @@ def login():
                         y = 100
 
                         rooms = roomDict.keys()
-                        for room in rooms:
-                            newButton = Button(home_automation_system_window, text=room
-                                               , command=lambda room=room: loadRoomPage(room))
+                        for room_refresh_buttons in rooms:
+                            newButton = Button(home_automation_system_window,
+                                               text=room_refresh_buttons,
+                                               command=lambda room=room_refresh_buttons: loadRoomPage(room))
                             newButton.place(x=x, y=y)
                             roomButtons.append(newButton)
                             x = (x + 125) % 380
                             if x < 180:
                                 x = 180
                                 y = y + 25
+
+                    refreshButtons()
 
                     def voice_assistant_button_pressed():
                         """"""
@@ -1613,7 +1644,7 @@ def login():
                             (r, g, b) = color_code[0]
                             bulb.set_colour(r, g, b)
                         except:
-                            print("You cancelled colour picker")
+                            return
 
                     study_light_1_colour_picker = Button(home_automation_system_window,
                                                          text="Select colour",
@@ -1699,19 +1730,19 @@ def login():
                         def ok_button_rooms_command(room_name):
                             add_room_connection = sqlite3.connect(database_name)
                             cursor = add_room_connection.cursor()
-                            bulbList = []
+                            bulb_List = []
                             bulbBoolean = [0, 0, 0, 0]
                             if isStudyLight1Checked.get() == 1:
-                                bulbList.append(study_light_1)
+                                bulb_List.append(study_light_1)
                                 bulbBoolean[0] = 1
                             if isStudyLight2Checked.get():
-                                bulbList.append(study_light_2)
+                                bulb_List.append(study_light_2)
                                 bulbBoolean[1] = 1
                             if isTransformerChecked.get():
-                                bulbList.append(Transformer)
+                                bulb_List.append(Transformer)
                                 bulbBoolean[2] = 1
                             if isBananasChecked.get():
-                                bulbList.append(Bananas)
+                                bulb_List.append(Bananas)
                                 bulbBoolean[3] = 1
                             insertRoomQuery = "INSERT INTO UserRooms VALUES(%d,'%s',%d,%d,%d,%d) " % (loggedInUserID,
                                                                                                       room_name,
@@ -1723,12 +1754,13 @@ def login():
                             add_room_connection.commit()
                             add_room_connection.close()
 
-                            roomDict[room_name] = bulbList
+                            roomDict[room_name] = bulb_List
                             refreshButtons()
                             create_rooms_window.destroy()
 
                         ok_button_rooms = Button(create_rooms_window, text="Ok",
-                                                 command=lambda: ok_button_rooms_command(name_of_room_created_entry.get()))
+                                                 command=lambda:
+                                                 ok_button_rooms_command(name_of_room_created_entry.get()))
                         ok_button_rooms.place(x=350, y=150)
 
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
