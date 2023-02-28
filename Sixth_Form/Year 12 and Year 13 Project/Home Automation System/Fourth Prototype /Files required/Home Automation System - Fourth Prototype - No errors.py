@@ -394,7 +394,7 @@ def register():
         emailSender = "ramcaleb50@gmail.com"
         # creates an emailSender variable to called later, and sets this to an email address,
         # this will be the email address the code is sent by
-        file_code = open("fp.txt", "r")
+        file_code = open("hello.txt", "r")
         # creates a variable and tells it to open a file and allows the system to read from the file
         emailPassword = file_code.read()
         # sets the emailPassword, which will be called below, equal to reading the file
@@ -426,11 +426,11 @@ def register():
                     # and the emoji library to a green tick
                     name_register_split_with_sign, domain_register_split_with_sign = emailRecipient.split("@")
                     # using two variable names splits the email address the user has inputted before and after @ sign
-                    name_register = open("names_register.txt", "r").read().splitlines()
+                    name_register = open("names.txt", "r").read().splitlines()
                     # creates a new variable
                     # setting it equal to opening a file and tells the system to read from the file
                     # splits the lines of each of the names
-                    domain_register = open("email_register_domain.txt", "r").read().splitlines()
+                    domain_register = open("emaildomains.txt", "r").read().splitlines()
                     # splits the lines of each of the domains found inside the email_register_domain.txt file
                     if name_register_split_with_sign in name_register:
                         # this ensure they are trying to send the email to an existing email address
@@ -483,12 +483,12 @@ def register():
                     # where there wasn't an @ sign inside the user's inputted email
                     emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                     # changes the @ sign label from blank or tick to a cross
-                    with open("names_register.txt", "r") as file_register_domains:
+                    with open("names.txt", "r") as file_register_domains:
                         # opens new file for names
                         name_register = file_register_domains.read().splitlines()
                         # opens file with file name and speech marks allows us to read from file
                         # and sets it equal to the variable name_register
-                    with open("email_register_domain.txt", "r") as file_register_names:
+                    with open("emaildomains.txt", "r") as file_register_names:
                         # opens file with file name and speech marks allows us to read from file
                         # and sets it equal to a variable
                         domain_register = file_register_names.read().splitlines()
@@ -679,11 +679,11 @@ def login():
                 # and the emoji library to a green tick
                 name_register_split_with_sign, domain_register_split_with_sign = email_login.split("@")
                 # using two variable names splits the email address the user has inputted before and after @ sign
-                name_register = open("names_register.txt", "r").read().splitlines()
+                name_register = open("names.txt", "r").read().splitlines()
                 # creates a new variable
                 # setting it equal to opening a file and tells the system to read from the file
                 # splits the lines of each of the names
-                domain_register = open("email_register_domain.txt", "r").read().splitlines()
+                domain_register = open("emaildomains.txt", "r").read().splitlines()
                 # splits the lines of each of the domains found inside the email_register_domain.txt file
                 if name_register_split_with_sign in name_register:
                     # this ensure they are trying to send the email to an existing email address
@@ -718,12 +718,12 @@ def login():
                 # where there wasn't an @ sign inside the user's inputted email
                 emoji_label_clause_2_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
                 # changes the @ sign label from blank or tick to a cross
-                with open("names_register.txt", "r") as file_register_domains:
+                with open("names.txt", "r") as file_register_domains:
                     # opens new file for names
                     name_register = file_register_domains.read().splitlines()
                     # opens file with file name and speech marks allows us to read from file
                     # and sets it equal to the variable name_register
-                with open("email_register_domain.txt", "r") as file_register_names:
+                with open("emaildomains.txt", "r") as file_register_names:
                     # opens file with file name and speech marks allows us to read from file
                     # and sets it equal to a variable
                     domain_register = file_register_names.read().splitlines()
@@ -1154,7 +1154,6 @@ def login():
 
                     def voice_assistant_button_pressed_prompt_window():
                         """"""
-
                         def do_spotify_command():
 
                             r_spotify = sr.Recognizer()
