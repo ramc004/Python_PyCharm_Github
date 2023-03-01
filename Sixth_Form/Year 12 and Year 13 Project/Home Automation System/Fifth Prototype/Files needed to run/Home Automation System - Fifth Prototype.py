@@ -28,7 +28,6 @@ import tinytuya
 
 from tkinter import colorchooser
 
-
 scope = "user-modify-playback-state, user-read-playback-state"
 
 clientIDFile = open("logins.txt", "r")
@@ -412,6 +411,38 @@ def register():
         connection_sign_up.close()
         # closes the database connection until reopened
 
+    def view_key_register_screen():
+        view_key_window_register_screen = Tk()
+        view_key_window_register_screen.geometry("540x150")
+        view_key_window_register_screen.resizable(False, False)
+        view_key_window_register_screen.title("View Key for Register Screen")
+        view_key_orange_colour_label = Label(view_key_window_register_screen, text="Orange: ")
+        view_key_orange_colour_label.place(x=15, y=30)
+        view_key_red_colour_label = Label(view_key_window_register_screen, text="Red: ")
+        view_key_red_colour_label.place(x=35, y=60)
+        view_key_green_colour_label = Label(view_key_window_register_screen, text="Green: ")
+        view_key_green_colour_label.place(x=22, y=90)
+        view_key_orange_description_label = Label(view_key_window_register_screen, text="You have entered "
+                                                                                        "information but"
+                                                                                        " you can not move on yet")
+        view_key_orange_description_label.place(x=68, y=30)
+        view_key_red_description_label = Label(view_key_window_register_screen, text="You have not entered the correct "
+                                                                                     "information therefore cannot "
+                                                                                     "move on")
+        view_key_red_description_label.place(x=68, y=60)
+        view_key_green_description_label = Label(view_key_window_register_screen, text="You have entered correct "
+                                                                                       "information and are now able to"
+                                                                                       " move on")
+        view_key_green_description_label.place(x=68, y=90)
+        view_key_orange_colour_label.config(foreground="orange")
+        view_key_orange_description_label.config(foreground="orange")
+        view_key_red_colour_label.config(foreground="red")
+        view_key_red_description_label.config(foreground="red")
+        view_key_green_colour_label.config(foreground="green")
+        view_key_green_description_label.config(foreground="green")
+
+    view_key_button = Button(register_screen, text="View Key", command=view_key_register_screen)
+    view_key_button.place(x=100, y=32)
     email_address_entry_register_screen = Entry(register_screen)
     # creates a new variable and sets it equal to an entry box placing it in the register_screen
     email_address_entry_register_screen.place(x=150, y=70)
@@ -817,6 +848,48 @@ def login():
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
             # connecting to a label made below changes the label to a cross mark
 
+    def view_key_login_screen():
+        view_key_window_login_screen = Tk()
+        view_key_window_login_screen.geometry("540x180")
+        view_key_window_login_screen.resizable(False, False)
+        view_key_window_login_screen.title("View Key for Login Screen")
+        view_key_orange_colour_label = Label(view_key_window_login_screen, text="Orange: ")
+        view_key_orange_colour_label.place(x=15, y=30)
+        view_key_red_colour_label = Label(view_key_window_login_screen, text="Red: ")
+        view_key_red_colour_label.place(x=35, y=60)
+        view_key_green_colour_label = Label(view_key_window_login_screen, text="Green: ")
+        view_key_green_colour_label.place(x=22, y=90)
+        view_key_blue_colour_label = Label(view_key_window_login_screen, text="Blue: ")
+        view_key_blue_colour_label.place(x=32, y=120)
+
+        view_key_orange_description_label = Label(view_key_window_login_screen, text="You have left optional "
+                                                                                     "information blank, you are able "
+                                                                                     "to move on")
+        view_key_orange_description_label.place(x=68, y=30)
+        view_key_blue_description_label = Label(view_key_window_login_screen, text="You have entered information "
+                                                                                   "into an optional field")
+        view_key_blue_description_label.place(x=68, y=120)
+        view_key_red_description_label = Label(view_key_window_login_screen, text="You have not entered the correct "
+                                                                                  "information therefore cannot "
+                                                                                  "move on")
+        view_key_red_description_label.place(x=68, y=60)
+        view_key_green_description_label = Label(view_key_window_login_screen, text="You have entered correct "
+                                                                                    "information and are now able to"
+                                                                                    " move on")
+        view_key_green_description_label.place(x=68, y=90)
+
+        view_key_orange_colour_label.config(foreground="orange")
+        view_key_orange_description_label.config(foreground="orange")
+        view_key_red_colour_label.config(foreground="red")
+        view_key_red_description_label.config(foreground="red")
+        view_key_green_colour_label.config(foreground="green")
+        view_key_green_description_label.config(foreground="green")
+        view_key_blue_description_label.config(foreground="blue")
+        view_key_blue_colour_label.config(foreground="blue")
+
+    view_key_button = Button(login_screen, text="View Key", command=view_key_login_screen)
+    view_key_button.place(x=105, y=20)
+
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
     # creates a variable connecting it to a button inside the login_screen with text and a command
     # the command wil check which rules pass or fail
@@ -841,7 +914,6 @@ def login():
     password_entry_login = Entry(login_screen, show='*')
     # creates a new variable and sets it equal to an entry box showing stars in place of whatever the user enters
     password_entry_login.place(x=150, y=190)
-
     # directs the program to where the entry box is to be placed inside the login_screen
 
     def show_password_login():
@@ -860,7 +932,6 @@ def login():
     # has a command linking to the above function telling the system how to behave
     # whether or not the check box is ticked
     show_password_check_box_login.place(x=85, y=227)
-
     # places the checkButton along the x axis and down the y axis
 
     def check_password():
@@ -996,7 +1067,6 @@ def login():
     connection_login.commit()
     # commits any changes the users inputs have made to the database
     connection_login.close()
-
     # closes the connection for the database
 
     def log_in(email_address_log_in, password_db_log_in, nickname, date_of_birth):
@@ -1224,9 +1294,9 @@ def login():
                     # gives the user a starting size using the geometry function built into tkinter
                     home_automation_system_window.resizable(False, False)
                     # creates limits for the window at the original size
-                    speak_now_voice_assistant_label = Label(home_automation_system_window,
-                                                            text="Click here, wait 1 second, say command")
-                    speak_now_voice_assistant_label.place(x=70, y=550)
+                    # speak_now_voice_assistant_label = Label(home_automation_system_window,
+                    # text="Click here, wait 1 second, say command")
+                    # speak_now_voice_assistant_label.place(x=70, y=550)
                     roomButtons = []
 
                     def room_more_controls(room_Name):
@@ -1391,6 +1461,7 @@ def login():
                                     question_spotify_label = Label(home_automation_system_window,
                                                                    text="What would you like to do with spotify")
                                     question_spotify_label.place(x=20, y=550)
+                                    home_automation_system_window.update()
                                     audio_spotify = r_spotify.listen(source_spotify)
                                     speech_spotify = r_spotify.recognize_google(audio_spotify)
                                     if "change volume" or "change vol" in speech_spotify:
@@ -1403,6 +1474,7 @@ def login():
                                                                                  text="What would you like the new "
                                                                                       "percentage of playback to be?")
                                             percentage_playback_question.place(x=5, y=550)
+                                            home_automation_system_window.update()
                                             volume_change = r_volume.listen(source_volume)
                                             speech_volume = r_volume.recognize_google(volume_change)
                                             sp.volume(int(speech_volume))
@@ -1415,9 +1487,10 @@ def login():
                                                                                                         "volume please "
                                                                                                         "retry")
                                             percentage_playback_response.place(x=5, y=550)
+                                            home_automation_system_window.update()
                                     elif "play" or "pl" in speech_spotify:
                                         sp.start_playback()
-                                    elif "pause" in speech_spotify:
+                                    elif "pause" or "paws" or "pores" or "Porsche" in speech_spotify:
                                         sp.pause_playback()
                                     elif "song" in speech_spotify:
                                         r_song = sr.Recognizer()
@@ -1427,6 +1500,7 @@ def login():
                                             song_question_label = Label(home_automation_system_window,
                                                                         text="Which song would you like to play?")
                                             song_question_label.place(x=20, y=550)
+                                            home_automation_system_window.update()
                                             song_audio = r_spotify.listen(song_user)
                                             song_user = r_spotify.recognize_google(song_audio)
                                             # print("You said: " + song_user + ", " + song_user + " is playing, if this
@@ -1437,6 +1511,7 @@ def login():
                                                                              " is playing, if this wasn't the song you "
                                                                              "wanted to play, please retry")
                                             song_response_label.place(x=5, y=550)
+                                            home_automation_system_window.update()
                                             results = sp.search(q=song_user, type='track')
                                             track_uri = results['tracks']['items'][0]['uri']
                                             sp.start_playback(uris=[track_uri])
@@ -1453,39 +1528,29 @@ def login():
                                                                                       "click on voice assistant again "
                                                                                       "to retry")
                                         general_error_spotify_label_main.place(x=5, y=550)
+                                        home_automation_system_window.update()
 
                             def find_weather():
                                 """"""
                                 url = "https://www.google.co.uk/search?q=weather"
-                                #
                                 find_weather_result = requests.get(url, headers=headers)
-                                #
                                 soup = BeautifulSoup(find_weather_result.text, "html.parser")
-                                #
                                 temperature = soup.select("#wob_tm")[0].getText().strip()
-                                #
                                 weather_description = soup.select("#wob_dc")[0].getText().strip()
-                                #
                                 return temperature, weather_description
-                                #
 
                             def do_maths(maths_question):
                                 """"""
                                 maths_question = maths_question.replace(" ", "+")
-                                #
                                 url = "https://www.google.co.uk/search?q=%s" % maths_question
-                                #
                                 do_maths_result = requests.get(url, headers=headers)
-                                #
                                 soup = BeautifulSoup(do_maths_result.text, "html.parser")
-                                #
                                 answer = soup.select("#cwos")
                                 if answer:
                                     answer = answer[0].getText().strip()
                                     return answer
                                 else:
                                     return None
-                                #
                             r = sr.Recognizer()
                             # variable used to recognise speech
                             song = sp.current_playback()
@@ -1496,47 +1561,57 @@ def login():
                                 sp.volume(int(10))
                             try:
                                 with sr.Microphone() as source:
-                                    #
+
                                     r.adjust_for_ambient_noise(source, duration=0.2)
                                     # print("Speak now")
-                                    #
+                                    speak_now_label = Label(home_automation_system_window, text="Speak now",
+                                                            pady=30, padx=120)
+                                    speak_now_label.place(x=5, y=550)
+                                    home_automation_system_window.update()
                                     audio = r.listen(source)
-                                    #
+
                                     speech = r.recognize_google(audio)
-                                    #
+
                                     # print("You said: " + speech)
-                                    #
+
                                     if "Spotify" in speech:
                                         try:
                                             do_spotify_command()
                                         except:
                                             # print("I am not sure how to help you,
                                             # click on voice assistant again to retry")
-                                            general_error_spotify_label = Label(home_automation_system_window,
-                                                                                text="I am not sure how to help you,"
-                                                                                     " click on voice assistant again"
-                                                                                     " to retry")
-                                            general_error_spotify_label.place(x=5, y=550)
+                                            general_error_spotify_label_line_1 = Label(home_automation_system_window,
+                                                                                       text="I am not sure how to help "
+                                                                                            "you, click on "
+                                                                                            "voice assistant")
+                                            general_error_spotify_label_line_1.place(x=5, y=550)
+                                            general_error_spotify_label_line_2 = Label(home_automation_system_window,
+                                                                                       text="again to retry")
+                                            general_error_spotify_label_line_2.place(x=75, y=565)
+                                            home_automation_system_window.update()
                                     elif "weather" in speech:
-                                        #
+
                                         tempValue, description = find_weather()
                                         # print(tempValue + " degree celsius", description)
-                                        test_label = Label(home_automation_system_window,
-                                                           text=tempValue + " degree celsius" + description)
-                                        test_label.place(x=20, y=550)
+                                        weather_label = Label(home_automation_system_window,
+                                                              text=tempValue + " °C " + description,
+                                                              pady=25, padx=120)
+                                        weather_label.place(x=5, y=550)
+                                        home_automation_system_window.update()
                                     elif "calculator" in speech:
-                                        #
+
                                         r.adjust_for_ambient_noise(source, duration=0.2)
-                                        #
+
                                         # print("Ask your question")
                                         question_calculator_label = Label(home_automation_system_window,
                                                                           text="Ask your question")
                                         question_calculator_label.place(x=40, y=550)
-                                        #
+                                        home_automation_system_window.update()
+
                                         questionAudio = r.listen(source)
-                                        #
+
                                         question = r.recognize_google(questionAudio)
-                                        #
+
                                         result = do_maths(question)
                                         # print(result)
                                         if not result:
@@ -1545,10 +1620,12 @@ def login():
                                                                       text="Couldn't find an answer, click on voice "
                                                                            "assistant again to retry")
                                             error_maths_label.place(x=5, y=550)
+                                            home_automation_system_window.update()
                                         else:
                                             maths_label_answer = Label(home_automation_system_window,
                                                                        text=result)
                                             maths_label_answer.place(x=75, y=550)
+                                            home_automation_system_window.update()
                                     else:
                                         # print("I am not sure how to help you, click on voice assistant
                                         # again to retry")
@@ -1556,15 +1633,20 @@ def login():
                                                                     text="I am not sure how to help you, click on "
                                                                          "voice assistant again to retry")
                                         general_error_label.place(x=5, y=550)
+                                        home_automation_system_window.update()
                             except:  # Exception as e:
                                 sp.volume(int(currVolume))
                                 # print(e)
                         except:
                             # print("I am not sure how to help you, click on voice assistant again to retry")
-                            general_error_label_voice_assistant = Label(home_automation_system_window,
-                                                                        text="I am not sure how to help you, click on "
-                                                                             "voice assistant again to retry")
-                            general_error_label_voice_assistant.place(x=5, y=550)
+                            general_error_voice_assistant_label_line_1 = Label(home_automation_system_window,
+                                                                               text="I am not sure how to help you, "
+                                                                                    "click on voice assistant")
+                            general_error_voice_assistant_label_line_1.place(x=5, y=540)
+                            general_error_voice_assistant_label_line_2 = Label(home_automation_system_window,
+                                                                               text="again to retry")
+                            general_error_voice_assistant_label_line_2.place(x=150, y=560)
+                            home_automation_system_window.update()
 
                     voice_assistant_button = Button(home_automation_system_window,
                                                     text="Voice Assistant",
