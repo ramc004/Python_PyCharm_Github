@@ -1301,34 +1301,34 @@ def login():
                     def room_more_controls(room_Name):
                         room_more_controls_window = Tk()
                         room_more_controls_window.title("Home Automation System Rooms More Controls")
-                        room_more_controls_window.geometry("500x600")
+                        room_more_controls_window.geometry("500x375")
                         room_more_controls_window.resizable(False, False)
                         more_controls_button_on = Button(room_more_controls_window,
                                                          text="On",
                                                          command=lambda: OnButtonRoom(room_Name))
-                        more_controls_button_on.place(x=95, y=205)
+                        more_controls_button_on.place(x=195, y=70)
 
                         more_controls_button_off = Button(room_more_controls_window,
                                                           text="Off",
                                                           command=lambda: OffButtonRoom(room_Name))
-                        more_controls_button_off.place(x=155, y=205)
+                        more_controls_button_off.place(x=255, y=70)
 
                         more_controls_colour_picker = Button(room_more_controls_window,
                                                              text="Select colour",
                                                              command=lambda: choose_colour_room(room_Name))
-                        more_controls_colour_picker.place(x=95, y=275)
+                        more_controls_colour_picker.place(x=195, y=140)
 
                         more_controls_name_of_bulb = Label(room_more_controls_window, text=room_Name)
-                        more_controls_name_of_bulb.place(x=95, y=175)
+                        more_controls_name_of_bulb.place(x=195, y=40)
                         slider_more_controls = Scale(
                             room_more_controls_window,
                             from_=10,
                             to=1000,
                             orient='horizontal',
                             command=lambda value: room_slider_control(room_Name, value))
-                        slider_more_controls.place(x=100, y=232)
+                        slider_more_controls.place(x=200, y=97)
                         scenes_more_controls = Label(room_more_controls_window, text="Scenes")
-                        scenes_more_controls.place(x=225, y=320)
+                        scenes_more_controls.place(x=225, y=195)
 
                         def set_Scene(sceneBulb, scene):
                             sceneBulb.set_mode("scene")
@@ -1337,36 +1337,36 @@ def login():
 
                         scenes_reading = Button(room_more_controls_window,
                                                 text="Reading", command=lambda: setRoomScenes(room_Name, "Reading"))
-                        scenes_reading.place(x=50, y=350)
+                        scenes_reading.place(x=50, y=225)
 
                         scenes_night = Button(room_more_controls_window,
                                               text="Night", command=lambda: setRoomScenes(room_Name, "Night"))
-                        scenes_night.place(x=220, y=350)
+                        scenes_night.place(x=220, y=225)
 
                         scenes_leisure = Button(room_more_controls_window,
                                                 text="Leisure", command=lambda: setRoomScenes(room_Name, "Leisure"))
-                        scenes_leisure.place(x=380, y=350)
+                        scenes_leisure.place(x=380, y=225)
 
                         scenes_working = Button(room_more_controls_window,
                                                 text="Working", command=lambda: setRoomScenes(room_Name, "Working"))
-                        scenes_working.place(x=50, y=400)
+                        scenes_working.place(x=50, y=275)
 
                         scenes_soft = Button(room_more_controls_window,
                                              text="Soft", command=lambda: setRoomScenes(room_Name, "Soft"))
-                        scenes_soft.place(x=220, y=400)
+                        scenes_soft.place(x=220, y=275)
 
                         scenes_colourful = Button(room_more_controls_window,
                                                   text="Colourful",
                                                   command=lambda: setRoomScenes(room_Name, "Colourful"))
-                        scenes_colourful.place(x=380, y=400)
+                        scenes_colourful.place(x=380, y=275)
 
                         scenes_dazzling = Button(room_more_controls_window,
                                                  text="Dazzling", command=lambda: setRoomScenes(room_Name, "Dazzling"))
-                        scenes_dazzling.place(x=120, y=450)
+                        scenes_dazzling.place(x=120, y=325)
 
                         scenes_gorgeous = Button(room_more_controls_window,
                                                  text="Gorgeous", command=lambda: setRoomScenes(room_Name, "Gorgeous"))
-                        scenes_gorgeous.place(x=310, y=450)
+                        scenes_gorgeous.place(x=310, y=325)
 
                         def setRoomScenes(roomName2, scene):
                             bulbs = roomDict[roomName2]
@@ -1404,7 +1404,7 @@ def login():
 
                     def loadRoomPage(room_Name):
                         load_room_page = Tk()
-                        load_room_page.title("HAS - Rooms For Devices")
+                        load_room_page.title("HAS - Rooms")
                         load_room_page.geometry("200x200")
                         load_room_page.resizable(False, False)
                         roomName_button = Button(load_room_page, text=room_Name,
@@ -1650,7 +1650,6 @@ def login():
                                                                                padx=15)
                             general_error_voice_assistant_label_line_2.place(x=50, y=590)
                             home_automation_system_window.update()
-
                     voice_assistant_button = Button(home_automation_system_window,
                                                     text="Voice Assistant",
                                                     command=voice_assistant_button_clicked)
@@ -1659,35 +1658,31 @@ def login():
                     def more_controls(bulb, bulbName):
                         more_controls_window = Tk()
                         more_controls_window.title("Home Automation System More Controls For Devices")
-                        more_controls_window.geometry("500x600")
+                        more_controls_window.geometry("500x375")
                         more_controls_window.resizable(False, False)
-
                         more_controls_button_on = Button(more_controls_window,
                                                          text="On",
                                                          command=lambda: light_on(bulb))
-                        more_controls_button_on.place(x=95, y=205)
-
+                        more_controls_button_on.place(x=195, y=70)
                         more_controls_button_off = Button(more_controls_window,
                                                           text="Off",
                                                           command=lambda: light_off(bulb))
-                        more_controls_button_off.place(x=155, y=205)
-
+                        more_controls_button_off.place(x=255, y=70)
                         more_controls_colour_picker = Button(more_controls_window,
                                                              text="Select colour",
                                                              command=lambda: choose_colour(bulb))
-                        more_controls_colour_picker.place(x=95, y=275)
-
+                        more_controls_colour_picker.place(x=195, y=140)
                         more_controls_name_of_bulb = Label(more_controls_window, text=bulbName)
-                        more_controls_name_of_bulb.place(x=95, y=175)
+                        more_controls_name_of_bulb.place(x=195, y=40)
                         slider_more_controls = Scale(
                             more_controls_window,
                             from_=10,
                             to=1000,
                             orient='horizontal',
                             command=lambda value: slider_control(bulb, value))
-                        slider_more_controls.place(x=100, y=232)
+                        slider_more_controls.place(x=200, y=97)
                         scenes_more_controls = Label(more_controls_window, text="Scenes")
-                        scenes_more_controls.place(x=225, y=320)
+                        scenes_more_controls.place(x=225, y=195)
 
                         def set_Scene(sceneBulb, scene):
                             sceneBulb.set_mode("scene")
@@ -1696,35 +1691,35 @@ def login():
 
                         scenes_reading = Button(more_controls_window,
                                                 text="Reading", command=lambda: set_Scene(bulb, "Reading"))
-                        scenes_reading.place(x=50, y=350)
+                        scenes_reading.place(x=50, y=225)
 
                         scenes_night = Button(more_controls_window,
                                               text="Night", command=lambda: set_Scene(bulb, "Night"))
-                        scenes_night.place(x=220, y=350)
+                        scenes_night.place(x=220, y=225)
 
                         scenes_leisure = Button(more_controls_window,
                                                 text="Leisure", command=lambda: set_Scene(bulb, "Leisure"))
-                        scenes_leisure.place(x=380, y=350)
+                        scenes_leisure.place(x=380, y=225)
 
                         scenes_working = Button(more_controls_window,
                                                 text="Working", command=lambda: set_Scene(bulb, "Working"))
-                        scenes_working.place(x=50, y=400)
+                        scenes_working.place(x=50, y=275)
 
                         scenes_soft = Button(more_controls_window,
                                              text="Soft", command=lambda: set_Scene(bulb, "Soft"))
-                        scenes_soft.place(x=220, y=400)
+                        scenes_soft.place(x=220, y=275)
 
                         scenes_colourful = Button(more_controls_window,
                                                   text="Colourful", command=lambda: set_Scene(bulb, "Colourful"))
-                        scenes_colourful.place(x=380, y=400)
+                        scenes_colourful.place(x=380, y=275)
 
                         scenes_dazzling = Button(more_controls_window,
                                                  text="Dazzling", command=lambda: set_Scene(bulb, "Dazzling"))
-                        scenes_dazzling.place(x=120, y=450)
+                        scenes_dazzling.place(x=120, y=325)
 
                         scenes_gorgeous = Button(more_controls_window,
                                                  text="Gorgeous", command=lambda: set_Scene(bulb, "Gorgeous"))
-                        scenes_gorgeous.place(x=310, y=450)
+                        scenes_gorgeous.place(x=310, y=325)
 
                     def light_on(bulb):
                         bulb.turn_on()
@@ -1856,7 +1851,7 @@ def login():
                     def create_rooms_for_devices():
                         create_rooms_window = Tk()
                         create_rooms_window.title("Adding Devices To A Room")
-                        create_rooms_window.geometry("450x300")
+                        create_rooms_window.geometry("450x200")
                         create_rooms_window.resizable(False, False)
                         question_label = Label(create_rooms_window, text="Name of device")
                         question_label.place(x=30, y=50)
@@ -1913,7 +1908,7 @@ def login():
                         ok_button_rooms = Button(create_rooms_window, text="Ok",
                                                  command=lambda:
                                                  ok_button_rooms_command(name_of_room_created_entry.get()))
-                        ok_button_rooms.place(x=350, y=150)
+                        ok_button_rooms.place(x=130, y=160)
 
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
                                                      command=create_rooms_for_devices)
