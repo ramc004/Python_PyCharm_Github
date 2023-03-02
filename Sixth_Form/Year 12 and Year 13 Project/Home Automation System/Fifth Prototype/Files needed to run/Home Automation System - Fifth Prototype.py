@@ -1262,9 +1262,8 @@ def login():
                                                   address='192.168.1.129',
                                                   local_key='9d8233fcceacb8e6',
                                                   version=3.3)
-
-                    getRoomsQuery = "SELECT roomName," \
-                                    "studyLight1,studyLight2,bananas,transformer FROM UserRooms WHERE userID = %d" % id
+                    roomDict = {}
+                    getRoomsQuery = """SELECT roomName, studyLight1,studyLight2,bananas,transformer FROM UserRooms WHERE userID = %d""" % id
                     cursor_log_in.execute(getRoomsQuery)
                     roomList = cursor_log_in.fetchall()
                     if roomList:
