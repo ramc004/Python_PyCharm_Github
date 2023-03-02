@@ -15,42 +15,27 @@ import smtplib
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 import requests
-
 from bs4 import BeautifulSoup
-
 import spotipy
-
 from spotipy.oauth2 import SpotifyOAuth
-
 import speech_recognition as sr
-
 import tinytuya
-
 from tkinter import colorchooser
 
 scope = "user-modify-playback-state, user-read-playback-state"
-
 clientIDFile = open("logins.txt", "r")
-
 clientID = clientIDFile.read()
-
 clientIDFile.close()
-
 clientSecretFile = open("secret.txt", "r")
-
 clientSecret = clientSecretFile.read()
-
 clientSecretFile.close()
-
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope,
                                                client_id=clientID,
                                                client_secret=clientSecret,
                                                redirect_uri="http://localhost:8350/callback/"))
-
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                   'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-
 scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
                          "Night": '000e0d0000000000000000c80000',
                          "Working": '020e0d0000000000000003e803e8',
@@ -62,11 +47,8 @@ scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
                          "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e8000000004'
                                      '64602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'
                          }
-
 roomDict = {}
-
 loggedInUserID = None
-
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
@@ -97,7 +79,6 @@ password text not null, accessLevel text, nickname text,  date_of_birth DATE)"""
 c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (userID int not null, roomName text not null, 
 studyLight1 BOOLEAN not null, studyLight2 BOOLEAN not null, bananas BOOLEAN not null, transformer BOOLEAN not null, 
 PRIMARY KEY (userID,roomName))""")
-
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
 # creates a variable called findAdminQuery
 # this will select the userID from our table but only where they are not a customer
@@ -1248,12 +1229,10 @@ def login():
                                                         address='192.168.1.159',
                                                         local_key='622ab2625722d80a',
                                                         version=3.3)
-
                     study_light_2 = tinytuya.BulbDevice(dev_id='bf57d83388422ac905nl4q',
                                                         address='192.168.1.147',
                                                         local_key='ed75d11af9d56a62',
                                                         version=3.3)
-
                     Transformer = tinytuya.BulbDevice(dev_id='bf95a987949dd79c645dw7',
                                                       address='192.168.1.155',
                                                       local_key='021d37949f73862e',
@@ -1273,7 +1252,6 @@ def login():
                             roomName = room[0]
                             bulbBooleans = room[1:]
                             bulbList = []
-
                             if bulbBooleans[0] == 1:
                                 bulbList.append(study_light_1)
                             if bulbBooleans[1] == 1:
@@ -1282,7 +1260,6 @@ def login():
                                 bulbList.append(Bananas)
                             if bulbBooleans[3] == 1:
                                 bulbList.append(Transformer)
-
                             roomDict[roomName] = [bulbList]
 
                     home_automation_system_window = Tk()
@@ -1307,17 +1284,14 @@ def login():
                                                          text="On",
                                                          command=lambda: OnButtonRoom(room_Name))
                         more_controls_button_on.place(x=195, y=70)
-
                         more_controls_button_off = Button(room_more_controls_window,
                                                           text="Off",
                                                           command=lambda: OffButtonRoom(room_Name))
                         more_controls_button_off.place(x=255, y=70)
-
                         more_controls_colour_picker = Button(room_more_controls_window,
                                                              text="Select colour",
                                                              command=lambda: choose_colour_room(room_Name))
                         more_controls_colour_picker.place(x=195, y=140)
-
                         more_controls_name_of_bulb = Label(room_more_controls_window, text=room_Name)
                         more_controls_name_of_bulb.place(x=195, y=40)
                         slider_more_controls = Scale(
@@ -1338,57 +1312,46 @@ def login():
                         scenes_reading = Button(room_more_controls_window,
                                                 text="Reading", command=lambda: setRoomScenes(room_Name, "Reading"))
                         scenes_reading.place(x=50, y=225)
-
                         scenes_night = Button(room_more_controls_window,
                                               text="Night", command=lambda: setRoomScenes(room_Name, "Night"))
                         scenes_night.place(x=220, y=225)
-
                         scenes_leisure = Button(room_more_controls_window,
                                                 text="Leisure", command=lambda: setRoomScenes(room_Name, "Leisure"))
                         scenes_leisure.place(x=380, y=225)
-
                         scenes_working = Button(room_more_controls_window,
                                                 text="Working", command=lambda: setRoomScenes(room_Name, "Working"))
                         scenes_working.place(x=50, y=275)
-
                         scenes_soft = Button(room_more_controls_window,
                                              text="Soft", command=lambda: setRoomScenes(room_Name, "Soft"))
                         scenes_soft.place(x=220, y=275)
-
                         scenes_colourful = Button(room_more_controls_window,
                                                   text="Colourful",
                                                   command=lambda: setRoomScenes(room_Name, "Colourful"))
                         scenes_colourful.place(x=380, y=275)
-
                         scenes_dazzling = Button(room_more_controls_window,
                                                  text="Dazzling", command=lambda: setRoomScenes(room_Name, "Dazzling"))
                         scenes_dazzling.place(x=120, y=325)
-
                         scenes_gorgeous = Button(room_more_controls_window,
                                                  text="Gorgeous", command=lambda: setRoomScenes(room_Name, "Gorgeous"))
                         scenes_gorgeous.place(x=310, y=325)
 
                         def setRoomScenes(roomName2, scene):
                             bulbs = roomDict[roomName2]
-
                             for bulb in bulbs:
                                 set_Scene(bulb, scene)
 
                     def OnButtonRoom(room_Name):
                         bulbs = roomDict[room_Name]
-
                         for bulb in bulbs:
                             bulb.turn_on()
 
                     def OffButtonRoom(room_Name):
                         bulbs = roomDict[room_Name]
-
                         for bulb in bulbs:
                             bulb.turn_off()
 
                     def room_slider_control(room_Name, value):
                         bulbs = roomDict[room_Name]
-
                         for bulb in bulbs:
                             bulb.set_brightness(int(value))
 
@@ -1435,7 +1398,6 @@ def login():
                         deleteButtons()
                         x = 180
                         y = 100
-
                         rooms = roomDict.keys()
                         for room_refresh_buttons in rooms:
                             newButton = Button(home_automation_system_window,
@@ -1567,7 +1529,6 @@ def login():
                                 sp.volume(int(10))
                             try:
                                 with sr.Microphone() as source:
-
                                     r.adjust_for_ambient_noise(source, duration=0.2)
                                     # print("Speak now")
                                     speak_now_label = Label(home_automation_system_window, text="Speak now",
@@ -1575,9 +1536,7 @@ def login():
                                     speak_now_label.place(x=5, y=570)
                                     home_automation_system_window.update()
                                     audio = r.listen(source)
-
                                     speech = r.recognize_google(audio)
-
                                     # print("You said: " + speech)
 
                                     if "Spotify" in speech:
@@ -1692,31 +1651,24 @@ def login():
                         scenes_reading = Button(more_controls_window,
                                                 text="Reading", command=lambda: set_Scene(bulb, "Reading"))
                         scenes_reading.place(x=50, y=225)
-
                         scenes_night = Button(more_controls_window,
                                               text="Night", command=lambda: set_Scene(bulb, "Night"))
                         scenes_night.place(x=220, y=225)
-
                         scenes_leisure = Button(more_controls_window,
                                                 text="Leisure", command=lambda: set_Scene(bulb, "Leisure"))
                         scenes_leisure.place(x=380, y=225)
-
                         scenes_working = Button(more_controls_window,
                                                 text="Working", command=lambda: set_Scene(bulb, "Working"))
                         scenes_working.place(x=50, y=275)
-
                         scenes_soft = Button(more_controls_window,
                                              text="Soft", command=lambda: set_Scene(bulb, "Soft"))
                         scenes_soft.place(x=220, y=275)
-
                         scenes_colourful = Button(more_controls_window,
                                                   text="Colourful", command=lambda: set_Scene(bulb, "Colourful"))
                         scenes_colourful.place(x=380, y=275)
-
                         scenes_dazzling = Button(more_controls_window,
                                                  text="Dazzling", command=lambda: set_Scene(bulb, "Dazzling"))
                         scenes_dazzling.place(x=120, y=325)
-
                         scenes_gorgeous = Button(more_controls_window,
                                                  text="Gorgeous", command=lambda: set_Scene(bulb, "Gorgeous"))
                         scenes_gorgeous.place(x=310, y=325)
@@ -1731,55 +1683,44 @@ def login():
                                                           text="Study Light 1",
                                                           command=lambda: more_controls(study_light_1, "Study Light 1"))
                     study_light_1_control_button.place(x=95, y=175)
-
                     study_light_1_on_button = Button(home_automation_system_window,
                                                      text="On",
                                                      command=lambda: light_on(study_light_1))
                     study_light_1_on_button.place(x=95, y=205)
-
                     study_light_1_off_button = Button(home_automation_system_window,
                                                       text="Off",
                                                       command=lambda: light_off(study_light_1))
                     study_light_1_off_button.place(x=155, y=205)
-
                     study_light_2_control_button = Button(home_automation_system_window,
                                                           text="Study Light 2",
                                                           command=lambda: more_controls(study_light_2, "Study Light 2"))
                     study_light_2_control_button.place(x=295, y=175)
-
                     study_light_2_on_button = Button(home_automation_system_window,
                                                      text="On",
                                                      command=lambda: light_on(study_light_2))
                     study_light_2_on_button.place(x=295, y=205)
-
                     study_light_2_off_button = Button(home_automation_system_window,
                                                       text="Off",
                                                       command=lambda: light_off(study_light_2))
                     study_light_2_off_button.place(x=355, y=205)
-
                     Transformer_control_button = Button(home_automation_system_window,
                                                         text="Transformer",
                                                         command=lambda: more_controls(Transformer, "Transformer"))
                     Transformer_control_button.place(x=95, y=375)
-
                     Transformer_on_button = Button(home_automation_system_window,
                                                    text="On", command=lambda: light_on(Transformer))
                     Transformer_on_button.place(x=95, y=405)
-
                     Transformer_off_button = Button(home_automation_system_window,
                                                     text="Off", command=lambda: light_off(Transformer))
                     Transformer_off_button.place(x=155, y=405)
-
                     Bananas_control_button = Button(home_automation_system_window,
                                                     text="Bananas",
                                                     command=lambda: more_controls(Bananas, "Bananas"))
                     Bananas_control_button.place(x=295, y=375)
-
                     Bananas_on_button = Button(home_automation_system_window,
                                                text="On",
                                                command=lambda: light_on(Bananas))
                     Bananas_on_button.place(x=295, y=405)
-
                     Bananas_off_button = Button(home_automation_system_window,
                                                 text="Off",
                                                 command=lambda: light_off(Bananas))
@@ -1797,17 +1738,14 @@ def login():
                                                          text="Select colour",
                                                          command=lambda: choose_colour(study_light_1))
                     study_light_1_colour_picker.place(x=95, y=275)
-
                     study_light_2_colour_picker = Button(home_automation_system_window,
                                                          text="Select colour",
                                                          command=lambda: choose_colour(study_light_2))
                     study_light_2_colour_picker.place(x=295, y=275)
-
                     Transformer_colour_picker = Button(home_automation_system_window,
                                                        text="Select colour",
                                                        command=lambda: choose_colour(Transformer))
                     Transformer_colour_picker.place(x=95, y=475)
-
                     Bananas_colour_picker = Button(home_automation_system_window,
                                                    text="Select colour",
                                                    command=lambda: choose_colour(Bananas))
@@ -1823,7 +1761,6 @@ def login():
                         orient='horizontal',
                         command=lambda value: slider_control(study_light_1, value))
                     slider_study_light_1.place(x=100, y=232)
-
                     slider_study_light_2 = Scale(
                         home_automation_system_window,
                         from_=10,
@@ -1831,7 +1768,6 @@ def login():
                         orient='horizontal',
                         command=lambda value: slider_control(study_light_2, value))
                     slider_study_light_2.place(x=300, y=232)
-
                     slider_Transformer = Scale(
                         home_automation_system_window,
                         from_=10,
@@ -1839,7 +1775,6 @@ def login():
                         orient='horizontal',
                         command=lambda value: slider_control(Transformer, value))
                     slider_Transformer.place(x=100, y=432)
-
                     slider_Bananas = Scale(
                         home_automation_system_window,
                         from_=10,
@@ -1900,16 +1835,13 @@ def login():
                             cursor.execute(insertRoomQuery)
                             add_room_connection.commit()
                             add_room_connection.close()
-
                             roomDict[room_name] = bulb_List
                             refreshButtons()
                             create_rooms_window.destroy()
-
                         ok_button_rooms = Button(create_rooms_window, text="Ok",
                                                  command=lambda:
                                                  ok_button_rooms_command(name_of_room_created_entry.get()))
                         ok_button_rooms.place(x=130, y=160)
-
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
                                                      command=create_rooms_for_devices)
 
