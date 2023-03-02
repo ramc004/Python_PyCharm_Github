@@ -1404,27 +1404,27 @@ def login():
 
                     def loadRoomPage(room_Name):
                         load_room_page = Tk()
-                        load_room_page.title("Home Automation System Rooms For Devices")
-                        load_room_page.geometry("500x600")
+                        load_room_page.title("HAS - Rooms For Devices")
+                        load_room_page.geometry("200x200")
                         load_room_page.resizable(False, False)
                         roomName_button = Button(load_room_page, text=room_Name,
                                                  command=lambda: room_more_controls(room_Name))
-                        roomName_button.place(x=195, y=45)
+                        roomName_button.place(x=40, y=32)
                         on_button_rooms = Button(load_room_page, text="On", command=lambda: OnButtonRoom(room_Name))
-                        on_button_rooms.place(x=35, y=75)
+                        on_button_rooms.place(x=40, y=60)
                         off_button_rooms = Button(load_room_page, text="Off", command=lambda: OffButtonRoom(room_Name))
-                        off_button_rooms.place(x=95, y=75)
+                        off_button_rooms.place(x=95, y=60)
                         slider_room_page = Scale(
                             load_room_page,
                             from_=10,
                             to=1000,
                             orient='horizontal',
                             command=lambda value: room_slider_control(room_Name, value))
-                        slider_room_page.place(x=65, y=130)
+                        slider_room_page.place(x=45, y=90)
                         room_colour_picker = Button(load_room_page,
                                                     text="Select colour",
                                                     command=lambda: choose_colour_room(room_Name))
-                        room_colour_picker.place(x=65, y=175)
+                        room_colour_picker.place(x=40, y=130)
 
                     def deleteButtons():
                         roomButtons.clear()
