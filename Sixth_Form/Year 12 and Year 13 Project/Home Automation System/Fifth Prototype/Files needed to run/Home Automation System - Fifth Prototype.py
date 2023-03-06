@@ -1993,7 +1993,7 @@ frame = Frame(proceed, width=420, height=55)
 # creates a frame, links it to our proceed Tkinter window and limits to a size with a width of 450 and height of 400
 frame.place(x=7, y=1)
 # allows the program to most efficiently place the image inside our frame using the function pack
-img = ImageTk.PhotoImage(Image.open("first.png"))
+img = ImageTk.PhotoImage(Image.open("top_image_proceed_window.png"))
 # creates a variable called img and sets it equal to our image with the first bit
 label = Label(frame, image=img)
 # creates a variable called label places it in a Label function
@@ -2004,7 +2004,7 @@ frame2 = Frame(proceed, width=400, height=60)
 # this is our next bit of the frame with the next line of text
 frame2.place(x=35, y=40)
 # this places our next bit of the frame using the function pack
-img2 = ImageTk.PhotoImage(Image.open("second.png"))
+img2 = ImageTk.PhotoImage(Image.open("bottom_image_proceed_window.png"))
 # creates the next image to be used below the last one
 label2 = Label(frame2, image=img2)
 # creates a new variable for our next image
