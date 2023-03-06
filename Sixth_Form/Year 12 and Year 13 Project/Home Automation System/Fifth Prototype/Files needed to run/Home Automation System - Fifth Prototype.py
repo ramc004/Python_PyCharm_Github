@@ -1437,8 +1437,8 @@ def login():
                                             # print("What would you like the new percentage of playback to be?")
                                             percentage_playback_question = Label(home_automation_system_window,
                                                                                  text="What would you like the new "
-                                                                                      "percentage of playback to be?"
-                                                                                 , padx=70, pady=15)
+                                                                                      "percentage of playback to be?",
+                                                                                 padx=70, pady=15)
                                             percentage_playback_question.place(x=5, y=530)
                                             home_automation_system_window.update()
                                             volume_change = r_volume.listen(source_volume)
@@ -1447,11 +1447,13 @@ def login():
                                             # print("Your volume has been changed to " + speech_volume +"%, if this is
                                             # the wrong volume please retry")
                                             percentage_playback_response = Label(home_automation_system_window,
-                                                                                 text="Your volume has been changed to "
-                                                                                      + speech_volume + "%, if this is "
-                                                                                                        "the wrong "
-                                                                                                        "volume please "
-                                                                                                        "retry"
+                                                                                 text="Your volume has been changed to"
+                                                                                      " " + speech_volume + "%, if this"
+                                                                                                            " is the "
+                                                                                                            "wrong "
+                                                                                                            "volume "
+                                                                                                            "please "
+                                                                                                            "retry"
                                                                                  , pady=15)
                                             percentage_playback_response.place(x=5, y=530)
                                             home_automation_system_window.update()
