@@ -1,13 +1,13 @@
 from tkinter import *
-# tells the program to use the built-in library Tkinter and import all the modules found within Tkinter
+# tells the program to use the built-in library Tkinter and import each relevant module found within Tkinter
 from PIL import ImageTk, Image
-# finds the library PIL and imports two separate packages, ImageTk and Image allowing us to store images inside tkinter
+# finds the library PIL and imports two separate packages, ImageTk and Image allowing me to store images inside tkinter
 import sqlite3
-# sqlite3 is the library I will be using for databases allowing us to read, query and write to and from the database
+# sqlite3 is the library I will be using for databases allowing me to read, query and write to and from the database
 import emoji
-# emoji library allowing us to show emojis inside our program
+# emoji library allowing me to show emojis inside our program
 import re
-# allows us to ensure the user follows rules when entering a password
+# allows me to ensure the user follows rules when entering a password
 import random
 # uses an algorithm to generate random numbers
 import smtplib
@@ -15,27 +15,59 @@ import smtplib
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 import requests
+# allows me to gather information from the internet using http requests
 from bs4 import BeautifulSoup
+# used to execute the request to the internet to find the result
 import spotipy
+# allows me to connect with spotify and lets me affect music in many ways
 from spotipy.oauth2 import SpotifyOAuth
+# signs a specific user in using a spotify authentication library to check the details given
 import speech_recognition as sr
+# lets me use the speech recognition library to allow me to be able to recognise the user's commands
+# then execute the appropriate commands
 import tinytuya
+# allows me to connect to lights and adapt the status of the lights
 from tkinter import colorchooser
+# calls the tkinter library and pulls colorchooser which shows a range of ways to choose a colour
+# the user is satisfied with to change their light(s) to
 
 scope = "user-modify-playback-state, user-read-playback-state"
+# creates a variable, 'scope', and passes in two separate parameters one for playing and pausing music,
+# and one for telling the user what music is playing
 clientIDFile = open("logins.txt", "r")
+# creates a variable, 'clientIDFile' tells the program to open the file with the file name
+# and be able to read from the file
 clientID = clientIDFile.read()
+# creates another new variable this time to read the file above just opened
 clientIDFile.close()
+# connects back to the variable with the file and closes the file
+# to ensure it isn't read from throughout the rest of the problem
 clientSecretFile = open("secret.txt", "r")
+# makes a variable to be used for the secret code generated from spotify developers webpage
 clientSecret = clientSecretFile.read()
+# connects back to the variable and reads from the file
 clientSecretFile.close()
+# closes the file to ensure it isn't misused through the rest of the program
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope,
                                                client_id=clientID,
                                                client_secret=clientSecret,
                                                redirect_uri="http://localhost:8350/callback/"))
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+# creates another new variable, the name is short to keep it efficient to call it stands for spotify
+# it first links to the spotipy library
+# and then connects to the brand of Spotify
+# and using the spotify authentication library
+# setting it equal to the library defining each of the necessary parameters to be passed through
+# first parameter being the scope of how spotify is allowed to access the account I am giving it
+# next parameter tells the program what the client_id is calling the information read from the file opened above
+# tells the program where the client secret can be found
+# this link is also added to the spotify developers page when creating the api
+# it is redirect website where in the case the information provided is invalid the user will be taken to an error page
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' 
+                         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+# creates another variable defining how the program must search the web referencing the architecture
+# and version of each system available
+# using a list calls the User-Agent which tells is a variable allowing the program
+# to perform searches on the mentioned browsers in the background
 scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
                          "Night": '000e0d0000000000000000c80000',
                          "Working": '020e0d0000000000000003e803e8',
@@ -45,10 +77,14 @@ scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
                                       '464601003d03e803e80000000046460100ae03e803e800000000464601011303e803e800000000',
                          "Dazzling": '06464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000',
                          "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e8000000004'
-                                     '64602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'
-                         }
+                                     '64602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'}
+# creates a variable and sets it equal to a list passing through variables
+# these variables links to specific scenes
+# each of these codes have been found by running a python script to determine which scene the light was on at that point
 roomDict = {}
+# calls in the list which will be for the users rooms they have created to ensure when it is called it has been created
 loggedInUserID = None
+# this tells the system that user has not signed in setting its boolean operator
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
@@ -199,17 +235,17 @@ def check_verification(email_address, password, actual_code, user_code, register
         verified = False
         # sets the verified variable to false if the user hasn't entered two capital letters
     else:
-        # where the user has entered 2 or more capital letters
+        # where the user has entered 1 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji to a tick to show the user they have followed this rule
     if not re.search(r'[1234567890]{1,}', password):
-        # if user doesn't have 2 or more number in their password
+        # if user doesn't have 1 or more number in their password
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # the system will find where we placed this variable from above and configure it to a cross
         verified = False
         # this sets the verified variable to false to ensure the user's details won't be saved unless follow rules
     else:
-        # if they have entered 2 or more numbers
+        # if they have entered 1 or more numbers
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji next to the final clause to a tick
     if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}', password):
@@ -393,19 +429,32 @@ def register():
         # closes the database connection until reopened
 
     def view_key_register_screen():
+        """function with a button directing the user to a new window informing them on what each colour means"""
         view_key_window_register_screen = Tk()
+        # creates a new variable and sets it equal to a new Tkinter window
         view_key_window_register_screen.geometry("540x150")
+        # defines the original dimensions for the window using the built-in geometry function
         view_key_window_register_screen.resizable(False, False)
+        # tells the program to fetch for the variable and then connect to the resizable function
+        # and sets both the x and y direction to false to force the window to stay at its original size
         view_key_window_register_screen.title("View Key for Register Screen")
+        # gives the window which will be displayed in the border of the window to show the user which window is open
         view_key_orange_colour_label = Label(view_key_window_register_screen, text="Orange: ")
+        # creates a new variable and sets it equal to a specific function which allows me to put labels on the window
         view_key_orange_colour_label.place(x=15, y=30)
+        # tells the system where to place this label in reference with the x and y axis
         view_key_red_colour_label = Label(view_key_window_register_screen, text="Red: ")
+        # variable for label telling the user Red:
         view_key_red_colour_label.place(x=35, y=60)
+        # places this text inside the label along the x axis and down the y axis
         view_key_green_colour_label = Label(view_key_window_register_screen, text="Green: ")
+        # creates the colour label telling the user Green
         view_key_green_colour_label.place(x=22, y=90)
+        # places this label using the place function and defining the x and y direction
         view_key_orange_description_label = Label(view_key_window_register_screen, text="You have entered "
                                                                                         "information but"
                                                                                         " you can not move on yet")
+        # creates 
         view_key_orange_description_label.place(x=68, y=30)
         view_key_red_description_label = Label(view_key_window_register_screen, text="You have not entered the correct "
                                                                                      "information therefore cannot "
