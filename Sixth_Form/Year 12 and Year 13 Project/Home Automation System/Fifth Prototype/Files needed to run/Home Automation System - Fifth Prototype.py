@@ -115,6 +115,14 @@ password text not null, accessLevel text, nickname text,  date_of_birth DATE)"""
 c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (userID int not null, roomName text not null, 
 studyLight1 BOOLEAN not null, studyLight2 BOOLEAN not null, bananas BOOLEAN not null, transformer BOOLEAN not null, 
 PRIMARY KEY (userID,roomName))""")
+# calls the cursor connection from above
+# makes a table unless table is already found, with a name of 'UserRooms' creates the field userID with an integer value
+# another field, roomName with boolean operator for text
+# makes fields for each of the lights so to allow a user to save which lights they wanted saved to each room created
+# by giving each of the operators the default data type
+# allows each field to have a value of 0 if not selected and value of 1 to be selected
+# also links to the other table created above by using a primary key,
+# this allows the lights to be selected to be saved to each specific user
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
 # creates a variable called findAdminQuery
 # this will select the userID from our table but only where they are not a customer
@@ -454,7 +462,6 @@ def register():
         view_key_orange_description_label = Label(view_key_window_register_screen, text="You have entered "
                                                                                         "information but"
                                                                                         " you can not move on yet")
-        # creates 
         view_key_orange_description_label.place(x=68, y=30)
         view_key_red_description_label = Label(view_key_window_register_screen, text="You have not entered the correct "
                                                                                      "information therefore cannot "
