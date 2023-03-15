@@ -1844,7 +1844,7 @@ def login():
                     def create_rooms_for_devices():
                         create_rooms_window = Tk()
                         create_rooms_window.title("Adding Devices To A Room")
-                        create_rooms_window.geometry("450x200")
+                        create_rooms_window.geometry("450x250")
                         create_rooms_window.resizable(False, False)
                         question_label = Label(create_rooms_window, text="Name of device")
                         question_label.place(x=30, y=50)
