@@ -113,7 +113,7 @@ password text not null, accessLevel text, nickname text,  date_of_birth DATE)"""
 # if they do enter a nickname it will be stored as text
 # if they enter a date_of_birth then it will be stored as a DATE which allows the user to enter their dob simply
 c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (userID int not null, roomName text not null, 
-studyLight1 BOOLEAN not null, studyLight2 BOOLEAN not null, bananas BOOLEAN not null, transformer BOOLEAN not null, 
+studyLight1 BOOLEAN not null, studyLight2 BOOLEAN not null, transformer BOOLEAN not null, 
 PRIMARY KEY (userID,roomName))""")
 # calls the cursor connection from above
 # makes a table unless table is already found, with a name of 'UserRooms' creates the field userID with an integer value
@@ -1293,12 +1293,8 @@ def login():
                                                       address='192.168.1.155',
                                                       local_key='021d37949f73862e',
                                                       version=3.3)
-                    Bananas = tinytuya.BulbDevice(dev_id='bf8e3b5d5202077a15d42q',
-                                                  address='192.168.1.129',
-                                                  local_key='9d8233fcceacb8e6',
-                                                  version=3.3)
                     roomDict = {}
-                    getRoomsQuery = """SELECT roomName, studyLight1,studyLight2,bananas,transformer FROM UserRooms WHERE userID = %d""" % id
+                    getRoomsQuery = """SELECT roomName, studyLight1,studyLight2,transformer FROM UserRooms WHERE userID = %d""" % id
                     cursor_log_in.execute(getRoomsQuery)
                     roomList = cursor_log_in.fetchall()
                     if roomList:
@@ -1312,8 +1308,6 @@ def login():
                                 bulbList.append(study_light_1)
                             if bulbBooleans[1] == 1:
                                 bulbList.append(study_light_2)
-                            if bulbBooleans[2] == 1:
-                                bulbList.append(Bananas)
                             if bulbBooleans[3] == 1:
                                 bulbList.append(Transformer)
                             roomDict[roomName] = [bulbList]
@@ -1771,18 +1765,6 @@ def login():
                     Transformer_off_button = Button(home_automation_system_window,
                                                     text="Off", command=lambda: light_off(Transformer))
                     Transformer_off_button.place(x=155, y=405)
-                    Bananas_control_button = Button(home_automation_system_window,
-                                                    text="Bananas",
-                                                    command=lambda: more_controls(Bananas, "Bananas"))
-                    Bananas_control_button.place(x=295, y=375)
-                    Bananas_on_button = Button(home_automation_system_window,
-                                               text="On",
-                                               command=lambda: light_on(Bananas))
-                    Bananas_on_button.place(x=295, y=405)
-                    Bananas_off_button = Button(home_automation_system_window,
-                                                text="Off",
-                                                command=lambda: light_off(Bananas))
-                    Bananas_off_button.place(x=355, y=405)
 
                     def choose_colour(bulb):
                         try:
@@ -1804,10 +1786,6 @@ def login():
                                                        text="Select colour",
                                                        command=lambda: choose_colour(Transformer))
                     Transformer_colour_picker.place(x=95, y=475)
-                    Bananas_colour_picker = Button(home_automation_system_window,
-                                                   text="Select colour",
-                                                   command=lambda: choose_colour(Bananas))
-                    Bananas_colour_picker.place(x=295, y=475)
 
                     def slider_control(bulb, value):
                         bulb.set_brightness(int(value))
@@ -1833,13 +1811,6 @@ def login():
                         orient='horizontal',
                         command=lambda value: slider_control(Transformer, value))
                     slider_Transformer.place(x=100, y=432)
-                    slider_Bananas = Scale(
-                        home_automation_system_window,
-                        from_=10,
-                        to=1000,
-                        orient='horizontal',
-                        command=lambda value: slider_control(Bananas, value))
-                    slider_Bananas.place(x=300, y=432)
 
                     def create_rooms_for_devices():
                         create_rooms_window = Tk()
@@ -1848,10 +1819,6 @@ def login():
                         create_rooms_window.resizable(False, False)
                         question_label = Label(create_rooms_window, text="Name of device")
                         question_label.place(x=30, y=50)
-                        isBananasChecked = IntVar(create_rooms_window)
-                        bananas_rooms_yes_or_no = Checkbutton(create_rooms_window, text="bananas",
-                                                              variable=isBananasChecked)
-                        bananas_rooms_yes_or_no.place(x=30, y=150)
                         isTransformerChecked = IntVar(create_rooms_window)
                         transformer_rooms_yes_or_no = Checkbutton(create_rooms_window, text="transformer",
                                                                   variable=isTransformerChecked)
@@ -1881,15 +1848,11 @@ def login():
                             if isTransformerChecked.get():
                                 bulb_List.append(Transformer)
                                 bulbBoolean[2] = 1
-                            if isBananasChecked.get():
-                                bulb_List.append(Bananas)
-                                bulbBoolean[3] = 1
-                            insertRoomQuery = "INSERT INTO UserRooms VALUES(%d,'%s',%d,%d,%d,%d) " % (loggedInUserID,
-                                                                                                      room_name,
-                                                                                                      bulbBoolean[0],
-                                                                                                      bulbBoolean[1],
-                                                                                                      bulbBoolean[2],
-                                                                                                      bulbBoolean[3])
+                            insertRoomQuery = "INSERT INTO UserRooms VALUES(%d,'%s',%d,%d,%d) " % (loggedInUserID,
+                                                                                                   room_name,
+                                                                                                   bulbBoolean[0],
+                                                                                                   bulbBoolean[1],
+                                                                                                   bulbBoolean[2])
                             cursor.execute(insertRoomQuery)
                             add_room_connection.commit()
                             add_room_connection.close()
