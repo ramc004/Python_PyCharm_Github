@@ -12,9 +12,8 @@ import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
-register_verify = False
-# creates a variable called register_verify outside any functions allowing us to call it from anywhere
-# sets the user to being register to false for now, because they haven't entered any correct credentials at this point
+database_name = 'Home Automation System.db'
+# gives a name to our database so that we can call it throughout our program
 proceed = Tk()
 # we are creating a variable called proceed, and setting it equal to our tkinter window
 # so whenever we need to put something inside out Tkinter window we just have to call proceed
@@ -36,7 +35,7 @@ def check_verification(email_address, password, actual_code, user_code, register
     emoji_label_clause_1_password_check_verification.place(x=125, y=300)
     # places the label using the place function along the x axis and down the y axis
     emoji_label_clause_4_password_check_verification = Label(register_screen)
-    # this is used to check the user has inputted at least 2 numbers
+    # this is used to check the user has inputted at least a number
     emoji_label_clause_4_password_check_verification.place(x=125, y=364)
     # tells the system where to place the variable inside our register_screen
     emoji_label_clause_3_password_check_verification = Label(register_screen)
@@ -84,12 +83,6 @@ def check_verification(email_address, password, actual_code, user_code, register
         # it then places this label beneath the password clauses
         password_has_been_entered.config(foreground="green")
         # sets the foreground of the variable to green to show the user they have been successful
-        successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
-        # message telling user they are free to go and log in to the system
-        successful_sign_up.place(x=75, y=500)
-        # places the successful message on the screen using the place function
-        successful_sign_up.config(foreground="green")
-        # by colouring the text green informs the user they have followed all the necessary rules
     if len(password) < 8:
         # where password's length is less than 8 characters
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
@@ -206,6 +199,15 @@ def register():
                 # places this label and overrides the past label
                 password_has_been_entered.config(foreground="green")
                 # sets the colour of this label to green telling the user they have followed this rule
+            if email_address_db and password_db:
+                # only where both the email and password have been entered
+                successful_sign_up = Label(register_screen,
+                                           text="you have been successfully signed up, you may now log in")
+                # message telling user they are free to go and log in to the system
+                successful_sign_up.place(x=75, y=500)
+                # places the successful message on the screen using the place function
+                successful_sign_up.config(foreground="green")
+                # by colouring the text green informs the user they have followed all the necessary rules
     email_address_entry_register_screen = Entry(register_screen)
     # creates a new variable and sets it equal to an entry box placing it in the register_screen
     email_address_entry_register_screen.place(x=150, y=70)
@@ -267,11 +269,11 @@ def register():
                     # and the emoji library to a green tick
                     name_register_split_with_sign, domain_register_split_with_sign = emailRecipient.split("@")
                     # using two variable names splits the email address the user has inputted before and after @ sign
-                    name_register = open("names_register.txt", "r").read().splitlines()
+                    name_register = open("names.txt", "r").read().splitlines()
                     # creates a new variable
                     # setting it equal to opening a file and tells the system to read from the file
                     # splits the lines of each of the names
-                    domain_register = open("email_register_domain.txt", "r").read().splitlines()
+                    domain_register = open("emaildomains.txt", "r").read().splitlines()
                     # splits the lines of each of the domains found inside the email_register_domain.txt file
                     if name_register_split_with_sign in name_register:
                         # this ensure they are trying to send the email to an existing email address
@@ -324,12 +326,12 @@ def register():
                     # where there wasn't an @ sign inside the user's inputted email
                     emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                     # changes the @ sign label from blank or tick to a cross
-                    with open("names_register.txt", "r") as file_register_domains:
+                    with open("names.txt", "r") as file_register_domains:
                         # opens new file for names
                         name_register = file_register_domains.read().splitlines()
                         # opens file with file name and speech marks allows us to read from file
                         # and sets it equal to the variable name_register
-                    with open("email_register_domain.txt", "r") as file_register_names:
+                    with open("emaildomains.txt", "r") as file_register_names:
                         # opens file with file name and speech marks allows us to read from file
                         # and sets it equal to a variable
                         domain_register = file_register_names.read().splitlines()
@@ -434,7 +436,7 @@ def register():
     # sets it equal to a label which shall be put inside the register_screen with some text
     check_clause_3_password.place(x=150, y=340)
     # lets the system know where the label should be placed
-    check_clause_4_password = Label(register_screen, text="At least 2 numbers")
+    check_clause_4_password = Label(register_screen, text="At least 1 numbers")
     # creates a new variable and lets it equal to a label placed inside the register_screen with text
     check_clause_4_password.place(x=150, y=360)
     # places our variable created above using the 'x' and the 'y' axis
