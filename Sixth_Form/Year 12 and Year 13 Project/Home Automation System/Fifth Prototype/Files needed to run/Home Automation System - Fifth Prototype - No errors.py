@@ -1320,9 +1320,6 @@ def login():
                     # gives the user a starting size using the geometry function built into tkinter
                     home_automation_system_window.resizable(False, False)
                     # creates limits for the window at the original size
-                    # speak_now_voice_assistant_label = Label(home_automation_system_window,
-                    # text="Click here, wait 1 second, say command")
-                    # speak_now_voice_assistant_label.place(x=70, y=550)
                     roomButtons = []
 
                     def room_more_controls(room_Name):
