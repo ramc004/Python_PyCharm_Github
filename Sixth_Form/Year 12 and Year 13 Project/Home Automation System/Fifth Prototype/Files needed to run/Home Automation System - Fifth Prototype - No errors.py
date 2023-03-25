@@ -1037,7 +1037,7 @@ def login():
             # emoji will reflect this by being a red cross
         password_numbers_login = password_entry_login.get()
         # new variable now equal to the information entered into the password entry box
-        if re.search(r'[1234567890]{2,}', password_numbers_login):
+        if re.search(r'[1234567890]{1,}', password_numbers_login):
             # calls the re library and using the built in search function, searches through the user's entered password
             emoji_label_clause_4_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # either changes the cross to a tick or shows the user a tick
@@ -1075,7 +1075,7 @@ def login():
     # hopefully informing the user the information they have to input into their password
     check_clause_3_password_login.place(x=150, y=290)
     # informs the system where to place the third password clause
-    check_clause_4_password_login = Label(login_screen, text="At least 1 numbers")
+    check_clause_4_password_login = Label(login_screen, text="At least 1 number")
     # final clause for password made be creating a variable setting it equal label with text in login screen
     check_clause_4_password_login.place(x=150, y=310)
     # places the label inside the login screen
