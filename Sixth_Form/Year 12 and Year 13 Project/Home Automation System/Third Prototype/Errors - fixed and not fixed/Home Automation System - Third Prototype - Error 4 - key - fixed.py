@@ -323,37 +323,37 @@ def register():
         view_key_orange_description_label = Label(view_key_window_register_screen, text="You have entered "
                                                                                         "information but"
                                                                                         " you can not move on yet")
-        # Creates a label to indicate that the user has entered information, but cannot move on yet
+        # creates a label to indicate that the user has entered information, but cannot move on yet
         view_key_orange_description_label.place(x=68, y=30)
-        # Positions the label at x=68, y=30
+        # positions the label at x=68, y=30
         view_key_red_description_label = Label(view_key_window_register_screen, text="You have not entered the correct "
                                                                                      "information therefore cannot "
                                                                                      "move on")
-        # Creates a label to indicate that the user has not entered the correct information, and cannot move on
+        # creates a label to indicate that the user has not entered the correct information, and cannot move on
         view_key_red_description_label.place(x=68, y=60)
-        # Positions the label at x=68, y=60
+        # positions the label at x=68, y=60
         view_key_green_description_label = Label(view_key_window_register_screen, text="You have entered correct "
                                                                                        "information and are now able to"
                                                                                        " move on")
-        # Creates a label to indicate that the user has entered correct information and can move on
+        # creates a label to indicate that the user has entered correct information and can move on
         view_key_green_description_label.place(x=68, y=90)
-        # Positions the label at x=68, y=90
+        # positions the label at x=68, y=90
         view_key_orange_colour_label.config(foreground="orange")
-        # Sets the color of the orange color label to orange
+        # sets the color of the orange color label to orange
         view_key_orange_description_label.config(foreground="orange")
-        # Sets the color of the orange description label to orange
+        # sets the color of the orange description label to orange
         view_key_red_colour_label.config(foreground="red")
-        # Sets the color of the red color label to red
+        # sets the color of the red color label to red
         view_key_red_description_label.config(foreground="red")
-        # Sets the color of the red description label to red
+        # sets the color of the red description label to red
         view_key_green_colour_label.config(foreground="green")
-        # Sets the color of the green color label to green
+        # sets the color of the green color label to green
         view_key_green_description_label.config(foreground="green")
-        # Sets the color of the green description label to green
+        # sets the color of the green description label to green
     view_key_button = Button(register_screen, text="View Key", command=view_key_register_screen)
-    # Creates a button to view the key and calls the function "view_key_register_screen" when clicked
+    # creates a button to view the key and calls the function "view_key_register_screen" when clicked
     view_key_button.place(x=100, y=32)
-    # Positions the button at x=100, y=32
+    # positions the button at x=100, y=32
     email_address_entry_register_screen = Entry(register_screen)
     # creates a new variable and sets it equal to an entry box placing it in the register_screen
     email_address_entry_register_screen.place(x=150, y=70)
