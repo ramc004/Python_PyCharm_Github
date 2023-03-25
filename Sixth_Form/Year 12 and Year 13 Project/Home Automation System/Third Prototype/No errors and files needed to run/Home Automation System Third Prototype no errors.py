@@ -820,47 +820,75 @@ def login():
             # connecting to a label made below changes the label to a cross mark
 
     def view_key_login_screen():
+        """displays a window with color-coded labels and descriptions for colour meanings for the login window """
         view_key_window_login_screen = Tk()
+        # attaches a new tkinter window to the new variable
         view_key_window_login_screen.geometry("540x180")
+        # using the geometry function defines the starting size
         view_key_window_login_screen.resizable(False, False)
+        # the resizable function is used to set both the across and down directions to false
+        # preventing the window from being resized
         view_key_window_login_screen.title("View Key for Login Screen")
+        # using the title function gives the tkinter window a title
         view_key_orange_colour_label = Label(view_key_window_login_screen, text="Orange: ")
+        # using the label function creates a label with text for the orange label
         view_key_orange_colour_label.place(x=15, y=30)
+        # using the place function positions the label
         view_key_red_colour_label = Label(view_key_window_login_screen, text="Red: ")
+        # using the label function creates a label with text for the red label
         view_key_red_colour_label.place(x=35, y=60)
+        # positions the label using the the place function and calling the x and y parameters
         view_key_green_colour_label = Label(view_key_window_login_screen, text="Green: ")
+        # creates another label, this time for the green label
         view_key_green_colour_label.place(x=22, y=90)
+        # positions the label below the red label and slightly before the red label to ensure it is in line with the end
         view_key_blue_colour_label = Label(view_key_window_login_screen, text="Blue: ")
+        # creates a new label for the blue label and places it inside the 'view_key_window_login_screen' window
         view_key_blue_colour_label.place(x=32, y=120)
-
+        # positions the label inside the window using the place function
         view_key_orange_description_label = Label(view_key_window_login_screen, text="You have left optional "
                                                                                      "information blank, you are able "
                                                                                      "to move on")
+        # creates a new label for the orange description using the label function
         view_key_orange_description_label.place(x=68, y=30)
+        # positions the orange description label inline with the orange label
         view_key_blue_description_label = Label(view_key_window_login_screen, text="You have entered information "
                                                                                    "into an optional field")
+        # creates a new label for the blue description and places it inside the 'view_key_window_login_screen'
         view_key_blue_description_label.place(x=68, y=120)
+        # positions the blue description label using the x and y parameters
         view_key_red_description_label = Label(view_key_window_login_screen, text="You have not entered the correct "
                                                                                   "information therefore cannot "
                                                                                   "move on")
+        # makes a new label which is to be placed inside the 'view_key_window_login_screen' window
         view_key_red_description_label.place(x=68, y=60)
+        # places the new label across the x axis and the y axis
         view_key_green_description_label = Label(view_key_window_login_screen, text="You have entered correct "
                                                                                     "information and are now able to"
                                                                                     " move on")
+        # creates a description using the text parameter and places it inside the same window
         view_key_green_description_label.place(x=68, y=90)
-
+        # places the label using the place function 68 along and 90 down
         view_key_orange_colour_label.config(foreground="orange")
+        # using the config function sets the colour of the text of the orange label
         view_key_orange_description_label.config(foreground="orange")
+        # changes the default colour of black text (foreground) and white background to orange text
         view_key_red_colour_label.config(foreground="red")
+        # using the config function changes the colour of the red colour label to red
         view_key_red_description_label.config(foreground="red")
+        # changes the colour of description for the red to be red
         view_key_green_colour_label.config(foreground="green")
+        # makes the green label have a green colour
         view_key_green_description_label.config(foreground="green")
+        # gives the description a green colour
         view_key_blue_description_label.config(foreground="blue")
+        # gives the blue label a blue colour to match its text
         view_key_blue_colour_label.config(foreground="blue")
-
+        # matching the name label gives the description the same colour
     view_key_button = Button(login_screen, text="View Key", command=view_key_login_screen)
+    # creates a new button passing in parameters and pointing the program to the function above
     view_key_button.place(x=105, y=20)
-
+    # places the button inside the window above the email address entry box
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
     # creates a variable connecting it to a button inside the login_screen with text and a command
     # the command wil check which rules pass or fail
