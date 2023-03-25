@@ -1,20 +1,19 @@
 from tkinter import *
-# tells the program to use the built-in library Tkinter and import each relevant module found within Tkinter
+# tells the program to use the built-in library Tkinter and import all the modules found within Tkinter
 from PIL import ImageTk, Image
-# finds the library PIL and imports two separate packages, ImageTk and Image allowing me to store images inside tkinter
+# finds the library PIL and imports two separate packages, ImageTk and Image allowing us to store images inside tkinter
 import sqlite3
-# sqlite3 is the library I will be using for databases allowing me to read, query and write to and from the database
+# sqlite3 is the library I will be using for databases allowing us to read, query and write to and from the database
 import emoji
-# emoji library allowing me to show emojis inside our program
+# emoji library allowing us to show emojis inside our program
 import re
-# allows me to ensure the user follows rules when entering a password
+# allows us to ensure the user follows rules when entering a password
 import random
 # uses an algorithm to generate random numbers
 import smtplib
 # allows to send emails from a specific email using smtp, which stands for simple mail transfer protocol
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
-
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
@@ -26,11 +25,14 @@ proceed.geometry("450x300")
 # gives some restrictions for our tkinter window of 400x300
 conn = sqlite3.connect(database_name)
 # connects to sqlite3 using a variable name of conn short for connection
-# finds the variable database_name and sets it equal to the database file from above
+# finds the variable database_name and calls our database file from above
 c = conn.cursor()
 # creates a cursor allowing us to execute sql commands
-c.execute("""CREATE TABLE IF NOT EXISTS users ( userID int PRIMARY KEY not null, email_address text not null, 
-password text not null, accessLevel text)""")
+c.execute("""CREATE TABLE IF NOT EXISTS users (
+        userID int PRIMARY KEY not null,
+        email_address text not null, 
+        password text not null, 
+        accessLevel text)""")
 # using the execute command creates our table within our database giving it a name of users
 # only creates the database if it hasn't already been created
 # I have decided to make userID a primary key
@@ -70,9 +72,9 @@ def check_verification(email_address, password, actual_code, user_code, register
     # ensures the emoji is being configured next to the appropriate clause
     if not email_address:
         # this checks if the email_address field is filled
-        no_email_entry = Label(register_screen, text="please enter email", padx=67)
+        no_email_entry = Label(register_screen, text="please enter email", width=75)
         # tells the user to enter an email
-        no_email_entry.place(x=118, y=170)
+        no_email_entry.place(x=0, y=170)
         # places the label using the place function, ensure it goes just below email box
         no_email_entry.config(foreground="red")
         # configures this text to the colour red to show the user there is an issue
@@ -80,13 +82,13 @@ def check_verification(email_address, password, actual_code, user_code, register
         # calls the 'verified' variable and sets it to false to ensure it doesn't let them sign up
     else:
         # however if an email had been entered
-        email_has_been_entered = Label(register_screen, text="you entered an email", padx=64)
+        email_has_been_entered = Label(register_screen, text="you entered an email")
         # the program creates a new variable
         # using the label function placing text telling the user they have entered an email
-        email_has_been_entered.place(x=118, y=170)
+        email_has_been_entered.place(x=140, y=170)
         # tells the system how to place the variable made above
-        email_has_been_entered.config(foreground="orange")
-        # configures the text message to pastel yellow telling the user they have followed this rule
+        email_has_been_entered.config(foreground="green")
+        # configures the text message to green telling the user they have followed this rule
     if not password:
         # if the user has not entered anything into the password entry box
         no_password_entry = Label(register_screen, text="  please enter password")
@@ -105,6 +107,12 @@ def check_verification(email_address, password, actual_code, user_code, register
         # it then places this label beneath the password clauses
         password_has_been_entered.config(foreground="green")
         # sets the foreground of the variable to green to show the user they have been successful
+        successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
+        # message telling user they are free to go and log in to the system
+        successful_sign_up.place(x=75, y=500)
+        # places the successful message on the screen using the place function
+        successful_sign_up.config(foreground="green")
+        # by colouring the text green informs the user they have followed all the necessary rules
     if len(password) < 8:
         # where password's length is less than 8 characters
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
@@ -122,17 +130,17 @@ def check_verification(email_address, password, actual_code, user_code, register
         verified = False
         # sets the verified variable to false if the user hasn't entered two capital letters
     else:
-        # where the user has entered 1 or more capital letters
+        # where the user has entered 2 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji to a tick to show the user they have followed this rule
     if not re.search(r'[1234567890]{1,}', password):
-        # if user doesn't have 1 or more number in their password
+        # if user doesn't have 2 or more number in their password
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # the system will find where we placed this variable from above and configure it to a cross
         verified = False
         # this sets the verified variable to false to ensure the user's details won't be saved unless follow rules
     else:
-        # if they have entered 1 or more numbers
+        # if they have entered 2 or more numbers
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji next to the final clause to a tick
     if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}', password):
@@ -153,9 +161,9 @@ def check_verification(email_address, password, actual_code, user_code, register
     # creates a new variable and forces only one piece of data at a time to be compared
     if emailID:
         # where the emailID entered by user is already saved to database
-        email_already_exists_label = Label(register_screen, text="this email is already linked to an account")
+        email_already_exists_label = Label(register_screen, text="   this email is already linked to an account")
         # tkinter will create a new label telling the user they have already signed up with this account
-        email_already_exists_label.place(x=118, y=170)
+        email_already_exists_label.place(x=140, y=170)
         # tells the system where to put this label, this will go directly below all the email rules
         email_already_exists_label.config(foreground="orange")
         # sets the colour of the text for this label to orange
@@ -164,9 +172,9 @@ def check_verification(email_address, password, actual_code, user_code, register
         # calls the verified variable and sets it to false stopping the user from registering incorrect details
     if actual_code != user_code:
         # fetches the code sent via email and matches with the code entered by the user
-        code_label_failure = Label(register_screen, text="code incorrect, email not verified")
+        code_label_failure = Label(register_screen, text="code incorrect, not verified")
         # tells the user they have mistyped their code
-        code_label_failure.place(x=145, y=227)
+        code_label_failure.place(x=200, y=227)
         # places this label just below the code entry box
         code_label_failure.config(foreground="red")
         # tells the user this a major issue they need to fix
@@ -175,32 +183,12 @@ def check_verification(email_address, password, actual_code, user_code, register
         # preventing the user from registering incorrect information
     else:
         # if the user has copied the code correctly
-        code_label_success = Label(register_screen, text="     code correct, email verified    ")
+        code_label_success = Label(register_screen, text="code correct, now verified")
         # system tells user code is correct
-        code_label_success.place(x=145, y=227)
+        code_label_success.place(x=200, y=227)
         # system places label at same place as code incorrect to ensure only one message appears at a time
         code_label_success.config(foreground="green")
         # configures the label to green showing the user the code is correct
-    if verified:
-        successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
-        # message telling user they are free to go and log in to the system
-        successful_sign_up.place(x=95, y=500)
-        # places the successful message on the screen using the place function
-        successful_sign_up.config(foreground="green")
-        # by colouring the text green informs the user they have followed all the necessary rules
-        email_has_been_entered_verified = Label(register_screen, text="you entered an email", padx=64)
-        # message telling user they are free to go and log in to the system
-        email_has_been_entered_verified.place(x=118, y=170)
-        # places the successful message on the screen using the place function
-        email_has_been_entered_verified.config(foreground="green")
-        # by colouring the text green informs the user they have followed all the necessary rules
-    else:
-        not_successful_sign_up = Label(register_screen, text="some details have errors, please try again", padx=55)
-        # message telling user they need to check their details before trying to log in
-        not_successful_sign_up.place(x=95, y=500)
-        # places the not successful message on the screen using the place function
-        not_successful_sign_up.config(foreground="red")
-        # by colouring the text red informs the user they have not followed all the necessary rules
     connection_check_verification.commit()
     # commits any changes the users inputs have made to the database
     connection_check_verification.close()
@@ -227,7 +215,8 @@ def register():
     def sign_up(email_address_db, password_db, actual_code, user_code):
         """this function is used for when the user clicks on the sign_up button
         I have passed is_verified, email_address_db, password_db as parameters through this function
-        we are then able to call any of these parameters throughout our program"""
+        we are then able to call any of these parameters throughout our program
+        """
         connection_sign_up = sqlite3.connect(database_name)
         # connects to sqlite3 using a variable name of conn short for connection
         # finds the variable database_name and calls our database file from above
@@ -263,28 +252,21 @@ def register():
                 # place it as the first id
             if not email_address_db:
                 # where the user has not entered an email
-                no_email_entry = Label(register_screen, text="please enter email", padx=67)
+                no_email_entry = Label(register_screen, text="   please enter email")
                 # creates a variable
                 # sets it equal to Tkinter's label function with text informing the user they need to enter an email
-                no_email_entry.place(x=118, y=160)
+                no_email_entry.place(x=150, y=160)
                 # tells the system where to place this new label function, just below the email clauses
                 no_email_entry.config(foreground="red")
                 # configures the text to red telling the user they need to fix this before moving on
             else:
-                # however if an email had been entered
-                email_has_been_entered = Label(register_screen, text="you entered an email", padx=64)
-                # the program creates a new variable
-                # using the label function placing text telling the user they have entered an email
-                email_has_been_entered.place(x=118, y=170)
-                # tells the system how to place the variable made above
-                email_has_been_entered.config(foreground="orange")
-                # configures the text message to green telling the user they have followed this rule
-                email_has_been_entered_verified = Label(register_screen, text="you entered an email", padx=64)
-                # message telling user they are free to go and log in to the system
-                email_has_been_entered_verified.place(x=118, y=170)
-                # places the successful message on the screen using the place function
-                email_has_been_entered_verified.config(foreground="green")
-                # by colouring the text green informs the user they have followed all the necessary rules
+                # where the user has entered an email
+                email_has_been_entered = Label(register_screen, text="you entered an email")
+                # new variable created, using text within label to tell user they entered an email
+                email_has_been_entered.place(x=140, y=170)
+                # tells system where to place new variable using the built in place function within tkinter
+                email_has_been_entered.config(foreground="green")
+                # by showing the user green text tells them they have followed this rule
             if not password_db:
                 # where the user has not entered a password
                 no_password_entry = Label(register_screen, text="  please enter password")
@@ -314,6 +296,64 @@ def register():
         # commits any changes the users inputs have made to the database
         connection_sign_up.close()
         # closes the database connection until reopened
+
+    def view_key_register_screen():
+        """function with a button directing the user to a new window informing them on what each colour means"""
+        view_key_window_register_screen = Tk()
+        # creates a new variable and sets it equal to a new Tkinter window
+        view_key_window_register_screen.geometry("540x150")
+        # defines the original dimensions for the window using the built-in geometry function
+        view_key_window_register_screen.resizable(False, False)
+        # tells the program to fetch for the variable and then connect to the resizable function
+        # and sets both the x and y direction to false to force the window to stay at its original size
+        view_key_window_register_screen.title("View Key for Register Screen")
+        # gives the window which will be displayed in the border of the window to show the user which window is open
+        view_key_orange_colour_label = Label(view_key_window_register_screen, text="Orange: ")
+        # creates a new variable and sets it equal to a specific function which allows me to put labels on the window
+        view_key_orange_colour_label.place(x=15, y=30)
+        # tells the system where to place this label in reference with the x and y axis
+        view_key_red_colour_label = Label(view_key_window_register_screen, text="Red: ")
+        # variable for label telling the user Red:
+        view_key_red_colour_label.place(x=35, y=60)
+        # places this text inside the label along the x axis and down the y axis
+        view_key_green_colour_label = Label(view_key_window_register_screen, text="Green: ")
+        # creates the colour label telling the user Green
+        view_key_green_colour_label.place(x=22, y=90)
+        # places this label using the place function and defining the x and y direction
+        view_key_orange_description_label = Label(view_key_window_register_screen, text="You have entered "
+                                                                                        "information but"
+                                                                                        " you can not move on yet")
+        # Creates a label to indicate that the user has entered information, but cannot move on yet
+        view_key_orange_description_label.place(x=68, y=30)
+        # Positions the label at x=68, y=30
+        view_key_red_description_label = Label(view_key_window_register_screen, text="You have not entered the correct "
+                                                                                     "information therefore cannot "
+                                                                                     "move on")
+        # Creates a label to indicate that the user has not entered the correct information, and cannot move on
+        view_key_red_description_label.place(x=68, y=60)
+        # Positions the label at x=68, y=60
+        view_key_green_description_label = Label(view_key_window_register_screen, text="You have entered correct "
+                                                                                       "information and are now able to"
+                                                                                       " move on")
+        # Creates a label to indicate that the user has entered correct information and can move on
+        view_key_green_description_label.place(x=68, y=90)
+        # Positions the label at x=68, y=90
+        view_key_orange_colour_label.config(foreground="orange")
+        # Sets the color of the orange color label to orange
+        view_key_orange_description_label.config(foreground="orange")
+        # Sets the color of the orange description label to orange
+        view_key_red_colour_label.config(foreground="red")
+        # Sets the color of the red color label to red
+        view_key_red_description_label.config(foreground="red")
+        # Sets the color of the red description label to red
+        view_key_green_colour_label.config(foreground="green")
+        # Sets the color of the green color label to green
+        view_key_green_description_label.config(foreground="green")
+        # Sets the color of the green description label to green
+    view_key_button = Button(register_screen, text="View Key", command=view_key_register_screen)
+    # Creates a button to view the key and calls the function "view_key_register_screen" when clicked
+    view_key_button.place(x=100, y=32)
+    # Positions the button at x=100, y=32
     email_address_entry_register_screen = Entry(register_screen)
     # creates a new variable and sets it equal to an entry box placing it in the register_screen
     email_address_entry_register_screen.place(x=150, y=70)
@@ -380,13 +420,7 @@ def register():
                     # setting it equal to opening a file and tells the system to read from the file
                     # splits the lines of each of the names
                     domain_register = open("emaildomains.txt", "r").read().splitlines()
-                    # splits the lines of each of the domains found inside the emaildomains.txt file
-                    not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
-                    # it will make a new variable and set it equal to a label with text, Email has failed to send
-                    not_sent_label.place(x=310, y=124)
-                    # places label just above the verify button
-                    not_sent_label.config(foreground="red")
-                    # colours the label orange warning the user they haven't followed the rules
+                    # splits the lines of each of the domains found inside the email_register_domain.txt file
                     if name_register_split_with_sign in name_register:
                         # this ensure they are trying to send the email to an existing email address
                         # with a correct name
@@ -435,12 +469,6 @@ def register():
                         emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                         emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                 else:
-                    not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
-                    # it will make a new variable and set it equal to a label with text, Email has failed to send
-                    not_sent_label.place(x=310, y=124)
-                    # places label just above the verify button
-                    not_sent_label.config(foreground="red")
-                    # colours the label orange warning the user they haven't followed the rules
                     # where there wasn't an @ sign inside the user's inputted email
                     emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                     # changes the @ sign label from blank or tick to a cross
@@ -477,6 +505,7 @@ def register():
                 emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                 emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                 emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+                # although if the user has not entered an email
                 not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
                 # it will make a new variable and set it equal to a label with text, Email has failed to send
                 not_sent_label.place(x=310, y=124)
@@ -491,7 +520,6 @@ def register():
             # places label just above the verify button
             system_failure_email_sending.config(foreground="orange")
             # colours the label orange warning the user they haven't followed the rules
-
     email_address_verify_button = Button(register_screen, text="Verify", command=send_email)
     # creates a button in the register_screen with text of verify and puts a command of send_email
     # where this button is clicked the email will be sent
@@ -537,7 +565,6 @@ def register():
             # but if the user has selected the show password box
             password_entry.config(show='*')
             # the system will show stars in place of their password
-
     show_password_check_box = Checkbutton(register_screen, text='Show Password', command=show_password_register)
     # creates the check button box putting text next to the box
     show_password_check_box.place(x=85, y=277)
@@ -555,7 +582,7 @@ def register():
     # sets it equal to a label which shall be put inside the register_screen with some text
     check_clause_3_password.place(x=150, y=340)
     # lets the system know where the label should be placed
-    check_clause_4_password = Label(register_screen, text="At least 1 number")
+    check_clause_4_password = Label(register_screen, text="At least 2 numbers")
     # creates a new variable and lets it equal to a label placed inside the register_screen with text
     check_clause_4_password.place(x=150, y=360)
     # places our variable created above using the 'x' and the 'y' axis
