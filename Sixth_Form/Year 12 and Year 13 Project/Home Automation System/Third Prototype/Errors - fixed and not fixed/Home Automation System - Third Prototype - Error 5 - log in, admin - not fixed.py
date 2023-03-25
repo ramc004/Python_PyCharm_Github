@@ -15,8 +15,6 @@ import smtplib
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 
-loggedInUserID = None
-# this tells the system that user has not signed in setting its boolean operator
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
