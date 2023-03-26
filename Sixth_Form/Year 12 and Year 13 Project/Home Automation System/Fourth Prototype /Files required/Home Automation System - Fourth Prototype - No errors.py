@@ -1,13 +1,13 @@
 from tkinter import *
-# tells the program to use the built-in library Tkinter and import all the modules found within Tkinter
+# tells the program to use the built-in library Tkinter and import each relevant module found within Tkinter
 from PIL import ImageTk, Image
-# finds the library PIL and imports two separate packages, ImageTk and Image allowing us to store images inside tkinter
+# finds the library PIL and imports two separate packages, ImageTk and Image allowing me to store images inside tkinter
 import sqlite3
-# sqlite3 is the library I will be using for databases allowing us to read, query and write to and from the database
+# sqlite3 is the library I will be using for databases allowing me to read, query and write to and from the database
 import emoji
-# emoji library allowing us to show emojis inside our program
+# emoji library allowing me to show emojis inside our program
 import re
-# allows us to ensure the user follows rules when entering a password
+# allows me to ensure the user follows rules when entering a password
 import random
 # uses an algorithm to generate random numbers
 import smtplib
@@ -15,27 +15,58 @@ import smtplib
 from email.message import EmailMessage
 # allows me to place a specific message inside our email; I will be combining this with the above library to send emails
 import requests
+# allows me to gather information from the internet using http requests
 from bs4 import BeautifulSoup
+# used to execute the request to the internet to find the result
 import spotipy
+# allows me to connect with spotify and lets me affect music in many ways
 from spotipy.oauth2 import SpotifyOAuth
+# signs a specific user in using a spotify authentication library to check the details given
 import speech_recognition as sr
+# lets me use the speech recognition library to allow me to be able to recognise the user's commands
+# then execute the appropriate commands
 
 scope = "user-modify-playback-state, user-read-playback-state"
+# creates a variable, 'scope', and passes in two separate parameters one for playing and pausing music,
+# and one for telling the user what music is playing
 clientIDFile = open("logins.txt", "r")
+# creates a variable, 'clientIDFile' tells the program to open the file with the file name
+# and be able to read from the file
 clientID = clientIDFile.read()
+# creates another new variable this time to read the file above just opened
 clientIDFile.close()
+# connects back to the variable with the file and closes the file
+# to ensure it isn't read from throughout the rest of the problem
 clientSecretFile = open("secret.txt", "r")
+# makes a variable to be used for the secret code generated from spotify developers webpage
 clientSecret = clientSecretFile.read()
+# connects back to the variable and reads from the file
 clientSecretFile.close()
+# closes the file to ensure it isn't misused through the rest of the program
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope,
                                                client_id=clientID,
                                                client_secret=clientSecret,
                                                redirect_uri="http://localhost:8350/callback/"))
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-#
+# creates another new variable, the name is short to keep it efficient to call it stands for spotify
+# it first links to the spotipy library
+# and then connects to the brand of Spotify
+# and using the spotify authentication library
+# setting it equal to the library defining each of the necessary parameters to be passed through
+# first parameter being the scope of how spotify is allowed to access the account I am giving it
+# next parameter tells the program what the client_id is calling the information read from the file opened above
+# tells the program where the client secret can be found
+# this link is also added to the spotify developers page when creating the api
+# it is redirect website where in the case the information provided is invalid the user will be taken to an error page
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' 
+                         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+# creates another variable defining how the program must search the web referencing the architecture
+# and version of each system available
+# using a list calls the User-Agent which tells is a variable allowing the program
+# to perform searches on the mentioned browsers in the background
+roomDict = {}
+# calls in the list which will be for the users rooms they have created to ensure when it is called it has been created
+loggedInUserID = None
+# this tells the system that user has not signed in setting its boolean operator
 database_name = 'Home Automation System.db'
 # gives a name to our database so that we can call it throughout our program
 proceed = Tk()
@@ -47,16 +78,11 @@ proceed.geometry("450x300")
 # gives some restrictions for our tkinter window of 400x300
 conn = sqlite3.connect(database_name)
 # connects to sqlite3 using a variable name of conn short for connection
-# finds the variable database_name and calls our database file from above
+# finds the variable database_name and sets it equal to the database file from above
 c = conn.cursor()
 # creates a cursor allowing us to execute sql commands
-c.execute("""CREATE TABLE IF NOT EXISTS users (
-        userID int PRIMARY KEY not null,
-        email_address text not null, 
-        password text not null, 
-        accessLevel text, 
-        nickname text, 
-        date_of_birth DATE)""")
+c.execute("""CREATE TABLE IF NOT EXISTS users ( userID int PRIMARY KEY not null, email_address text not null, 
+password text not null, accessLevel text, nickname text,  date_of_birth DATE)""")
 # using the execute command creates our table within our database giving it a name of users
 # only creates the database if it hasn't already been created
 # I have decided to make userID a primary key
@@ -68,6 +94,17 @@ c.execute("""CREATE TABLE IF NOT EXISTS users (
 # these fields are only optional meaning they can be empty inside the database
 # if they do enter a nickname it will be stored as text
 # if they enter a date_of_birth then it will be stored as a DATE which allows the user to enter their dob simply
+c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (userID int not null, roomName text not null, 
+studyLight1 BOOLEAN not null, studyLight2 BOOLEAN not null, transformer BOOLEAN not null, 
+PRIMARY KEY (userID,roomName))""")
+# calls the cursor connection from above
+# makes a table unless table is already found, with a name of 'UserRooms' creates the field userID with an integer value
+# another field, roomName with boolean operator for text
+# makes fields for each of the lights so to allow a user to save which lights they wanted saved to each room created
+# by giving each of the operators the default data type
+# allows each field to have a value of 0 if not selected and value of 1 to be selected
+# also links to the other table created above by using a primary key,
+# this allows the lights to be selected to be saved to each specific user
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
 # creates a variable called findAdminQuery
 # this will select the userID from our table but only where they are not a customer
@@ -102,8 +139,6 @@ if not MyAdmin:
     c.execute(createAdminQuery)
     # executes the admin query to ensure the above database statement follows through
 register_verify = False
-
-
 # creates a variable called register_verify outside any functions allowing us to call it from anywhere
 # sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
@@ -138,9 +173,9 @@ def check_verification(email_address, password, actual_code, user_code, register
     # ensures the emoji is being configured next to the appropriate clause
     if not email_address:
         # this checks if the email_address field is filled
-        no_email_entry = Label(register_screen, text="please enter email", width=75)
+        no_email_entry = Label(register_screen, text="please enter email", padx=67)
         # tells the user to enter an email
-        no_email_entry.place(x=0, y=170)
+        no_email_entry.place(x=118, y=170)
         # places the label using the place function, ensure it goes just below email box
         no_email_entry.config(foreground="red")
         # configures this text to the colour red to show the user there is an issue
@@ -148,13 +183,13 @@ def check_verification(email_address, password, actual_code, user_code, register
         # calls the 'verified' variable and sets it to false to ensure it doesn't let them sign up
     else:
         # however if an email had been entered
-        email_has_been_entered = Label(register_screen, text="you entered an email")
+        email_has_been_entered = Label(register_screen, text="you entered an email", padx=64)
         # the program creates a new variable
         # using the label function placing text telling the user they have entered an email
-        email_has_been_entered.place(x=140, y=170)
+        email_has_been_entered.place(x=118, y=170)
         # tells the system how to place the variable made above
-        email_has_been_entered.config(foreground="green")
-        # configures the text message to green telling the user they have followed this rule
+        email_has_been_entered.config(foreground="orange")
+        # configures the text message to pastel yellow telling the user they have followed this rule
     if not password:
         # if the user has not entered anything into the password entry box
         no_password_entry = Label(register_screen, text="  please enter password")
@@ -173,12 +208,6 @@ def check_verification(email_address, password, actual_code, user_code, register
         # it then places this label beneath the password clauses
         password_has_been_entered.config(foreground="green")
         # sets the foreground of the variable to green to show the user they have been successful
-        successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
-        # message telling user they are free to go and log in to the system
-        successful_sign_up.place(x=75, y=500)
-        # places the successful message on the screen using the place function
-        successful_sign_up.config(foreground="green")
-        # by colouring the text green informs the user they have followed all the necessary rules
     if len(password) < 8:
         # where password's length is less than 8 characters
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
@@ -196,17 +225,17 @@ def check_verification(email_address, password, actual_code, user_code, register
         verified = False
         # sets the verified variable to false if the user hasn't entered two capital letters
     else:
-        # where the user has entered 2 or more capital letters
+        # where the user has entered 1 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji to a tick to show the user they have followed this rule
     if not re.search(r'[1234567890]{1,}', password):
-        # if user doesn't have 2 or more number in their password
+        # if user doesn't have 1 or more number in their password
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
         # the system will find where we placed this variable from above and configure it to a cross
         verified = False
         # this sets the verified variable to false to ensure the user's details won't be saved unless follow rules
     else:
-        # if they have entered 2 or more numbers
+        # if they have entered 1 or more numbers
         emoji_label_clause_4_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
         # changes the emoji next to the final clause to a tick
     if not re.search(r'[∑´®†¥¨~`Ω≈ç√∫µ≤≥«æ…¬˚∆˙©ƒ∂ßåπø“‘≠–ºª•¶§∞¢#€¡±œ!@$%^&*(),.;?":{+}|<-=>/]{1,}', password):
@@ -227,9 +256,9 @@ def check_verification(email_address, password, actual_code, user_code, register
     # creates a new variable and forces only one piece of data at a time to be compared
     if emailID:
         # where the emailID entered by user is already saved to database
-        email_already_exists_label = Label(register_screen, text="   this email is already linked to an account")
+        email_already_exists_label = Label(register_screen, text="this email is already linked to an account")
         # tkinter will create a new label telling the user they have already signed up with this account
-        email_already_exists_label.place(x=140, y=170)
+        email_already_exists_label.place(x=118, y=170)
         # tells the system where to put this label, this will go directly below all the email rules
         email_already_exists_label.config(foreground="orange")
         # sets the colour of the text for this label to orange
@@ -238,9 +267,9 @@ def check_verification(email_address, password, actual_code, user_code, register
         # calls the verified variable and sets it to false stopping the user from registering incorrect details
     if actual_code != user_code:
         # fetches the code sent via email and matches with the code entered by the user
-        code_label_failure = Label(register_screen, text="code incorrect, not verified")
+        code_label_failure = Label(register_screen, text="code incorrect, email not verified")
         # tells the user they have mistyped their code
-        code_label_failure.place(x=200, y=227)
+        code_label_failure.place(x=145, y=227)
         # places this label just below the code entry box
         code_label_failure.config(foreground="red")
         # tells the user this a major issue they need to fix
@@ -249,12 +278,32 @@ def check_verification(email_address, password, actual_code, user_code, register
         # preventing the user from registering incorrect information
     else:
         # if the user has copied the code correctly
-        code_label_success = Label(register_screen, text="code correct, now verified")
+        code_label_success = Label(register_screen, text="     code correct, email verified    ")
         # system tells user code is correct
-        code_label_success.place(x=200, y=227)
+        code_label_success.place(x=145, y=227)
         # system places label at same place as code incorrect to ensure only one message appears at a time
         code_label_success.config(foreground="green")
         # configures the label to green showing the user the code is correct
+    if verified:
+        successful_sign_up = Label(register_screen, text="you have been successfully signed up, you may now log in")
+        # message telling user they are free to go and log in to the system
+        successful_sign_up.place(x=95, y=500)
+        # places the successful message on the screen using the place function
+        successful_sign_up.config(foreground="green")
+        # by colouring the text green informs the user they have followed all the necessary rules
+        email_has_been_entered_verified = Label(register_screen, text="you entered an email", padx=64)
+        # message telling user they are free to go and log in to the system
+        email_has_been_entered_verified.place(x=118, y=170)
+        # places the successful message on the screen using the place function
+        email_has_been_entered_verified.config(foreground="green")
+        # by colouring the text green informs the user they have followed all the necessary rules
+    else:
+        not_successful_sign_up = Label(register_screen, text="some details have errors, please try again", padx=55)
+        # message telling user they need to check their details before trying to log in
+        not_successful_sign_up.place(x=95, y=500)
+        # places the not successful message on the screen using the place function
+        not_successful_sign_up.config(foreground="red")
+        # by colouring the text red informs the user they have not followed all the necessary rules
     connection_check_verification.commit()
     # commits any changes the users inputs have made to the database
     connection_check_verification.close()
@@ -276,14 +325,12 @@ def register():
     register_screen.geometry("500x600")
     # gives the starting size for the Tkinter user interface
     register_screen.resizable(False, False)
-
     # limits the user from resizing the interface
 
     def sign_up(email_address_db, password_db, actual_code, user_code):
         """this function is used for when the user clicks on the sign_up button
         I have passed is_verified, email_address_db, password_db as parameters through this function
-        we are then able to call any of these parameters throughout our program
-        """
+        we are then able to call any of these parameters throughout our program"""
         connection_sign_up = sqlite3.connect(database_name)
         # connects to sqlite3 using a variable name of conn short for connection
         # finds the variable database_name and calls our database file from above
@@ -319,21 +366,28 @@ def register():
                 # place it as the first id
             if not email_address_db:
                 # where the user has not entered an email
-                no_email_entry = Label(register_screen, text="   please enter email")
+                no_email_entry = Label(register_screen, text="please enter email", padx=67)
                 # creates a variable
                 # sets it equal to Tkinter's label function with text informing the user they need to enter an email
-                no_email_entry.place(x=150, y=160)
+                no_email_entry.place(x=118, y=160)
                 # tells the system where to place this new label function, just below the email clauses
                 no_email_entry.config(foreground="red")
                 # configures the text to red telling the user they need to fix this before moving on
             else:
-                # where the user has entered an email
-                email_has_been_entered = Label(register_screen, text="you entered an email")
-                # new variable created, using text within label to tell user they entered an email
-                email_has_been_entered.place(x=140, y=170)
-                # tells system where to place new variable using the built in place function within tkinter
-                email_has_been_entered.config(foreground="green")
-                # by showing the user green text tells them they have followed this rule
+                # however if an email had been entered
+                email_has_been_entered = Label(register_screen, text="you entered an email", padx=64)
+                # the program creates a new variable
+                # using the label function placing text telling the user they have entered an email
+                email_has_been_entered.place(x=118, y=170)
+                # tells the system how to place the variable made above
+                email_has_been_entered.config(foreground="orange")
+                # configures the text message to green telling the user they have followed this rule
+                email_has_been_entered_verified = Label(register_screen, text="you entered an email", padx=64)
+                # message telling user they are free to go and log in to the system
+                email_has_been_entered_verified.place(x=118, y=170)
+                # places the successful message on the screen using the place function
+                email_has_been_entered_verified.config(foreground="green")
+                # by colouring the text green informs the user they have followed all the necessary rules
             if not password_db:
                 # where the user has not entered a password
                 no_password_entry = Label(register_screen, text="  please enter password")
@@ -364,6 +418,63 @@ def register():
         connection_sign_up.close()
         # closes the database connection until reopened
 
+    def view_key_register_screen():
+        """function with a button directing the user to a new window informing them on what each colour means"""
+        view_key_window_register_screen = Tk()
+        # creates a new variable and sets it equal to a new Tkinter window
+        view_key_window_register_screen.geometry("540x150")
+        # defines the original dimensions for the window using the built-in geometry function
+        view_key_window_register_screen.resizable(False, False)
+        # tells the program to fetch for the variable and then connect to the resizable function
+        # and sets both the x and y direction to false to force the window to stay at its original size
+        view_key_window_register_screen.title("View Key for Register Screen")
+        # gives the window which will be displayed in the border of the window to show the user which window is open
+        view_key_orange_colour_label = Label(view_key_window_register_screen, text="Orange: ")
+        # creates a new variable and sets it equal to a specific function which allows me to put labels on the window
+        view_key_orange_colour_label.place(x=15, y=30)
+        # tells the system where to place this label in reference with the x and y axis
+        view_key_red_colour_label = Label(view_key_window_register_screen, text="Red: ")
+        # variable for label telling the user Red:
+        view_key_red_colour_label.place(x=35, y=60)
+        # places this text inside the label along the x axis and down the y axis
+        view_key_green_colour_label = Label(view_key_window_register_screen, text="Green: ")
+        # creates the colour label telling the user Green
+        view_key_green_colour_label.place(x=22, y=90)
+        # places this label using the place function and defining the x and y direction
+        view_key_orange_description_label = Label(view_key_window_register_screen, text="You have entered "
+                                                                                        "information but"
+                                                                                        " you can not move on yet")
+        # creates a label to indicate that the user has entered information, but cannot move on yet
+        view_key_orange_description_label.place(x=68, y=30)
+        # positions the label at x=68, y=30
+        view_key_red_description_label = Label(view_key_window_register_screen, text="You have not entered the correct "
+                                                                                     "information therefore cannot "
+                                                                                     "move on")
+        # creates a label to indicate that the user has not entered the correct information, and cannot move on
+        view_key_red_description_label.place(x=68, y=60)
+        # positions the label at x=68, y=60
+        view_key_green_description_label = Label(view_key_window_register_screen, text="You have entered correct "
+                                                                                       "information and are now able to"
+                                                                                       " move on")
+        # creates a label to indicate that the user has entered correct information and can move on
+        view_key_green_description_label.place(x=68, y=90)
+        # positions the label at x=68, y=90
+        view_key_orange_colour_label.config(foreground="orange")
+        # sets the color of the orange color label to orange
+        view_key_orange_description_label.config(foreground="orange")
+        # sets the color of the orange description label to orange
+        view_key_red_colour_label.config(foreground="red")
+        # sets the color of the red color label to red
+        view_key_red_description_label.config(foreground="red")
+        # sets the color of the red description label to red
+        view_key_green_colour_label.config(foreground="green")
+        # sets the color of the green color label to green
+        view_key_green_description_label.config(foreground="green")
+        # sets the color of the green description label to green
+    view_key_button = Button(register_screen, text="View Key", command=view_key_register_screen)
+    # creates a button to view the key and calls the function "view_key_register_screen" when clicked
+    view_key_button.place(x=100, y=32)
+    # positions the button at x=100, y=32
     email_address_entry_register_screen = Entry(register_screen)
     # creates a new variable and sets it equal to an entry box placing it in the register_screen
     email_address_entry_register_screen.place(x=150, y=70)
@@ -381,7 +492,6 @@ def register():
     verify_text.place(x=13, y=203)
     # places this label next to the verify box so the user knows where to put the information
     code = str(random.randint(100000, 999999))
-
     # using the random function which uses an algorithm to cycle through numbers and creates a six digit code
 
     def send_email():
@@ -431,7 +541,13 @@ def register():
                     # setting it equal to opening a file and tells the system to read from the file
                     # splits the lines of each of the names
                     domain_register = open("emaildomains.txt", "r").read().splitlines()
-                    # splits the lines of each of the domains found inside the email_register_domain.txt file
+                    # splits the lines of each of the domains found inside the emaildomains.txt file
+                    not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+                    # it will make a new variable and set it equal to a label with text, Email has failed to send
+                    not_sent_label.place(x=310, y=124)
+                    # places label just above the verify button
+                    not_sent_label.config(foreground="red")
+                    # colours the label orange warning the user they haven't followed the rules
                     if name_register_split_with_sign in name_register:
                         # this ensure they are trying to send the email to an existing email address
                         # with a correct name
@@ -480,6 +596,13 @@ def register():
                         emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                         emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                 else:
+
+                    not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
+                    # it will make a new variable and set it equal to a label with text, Email has failed to send
+                    not_sent_label.place(x=310, y=124)
+                    # places label just above the verify button
+                    not_sent_label.config(foreground="red")
+                    # colours the label orange warning the user they haven't followed the rules
                     # where there wasn't an @ sign inside the user's inputted email
                     emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                     # changes the @ sign label from blank or tick to a cross
@@ -513,10 +636,13 @@ def register():
                         emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
                         # this changes the text from a tick to a cross where there is no existing domain
             else:
+
                 emoji_label_clause_2_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+
                 emoji_label_clause_3_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
+
                 emoji_label_clause_1_email_address.config(text=f'{emoji.emojize(":cross_mark:")}')
-                # although if the user has not entered an email
+
                 not_sent_label = Label(register_screen, text="Email has failed to send 😭", width=20)
                 # it will make a new variable and set it equal to a label with text, Email has failed to send
                 not_sent_label.place(x=310, y=124)
@@ -565,7 +691,6 @@ def register():
     # creates another variable and sets it equal to another entry box where the users password can be inputted
     # to ensure security the users password will stay safe we star out whatever they type in to the password box
     password_entry.place(x=150, y=250)
-
     # places these stars inside the tkinter window
 
     def show_password_register():
@@ -596,7 +721,7 @@ def register():
     # sets it equal to a label which shall be put inside the register_screen with some text
     check_clause_3_password.place(x=150, y=340)
     # lets the system know where the label should be placed
-    check_clause_4_password = Label(register_screen, text="At least 2 numbers")
+    check_clause_4_password = Label(register_screen, text="At least 1 number")
     # creates a new variable and lets it equal to a label placed inside the register_screen with text
     check_clause_4_password.place(x=150, y=360)
     # places our variable created above using the 'x' and the 'y' axis
@@ -662,7 +787,6 @@ def login():
     email_address_text_login_screen = Label(login_screen, text="Email address")
     # tells the user which information they need to enter with text
     email_address_text_login_screen.place(x=56.2, y=52)
-
     # places email address text next to the email address box
 
     def check_email_address():
@@ -684,7 +808,7 @@ def login():
                 # setting it equal to opening a file and tells the system to read from the file
                 # splits the lines of each of the names
                 domain_register = open("emaildomains.txt", "r").read().splitlines()
-                # splits the lines of each of the domains found inside the email_register_domain.txt file
+                # splits the lines of each of the domains found inside the emaildomains.txt file
                 if name_register_split_with_sign in name_register:
                     # this ensure they are trying to send the email to an existing email address
                     # with a correct name
@@ -756,6 +880,76 @@ def login():
             emoji_label_clause_1_email_address_login.config(text=f'{emoji.emojize(":cross_mark:")}')
             # connecting to a label made below changes the label to a cross mark
 
+    def view_key_login_screen():
+        """displays a window with color-coded labels and descriptions for colour meanings for the login window """
+        view_key_window_login_screen = Tk()
+        # attaches a new tkinter window to the new variable
+        view_key_window_login_screen.geometry("540x180")
+        # using the geometry function defines the starting size
+        view_key_window_login_screen.resizable(False, False)
+        # the resizable function is used to set both the across and down directions to false
+        # preventing the window from being resized
+        view_key_window_login_screen.title("View Key for Login Screen")
+        # using the title function gives the tkinter window a title
+        view_key_orange_colour_label = Label(view_key_window_login_screen, text="Orange: ")
+        # using the label function creates a label with text for the orange label
+        view_key_orange_colour_label.place(x=15, y=30)
+        # using the place function positions the label
+        view_key_red_colour_label = Label(view_key_window_login_screen, text="Red: ")
+        # using the label function creates a label with text for the red label
+        view_key_red_colour_label.place(x=35, y=60)
+        # positions the label using the the place function and calling the x and y parameters
+        view_key_green_colour_label = Label(view_key_window_login_screen, text="Green: ")
+        # creates another label, this time for the green label
+        view_key_green_colour_label.place(x=22, y=90)
+        # positions the label below the red label and slightly before the red label to ensure it is in line with the end
+        view_key_blue_colour_label = Label(view_key_window_login_screen, text="Blue: ")
+        # creates a new label for the blue label and places it inside the 'view_key_window_login_screen' window
+        view_key_blue_colour_label.place(x=32, y=120)
+        # positions the label inside the window using the place function
+        view_key_orange_description_label = Label(view_key_window_login_screen, text="You have left optional "
+                                                                                     "information blank, you are able "
+                                                                                     "to move on")
+        # creates a new label for the orange description using the label function
+        view_key_orange_description_label.place(x=68, y=30)
+        # positions the orange description label inline with the orange label
+        view_key_blue_description_label = Label(view_key_window_login_screen, text="You have entered information "
+                                                                                   "into an optional field")
+        # creates a new label for the blue description and places it inside the 'view_key_window_login_screen'
+        view_key_blue_description_label.place(x=68, y=120)
+        # positions the blue description label using the x and y parameters
+        view_key_red_description_label = Label(view_key_window_login_screen, text="You have not entered the correct "
+                                                                                  "information therefore cannot "
+                                                                                  "move on")
+        # makes a new label which is to be placed inside the 'view_key_window_login_screen' window
+        view_key_red_description_label.place(x=68, y=60)
+        # places the new label across the x axis and the y axis
+        view_key_green_description_label = Label(view_key_window_login_screen, text="You have entered correct "
+                                                                                    "information and are now able to"
+                                                                                    " move on")
+        # creates a description using the text parameter and places it inside the same window
+        view_key_green_description_label.place(x=68, y=90)
+        # places the label using the place function 68 along and 90 down
+        view_key_orange_colour_label.config(foreground="orange")
+        # using the config function sets the colour of the text of the orange label
+        view_key_orange_description_label.config(foreground="orange")
+        # changes the default colour of black text (foreground) and white background to orange text
+        view_key_red_colour_label.config(foreground="red")
+        # using the config function changes the colour of the red colour label to red
+        view_key_red_description_label.config(foreground="red")
+        # changes the colour of description for the red to be red
+        view_key_green_colour_label.config(foreground="green")
+        # makes the green label have a green colour
+        view_key_green_description_label.config(foreground="green")
+        # gives the description a green colour
+        view_key_blue_description_label.config(foreground="blue")
+        # gives the blue label a blue colour to match its text
+        view_key_blue_colour_label.config(foreground="blue")
+        # matching the name label gives the description the same colour
+    view_key_button = Button(login_screen, text="View Key", command=view_key_login_screen)
+    # creates a new button passing in parameters and pointing the program to the function above
+    view_key_button.place(x=105, y=20)
+    # places the button inside the window above the email address entry box
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
     # creates a variable connecting it to a button inside the login_screen with text and a command
     # the command wil check which rules pass or fail
@@ -780,7 +974,6 @@ def login():
     password_entry_login = Entry(login_screen, show='*')
     # creates a new variable and sets it equal to an entry box showing stars in place of whatever the user enters
     password_entry_login.place(x=150, y=190)
-
     # directs the program to where the entry box is to be placed inside the login_screen
 
     def show_password_login():
@@ -799,7 +992,6 @@ def login():
     # has a command linking to the above function telling the system how to behave
     # whether or not the check box is ticked
     show_password_check_box_login.place(x=85, y=227)
-
     # places the checkButton along the x axis and down the y axis
 
     def check_password():
@@ -827,7 +1019,7 @@ def login():
             # emoji will reflect this by being a red cross
         password_numbers_login = password_entry_login.get()
         # new variable now equal to the information entered into the password entry box
-        if re.search(r'[1234567890]{2,}', password_numbers_login):
+        if re.search(r'[1234567890]{1,}', password_numbers_login):
             # calls the re library and using the built in search function, searches through the user's entered password
             emoji_label_clause_4_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # either changes the cross to a tick or shows the user a tick
@@ -865,7 +1057,7 @@ def login():
     # hopefully informing the user the information they have to input into their password
     check_clause_3_password_login.place(x=150, y=290)
     # informs the system where to place the third password clause
-    check_clause_4_password_login = Label(login_screen, text="At least 2 numbers")
+    check_clause_4_password_login = Label(login_screen, text="At least 1 number")
     # final clause for password made be creating a variable setting it equal label with text in login screen
     check_clause_4_password_login.place(x=150, y=310)
     # places the label inside the login screen
@@ -935,7 +1127,6 @@ def login():
     connection_login.commit()
     # commits any changes the users inputs have made to the database
     connection_login.close()
-
     # closes the connection for the database
 
     def log_in(email_address_log_in, password_db_log_in, nickname, date_of_birth):
@@ -974,7 +1165,7 @@ def login():
             if password_db_log_in == savedPassword:
                 # as long as the users password entered
                 # when trying to log in matches the password saved linking to email typed in
-                password_correct = Label(login_screen, text="        password is correct")
+                password_correct = Label(login_screen, text="           password is correct")
                 password_correct.place(x=160, y=330)
                 password_correct.config(foreground="green")
                 # creates a new variable to be used informing the user their password is correct
@@ -1036,6 +1227,14 @@ def login():
                 # forces program to fetch only one piece of data at a time
                 access_Level = access_Level[0]
                 # sets the access level search from 0 so this is where it starts
+
+                getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % email_address_log_in
+                cursor_log_in.execute(getUserIDQuery)
+                id = cursor_log_in.fetchone()
+                if id:
+                    id = int(id[0])
+                    global loggedInUserID
+                    loggedInUserID = id
 
                 if access_Level == "admin":
                     # the following code is where the admin account is trying update users' information
@@ -1105,226 +1304,18 @@ def login():
                     # however can be done in any order
                 elif access_Level == "userAccount":
                     # where if a non admin account has logged in
-                    home_automation_system_prompt_window = Tk()
+                    home_automation_system_window = Tk()
                     # a new tkinter page will be created and set equal to a new variable
-                    home_automation_system_prompt_window.title("Home Automation System Adding Devices")
+                    home_automation_system_window.title("Home Automation System HomePage")
                     # gives this new tkinter window a title to inform the user what stage of my system they are at
-                    home_automation_system_prompt_window.geometry("500x600")
+                    home_automation_system_window.geometry("500x600")
                     # gives the user a starting size using the geometry function built into tkinter
-                    home_automation_system_prompt_window.resizable(False, False)
+                    home_automation_system_window.resizable(False, False)
                     # creates limits for the window at the original size
-                    add_device_question = Label(home_automation_system_prompt_window,
-                                                text="Would you like to add a device?")
 
-                    add_device_question.place(x=45, y=45)
-
-                    def yes_button_to_add_device_question_command():
+                    def voice_assistant_button_clicked():
                         """"""
-                        device_brand_question_label = Label(home_automation_system_prompt_window,
-                                                            text="What brand is the device you would like to pair?")
-
-                        device_brand_question_label.place(x=20, y=250)
-
-                        device_brand_entry_box = Entry(home_automation_system_prompt_window)
-
-                        device_brand_entry_box.place(x=45, y=270)
-
-                        enter_button_device_brand = Button(home_automation_system_prompt_window, text="Enter")
-
-                        enter_button_device_brand.place(x=250, y=268)
-
-                        device_adding_description_label_first_line = Label(home_automation_system_prompt_window,
-                                                                           text="Download the corresponding app and "
-                                                                                "follow their instructions to add the "
-                                                                                "device")
-
-                        device_adding_description_label_first_line.place(x=25, y=300)
-
-                        device_adding_description_label_second_line = Label(home_automation_system_prompt_window,
-                                                                            text="You can then click next to connect it"
-                                                                                 " via this system")
-
-                        device_adding_description_label_second_line.place(x=25, y=320)
-
-                    yes_button_to_add_device_question = Button(home_automation_system_prompt_window,
-                                                               text="Yes",
-                                                               command=yes_button_to_add_device_question_command)
-
-                    yes_button_to_add_device_question.place(x=75, y=100)
-
-                    def voice_assistant_button_pressed_prompt_window():
-                        """"""
-                        def do_spotify_command():
-
-                            r_spotify = sr.Recognizer()
-                            with sr.Microphone() as source_spotify:
-                                r_spotify.adjust_for_ambient_noise(source_spotify, duration=0.2)
-                                print("What would you like to do with spotify")
-                                audio_spotify = r_spotify.listen(source_spotify)
-                                speech_spotify = r_spotify.recognize_google(audio_spotify)
-                                if "change volume" in speech_spotify:
-                                    r_volume = sr.Recognizer()
-                                    # variable used to recognise speech
-                                    with sr.Microphone() as source_volume:
-                                        r_volume.adjust_for_ambient_noise(source_volume, duration=0.2)
-                                        print("What would you like the new percentage of playback to be?")
-                                        volume_change = r_volume.listen(source_volume)
-                                        speech_volume = r_volume.recognize_google(volume_change)
-                                        sp.volume(int(speech_volume))
-                                        print(
-                                            "Your volume has been changed to " + speech_volume +
-                                            "%, if this is the wrong volume please retry")
-                                elif "play" in speech_spotify:
-                                    sp.start_playback()
-                                elif "pause" in speech_spotify:
-                                    sp.pause_playback()
-                                elif "song" in speech_spotify:
-                                    r_song = sr.Recognizer()
-                                    with sr.Microphone() as song_user:
-                                        r_song.adjust_for_ambient_noise(song_user, duration=0.2)
-                                        print("Which song would you like to play?")
-                                        song_audio = r_spotify.listen(song_user)
-                                        song_user = r_spotify.recognize_google(song_audio)
-                                        print("You said: " + song_user + ", " +
-                                              song_user + " is playing, if this wasn't the song you wanted to play,"
-                                                          " please retry")
-                                        results = sp.search(q=song_user, type='track')
-                                        track_uri = results['tracks']['items'][0]['uri']
-                                        sp.start_playback(uris=[track_uri])
-                                elif "shuffle" in speech_spotify:
-                                    sp.shuffle(True)
-                                elif "skip" or "next" in speech_spotify:
-                                    sp.next_track()
-                                elif "previous" or "go back" in speech_spotify:
-                                    sp.previous_track()
-                                else:
-                                    print("retry")
-
-                        def find_weather():
-                            """"""
-                            url = "https://www.google.co.uk/search?q=weather"
-                            #
-                            find_weather_result = requests.get(url, headers=headers)
-                            #
-                            soup = BeautifulSoup(find_weather_result.text, "html.parser")
-                            #
-                            temperature = soup.select("#wob_tm")[0].getText().strip()
-                            #
-                            weather_description = soup.select("#wob_dc")[0].getText().strip()
-                            #
-                            return temperature, weather_description
-                            #
-
-                        def do_maths(maths_question):
-                            """"""
-                            maths_question = maths_question.replace(" ", "+")
-                            #
-                            url = "https://www.google.co.uk/search?q=%s" % maths_question
-                            #
-                            do_maths_result = requests.get(url, headers=headers)
-                            #
-                            soup = BeautifulSoup(do_maths_result.text, "html.parser")
-                            #
-                            answer = soup.select("#cwos")
-                            if answer:
-                                answer = answer[0].getText().strip()
-                                return answer
-                            else:
-                                return None
-                            #
-
-                        r = sr.Recognizer()
-                        # variable used to recognise speech
-                        song = sp.current_playback()
-                        currVolume = 0
-                        if song:
-                            currVolume = song["device"]["volume_percent"]
-                            print(currVolume)
-                            sp.volume(int(10))
                         try:
-                            with sr.Microphone() as source:
-                                #
-                                r.adjust_for_ambient_noise(source, duration=0.2)
-                                #
-                                print("Speak now")
-                                #
-                                audio = r.listen(source)
-                                #
-                                speech = r.recognize_google(audio)
-                                #
-                                print("You said: " + speech)
-                                #
-                                if "Spotify" in speech:
-                                    do_spotify_command()
-                                elif "weather" in speech:
-                                    #
-                                    tempValue, description = find_weather()
-                                    #
-                                    print(tempValue + " degree celsius", description)
-                                elif "calculator" in speech:
-                                    #
-                                    r.adjust_for_ambient_noise(source, duration=0.2)
-                                    #
-                                    print("Ask your question")
-                                    #
-                                    questionAudio = r.listen(source)
-                                    #
-                                    question = r.recognize_google(questionAudio)
-                                    #
-                                    result = do_maths(question)
-                                    if result:
-                                        print(result)
-                                    else:
-                                        print("Couldn't find an answer, click on voice assistant again to retry")
-
-                                else:
-                                    print("I am not sure how to help you, click on voice assistant again to retry")
-                        except Exception as e:
-                            sp.volume(int(currVolume))
-                            print(e)
-
-                    voice_assistant_prompt_window = Button(home_automation_system_prompt_window,
-                                                           text="Voice Assistant",
-                                                           command=voice_assistant_button_pressed_prompt_window)
-
-                    voice_assistant_prompt_window.place(x=350, y=500)
-
-                    def next_button():
-                        """"""
-                        adding_devices_window = Tk()
-
-                        adding_devices_window.title("Searching for Devices")
-
-                        adding_devices_window.geometry("500x600")
-
-                        adding_devices_window.resizable(False, False)
-
-                    next_button = Button(home_automation_system_prompt_window, text="Next",
-                                         command=next_button)
-
-                    next_button.place(x=230, y=550)
-
-                    def no_button_to_add_device_question_command():
-                        home_automation_system_prompt_window.destroy()
-
-                        home_automation_system_control_devices_window = Tk()
-
-                        home_automation_system_control_devices_window.title("Home Automation System Control Devices")
-
-                        home_automation_system_control_devices_window.geometry("500x600")
-
-                        home_automation_system_control_devices_window.resizable(False, False)
-
-                        def show_rooms_for_devices():
-                            return
-
-                        rooms_for_lights_button = Button(home_automation_system_control_devices_window, text="Rooms",
-                                                         command=show_rooms_for_devices)
-
-                        rooms_for_lights_button.place(x=45, y=100)
-
-                        def voice_assistant_control_window_button_pressed():
-
                             def do_spotify_command():
                                 r_spotify = sr.Recognizer()
                                 with sr.Microphone() as source_spotify:
@@ -1332,7 +1323,11 @@ def login():
                                     print("What would you like to do with spotify")
                                     audio_spotify = r_spotify.listen(source_spotify)
                                     speech_spotify = r_spotify.recognize_google(audio_spotify)
-                                    if "change volume" in speech_spotify:
+                                    if "pause" in speech_spotify:
+                                        sp.pause_playback()
+                                    elif "play" in speech_spotify:
+                                        sp.start_playback()
+                                    elif "change volume" in speech_spotify:
                                         r_volume = sr.Recognizer()
                                         # variable used to recognise speech
                                         with sr.Microphone() as source_volume:
@@ -1341,16 +1336,10 @@ def login():
                                             volume_change = r_volume.listen(source_volume)
                                             speech_volume = r_volume.recognize_google(volume_change)
                                             sp.volume(int(speech_volume))
-                                            print(
-                                                "Your volume has been changed to " + speech_volume +
-                                                "%, if this is the wrong volume please retry")
-                                    elif "play" in speech_spotify:
-                                        sp.start_playback()
-                                    elif "pause" in speech_spotify:
-                                        # doesn't work because can hear music in background
-                                        # maybe there's a way to ignore speakers??
-                                        # and only receive input from microphone
-                                        sp.pause_playback()
+                                            print("Your volume has been changed to " + speech_volume + "%, if this "
+                                                                                                       "is the wrong "
+                                                                                                       "volume please "
+                                                                                                       "retry")
                                     elif "song" in speech_spotify:
                                         r_song = sr.Recognizer()
                                         with sr.Microphone() as song_user:
@@ -1358,16 +1347,16 @@ def login():
                                             print("Which song would you like to play?")
                                             song_audio = r_spotify.listen(song_user)
                                             song_user = r_spotify.recognize_google(song_audio)
-                                            print("You said: " +
-                                                  song_user + ", " + song_user + " is playing,"
-                                                                                 " if this wasn't the song you wanted "
-                                                                                 "to play, please retry")
+                                            print("You said: " + song_user + ", " + song_user + " is playing, if this"
+                                                                                                " wasn't the "
+                                                                                                "song you wanted to "
+                                                                                                "play, please retry")
                                             results = sp.search(q=song_user, type='track')
                                             track_uri = results['tracks']['items'][0]['uri']
                                             sp.start_playback(uris=[track_uri])
                                     elif "shuffle" in speech_spotify:
                                         sp.shuffle(True)
-                                    elif "skip" or "next" in speech_spotify:
+                                    elif "skip" or "next" or "skip it" in speech_spotify:
                                         sp.next_track()
                                     elif "previous" or "go back" in speech_spotify:
                                         sp.previous_track()
@@ -1377,35 +1366,24 @@ def login():
                             def find_weather():
                                 """"""
                                 url = "https://www.google.co.uk/search?q=weather"
-                                #
                                 find_weather_result = requests.get(url, headers=headers)
-                                #
                                 soup = BeautifulSoup(find_weather_result.text, "html.parser")
-                                #
                                 temperature = soup.select("#wob_tm")[0].getText().strip()
-                                #
                                 weather_description = soup.select("#wob_dc")[0].getText().strip()
-                                #
                                 return temperature, weather_description
-                                #
 
                             def do_maths(maths_question):
                                 """"""
                                 maths_question = maths_question.replace(" ", "+")
-                                #
                                 url = "https://www.google.co.uk/search?q=%s" % maths_question
-                                #
                                 do_maths_result = requests.get(url, headers=headers)
-                                #
                                 soup = BeautifulSoup(do_maths_result.text, "html.parser")
-                                #
                                 answer = soup.select("#cwos")
                                 if answer:
                                     answer = answer[0].getText().strip()
                                     return answer
                                 else:
                                     return None
-
                             r = sr.Recognizer()
                             # variable used to recognise speech
                             song = sp.current_playback()
@@ -1416,56 +1394,36 @@ def login():
                                 sp.volume(int(10))
                             try:
                                 with sr.Microphone() as source:
-                                    #
                                     r.adjust_for_ambient_noise(source, duration=0.2)
-                                    #
                                     print("Speak now")
-                                    #
                                     audio = r.listen(source)
-                                    #
                                     speech = r.recognize_google(audio)
-                                    #
                                     print("You said: " + speech)
-                                    #
-                                    if "weather" in speech:
-                                        #
+                                    if "Spotify" in speech:
+                                        do_spotify_command()
+                                    elif "weather" in speech:
                                         tempValue, description = find_weather()
-                                        #
                                         print(tempValue + " degree celsius", description)
                                     elif "calculator" in speech:
-                                        #
                                         r.adjust_for_ambient_noise(source, duration=0.2)
-                                        #
                                         print("Ask your question")
-                                        #
                                         questionAudio = r.listen(source)
-                                        #
                                         question = r.recognize_google(questionAudio)
-                                        #
                                         result = do_maths(question)
-                                        if result:
-                                            print(result)
-                                        else:
+                                        print(result)
+                                        if not result:
                                             print("Couldn't find an answer, click on voice assistant again to retry")
-                                    elif "Spotify" in speech:
-                                        do_spotify_command()
                                     else:
                                         print("I am not sure how to help you, click on voice assistant again to retry")
                             except Exception as e:
                                 sp.volume(int(currVolume))
                                 print(e)
-
-                        voice_assistant_control_devices = Button(home_automation_system_control_devices_window,
-                                                                 text="Voice Assistant",
-                                                                 command=voice_assistant_control_window_button_pressed)
-
-                        voice_assistant_control_devices.place(x=350, y=500)
-
-                    no_button_to_add_device_question = Button(home_automation_system_prompt_window,
-                                                              text="No",
-                                                              command=no_button_to_add_device_question_command)
-
-                    no_button_to_add_device_question.place(x=155, y=100)
+                        except:
+                            print("I am not sure how to help you, click on voice assistant again to retry")
+                    voice_assistant_button = Button(home_automation_system_window,
+                                                    text="Voice Assistant",
+                                                    command=voice_assistant_button_clicked)
+                    voice_assistant_button.place(x=350, y=580)
             else:
                 # where users entered password doesn't match the password they registered with
                 password_does_not_match = Label(login_screen, text="password does not match")
