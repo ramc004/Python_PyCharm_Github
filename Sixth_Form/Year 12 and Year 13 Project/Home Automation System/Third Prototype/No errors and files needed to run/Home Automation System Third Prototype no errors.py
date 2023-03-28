@@ -1168,15 +1168,21 @@ def login():
                 # forces program to fetch only one piece of data at a time
                 access_Level = access_Level[0]
                 # sets the access level search from 0 so this is where it starts
-
                 getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % email_address_log_in
+                # creates new variable and using a select statement collects the user id
+                # where the email address is equal to the email address entered
                 cursor_log_in.execute(getUserIDQuery)
+                # executes the above sql statement
                 id = cursor_log_in.fetchone()
+                # creates a variable for one piece of data the system will collect
                 if id:
+                    # where the variable does exist
                     id = int(id[0])
+                    # give the new id a new increment from the previous id
                     global loggedInUserID
+                    # allows us to call the logged in account as none from the top
                     loggedInUserID = id
-
+                    # then sets the new logged in account to the new increment
                 if access_Level == "admin":
                     # the following code is where the admin account is trying update users' information
                     # where the access level has been fetched and found to be admin

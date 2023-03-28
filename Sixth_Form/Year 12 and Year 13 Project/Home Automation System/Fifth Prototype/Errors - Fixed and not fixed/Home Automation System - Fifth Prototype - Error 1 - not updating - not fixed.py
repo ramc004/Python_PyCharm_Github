@@ -1257,15 +1257,21 @@ def login():
                 # forces program to fetch only one piece of data at a time
                 access_Level = access_Level[0]
                 # sets the access level search from 0 so this is where it starts
-
                 getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % email_address_log_in
+                # creates new variable and using a select statement collects the user id
+                # where the email address is equal to the email address entered
                 cursor_log_in.execute(getUserIDQuery)
+                # executes the above sql statement
                 id = cursor_log_in.fetchone()
+                # creates a variable for one piece of data the system will collect
                 if id:
+                    # where the variable does exist
                     id = int(id[0])
+                    # give the new id a new increment from the previous id
                     global loggedInUserID
+                    # allows us to call the logged in account as none from the top
                     loggedInUserID = id
-
+                    # then sets the new logged in account to the new increment 
                 if access_Level == "admin":
                     # the following code is where the admin account is trying update users' information
                     # where the access level has been fetched and found to be admin
@@ -1341,7 +1347,6 @@ def login():
                     home_automation_system_window.geometry("500x650")
                     # gives the user a starting size using the geometry function built into tkinter
                     home_automation_system_window.resizable(False, False)
-
                     # creates limits for the window at the original size
 
                     def voice_assistant_button_clicked():
@@ -1367,8 +1372,6 @@ def login():
                                     # creates a spotify label for command
                                     question_spotify_label.place(x=50, y=588)
                                     # places spotify command label on screen
-                                    home_automation_system_window.update()
-                                    # updates the home automation system window
                                     audio_spotify = r_spotify.listen(source_spotify)
                                     # new variable used to listen to what the user's request is
                                     speech_spotify = r_spotify.recognize_google(audio_spotify)
@@ -1419,8 +1422,6 @@ def login():
                                             # label created for new volume
                                             percentage_playback_response.place(x=5, y=530)
                                             # new volume window placed
-                                            home_automation_system_window.update()
-                                            # window updated with labels
                                     elif "song" in speech_spotify:
                                         # if the system recognises the user says for example song
                                         r_song = sr.Recognizer()
@@ -1435,8 +1436,6 @@ def login():
                                             # song request label
                                             song_question_label.place(x=8, y=525)
                                             # song request label placed
-                                            home_automation_system_window.update()
-                                            # home automation window updated with labels
                                             song_audio = r_spotify.listen(song_user)
                                             # using the listen module and the microphone
                                             song_user = r_spotify.recognize_google(song_audio)
@@ -1454,8 +1453,6 @@ def login():
                                             # second half of label
                                             song_response_label_line_2.place(x=5, y=550)
                                             # placed on new line of label
-                                            home_automation_system_window.update()
-                                            # system will update labels to user
                                             results = sp.search(q=song_user, type='track')
                                             # then to find the song the user asked for a query is run
                                             # on the converted speech only searching for specific tracks
@@ -1488,8 +1485,6 @@ def login():
                                         # retry label created
                                         general_error_spotify_label_main.place(x=5, y=550)
                                         # using place function label is positioned in window
-                                        home_automation_system_window.update()
-                                        # the window is then updated with the label just created
 
                             def find_weather():
                                 """the weather function where the voice assistant recognises the key word to be weather"""
@@ -1573,8 +1568,6 @@ def login():
                                     # the ready label is created with text of speak now
                                     speak_now_label.place(x=5, y=570)
                                     # the speak now label is placed
-                                    home_automation_system_window.update()
-                                    # labels are updated to the window
                                     audio = r.listen(source)
                                     # using a variable and connection to the recognizer made above the listen function is
                                     # used while passing in the microphones input
@@ -1595,8 +1588,6 @@ def login():
                                         # reports the temperature along with the conditions back to the user in a label
                                         weather_label.place(x=0, y=580)
                                         # places the weather label
-                                        home_automation_system_window.update()
-                                        # updates the window with the weather label
                                     elif "calculator" in speech:
                                         # where the user's speech contained the key word calculator
                                         r.adjust_for_ambient_noise(source, duration=0.2)
@@ -1605,8 +1596,6 @@ def login():
                                                                           text="Ask your question")
                                         # specific question for calculator label created
                                         question_calculator_label.place(x=120, y=590)
-                                        # calculator label placed
-                                        home_automation_system_window.update()
                                         # home automation system window updated with new label
                                         questionAudio = r.listen(source)
                                         # where the user has something in source variable is created
@@ -1631,8 +1620,6 @@ def login():
                                             # second half, requesting the user retry
                                             general_error_voice_assistant_maths_label_line_2.place(x=50, y=590)
                                             # label placed line below in middle
-                                            home_automation_system_window.update()
-                                            # window updated with new labels
                                         else:
                                             # where result  is found tp exist
                                             maths_label_answer = Label(home_automation_system_window,
@@ -1642,8 +1629,6 @@ def login():
                                             # holding a label with text of the result to the maths problem
                                             maths_label_answer.place(x=100, y=590)
                                             # places the maths label answer
-                                            home_automation_system_window.update()
-                                            # will update the system's window so user can see latest labels
                                     else:
                                         # however if the speech did not contain weather
                                         general_error_label_line_1 = Label(home_automation_system_window,
@@ -1657,8 +1642,6 @@ def login():
                                         # general error is created
                                         general_error_label_line_2.place(x=50, y=590)
                                         # general error is placed
-                                        home_automation_system_window.update()
-                                        # updates window with labels
                             except:
                                 # capture the error and where occurs hold it
                                 spotify_no_speech_label_line_1 = Label(home_automation_system_window,
@@ -1672,8 +1655,6 @@ def login():
                                 # system is told about the creation of a label where text and a padx are passed
                                 spotify_no_speech_label_line_2.place(x=50, y=590)
                                 # label informs system where it will be positioned
-                                home_automation_system_window.update()
-                                # labels are updated to system
                                 sp.volume(int(currVolume))
                                 # the volume is then set to what is found to be at
                         except:
@@ -1691,9 +1672,6 @@ def login():
                             # creates label for second half of general label
                             general_error_voice_assistant_label_line_2.place(x=50, y=590)
                             # places second half of general error label
-                            home_automation_system_window.update()
-                            # system updates current labels on window
-
                     voice_assistant_button = Button(home_automation_system_window,
                                                     text="Voice Assistant",
                                                     command=voice_assistant_button_clicked)
