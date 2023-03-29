@@ -1356,24 +1356,40 @@ def login():
                     # the dev id is found on the website
                     # the address, local key and version are found from terminal command
                     roomDict = {}
+                    # calling the dictionary to be filled in with the chosen lights
                     getRoomsQuery = """SELECT roomName, studyLight1,studyLight2,transformer FROM UserRooms WHERE userID = %d""" % id
+                    # query to select the name of room chosen along with user id the user is logged in with
                     cursor_log_in.execute(getRoomsQuery)
+                    # then using the cursor the query is executed
                     roomList = cursor_log_in.fetchall()
+                    # to ensure each piece of data is saved inside the room list
                     if roomList:
+                        # where room list exists
                         roomList = roomList[0:]
-
+                        # reset and increment to original state
                         for room in roomList:
+                            # checking if room found is in room list
                             roomName = room[0]
+                            # fetch the room name from the user's input
                             bulbBooleans = room[1:]
+                            # uses another variable where the light has been selected
                             bulbList = []
+                            # list for the bulbs is created to add the bulbs selected
                             if bulbBooleans[0] == 1:
+                                # if the first bulb in the list is selected
                                 bulbList.append(study_light_1)
+                                # using the append function the specific light is added to the list
                             if bulbBooleans[1] == 1:
+                                # where the second bulb has been selected
                                 bulbList.append(study_light_2)
+                                # 2nd light is appended to be selected to the list
                             if bulbBooleans[3] == 1:
+                                # for the final bulb where its chosen
                                 bulbList.append(Transformer)
+                                # the list is then appended with the new light
                             roomDict[roomName] = [bulbList]
-
+                            # then calling the room dictionary of the name chosen
+                            # equal to the list just created containing the selected lights
                     home_automation_system_window = Tk()
                     # a new tkinter page will be created and set equal to a new variable
                     home_automation_system_window.title("Home Automation System HomePage")
@@ -1383,142 +1399,249 @@ def login():
                     home_automation_system_window.resizable(False, False)
                     # creates limits for the window at the original size
                     roomButtons = []
+                    # creates the list for the room buttons
 
                     def room_more_controls(room_Name):
+                        """function passing in the room name chosen,
+                        for extra functionality of my system when clicking on the name of each light"""
                         room_more_controls_window = Tk()
+                        # new window is created attached to tkinter
                         room_more_controls_window.title("Home Automation System Rooms More Controls")
+                        # using title function giving the new window an informative title
                         room_more_controls_window.geometry("500x375")
+                        # using geometry function defining the dimensions of the window
                         room_more_controls_window.resizable(False, False)
+                        # to ensure the window is at a fixed size
                         more_controls_button_on = Button(room_more_controls_window,
                                                          text="On",
                                                          command=lambda: OnButtonRoom(room_Name))
+                        # the button function is called to switch the room on
                         more_controls_button_on.place(x=195, y=70)
+                        # button is placed on window in line
                         more_controls_button_off = Button(room_more_controls_window,
                                                           text="Off",
                                                           command=lambda: OffButtonRoom(room_Name))
+                        # off button for whole room's lights is shown
                         more_controls_button_off.place(x=255, y=70)
+                        # off button is placed
                         more_controls_colour_picker = Button(room_more_controls_window,
                                                              text="Select colour",
                                                              command=lambda: choose_colour_room(room_Name))
+                        # for the select colour button for the specific room
                         more_controls_colour_picker.place(x=195, y=140)
+                        # select colour button is placed
                         more_controls_name_of_bulb = Label(room_more_controls_window, text=room_Name)
+                        # using a label for the name of the room so the user knows which room they are in contact with
                         more_controls_name_of_bulb.place(x=195, y=40)
+                        # places the room name label on screen
                         slider_more_controls = Scale(
                             room_more_controls_window,
                             from_=10,
                             to=1000,
                             orient='horizontal',
                             command=lambda value: room_slider_control(room_Name, value))
+                        # makes a scale to control the room's brightness by passing in the room name and the value
                         slider_more_controls.place(x=200, y=97)
+                        # places the scale for more controls
                         scenes_more_controls = Label(room_more_controls_window, text="Scenes")
+                        # creates a label directing the user what the following buttons are (Scenes)
                         scenes_more_controls.place(x=225, y=195)
+                        # places the informative label
 
                         def set_Scene(sceneBulb, scene):
+                            """connecting back to the set_Scene function and passing in the scene
+                            along with the bulb being controlled"""
                             sceneBulb.set_mode("scene")
+                            # calling variable and setting its status to a particular scene the user chooses
                             scene_code = scene_code_dictionary[scene]
+                            # using a new variable and linking to the dictionary of scenes the scene is linked
                             sceneBulb.set_value(25, scene_code)
+                            # then using the value scenes reference with and the scene code just found
 
                         scenes_reading = Button(room_more_controls_window,
                                                 text="Reading", command=lambda: setRoomScenes(room_Name, "Reading"))
+                        # creates the button along with the scene to pass through
                         scenes_reading.place(x=50, y=225)
+                        # places the scenes button on the window in line so they each line up
                         scenes_night = Button(room_more_controls_window,
                                               text="Night", command=lambda: setRoomScenes(room_Name, "Night"))
+                        # creates the button along with the scene to pass through
                         scenes_night.place(x=220, y=225)
+                        # places the scenes button on the window in line so they each line up
                         scenes_leisure = Button(room_more_controls_window,
                                                 text="Leisure", command=lambda: setRoomScenes(room_Name, "Leisure"))
+                        # creates the button along with the scene to pass through
                         scenes_leisure.place(x=380, y=225)
+                        # places the scenes button on the window in line so they each line up
                         scenes_working = Button(room_more_controls_window,
                                                 text="Working", command=lambda: setRoomScenes(room_Name, "Working"))
+                        # creates the button along with the scene to pass through
                         scenes_working.place(x=50, y=275)
+                        # places the scenes button on the window in line so they each line up
                         scenes_soft = Button(room_more_controls_window,
                                              text="Soft", command=lambda: setRoomScenes(room_Name, "Soft"))
+                        # creates the button along with the scene to pass through
                         scenes_soft.place(x=220, y=275)
+                        # places the scenes button on the window in line so they each line up
                         scenes_colourful = Button(room_more_controls_window,
                                                   text="Colourful",
                                                   command=lambda: setRoomScenes(room_Name, "Colourful"))
+                        # creates the button along with the scene to pass through
                         scenes_colourful.place(x=380, y=275)
+                        # places the scenes button on the window in line so they each line up
                         scenes_dazzling = Button(room_more_controls_window,
                                                  text="Dazzling", command=lambda: setRoomScenes(room_Name, "Dazzling"))
+                        # creates the button along with the scene to pass through
                         scenes_dazzling.place(x=120, y=325)
+                        # places the scenes button on the window in line so they each line up
                         scenes_gorgeous = Button(room_more_controls_window,
                                                  text="Gorgeous", command=lambda: setRoomScenes(room_Name, "Gorgeous"))
+                        # creates the button along with the scene to pass through
                         scenes_gorgeous.place(x=310, y=325)
+                        # places the scenes button on the window in line so they each line up
 
                         def setRoomScenes(roomName2, scene):
+                            """function to set each of the scenes for the whole room"""
                             bulbs = roomDict[roomName2]
+                            # bulbs variable attached to room dictionary along with the room name
+                            # within the more controls window
                             for bulb in bulbs:
+                                # where the bulb selected is found in the room dictionary
                                 set_Scene(bulb, scene)
+                                # using the set scene function attached to the bulb and the scene
 
                     def OnButtonRoom(room_Name):
+                        """function to turn room on"""
                         bulbs = roomDict[room_Name]
+                        # link bulbs variable to name of room dictionary
                         for bulb in bulbs:
+                            # using a loop to search
+                            # any bulb found in the list that being accessed
                             bulb.turn_on()
+                            # is then turned on
 
                     def OffButtonRoom(room_Name):
+                        """function to turn lights in room off"""
                         bulbs = roomDict[room_Name]
+                        # variable to link to room dict with its room name
                         for bulb in bulbs:
+                            # using the room name access the list
                             bulb.turn_off()
+                            # turn off lights in that list
 
                     def room_slider_control(room_Name, value):
+                        """slider control for multiple lights in one room
+                        name passed through so system knows which lights are to be controlled
+                        value passed through to take the input from the slider"""
                         bulbs = roomDict[room_Name]
+                        # variable created and linked to room dictionary passing in the room name
                         for bulb in bulbs:
+                            # decides which bulbs to affect the lights with
                             bulb.set_brightness(int(value))
+                            # using the set brightness function the rooms brightness will change
 
                     def choose_colour_room(room_Name):
+                        """function to change colour of lights within the room under its name """
                         try:
+                            # hold the error in the below code
                             color_code = colorchooser.askcolor(title="Choose Colour")
+                            # using the colorchooser library the askcolor function is used
+                            # to show the multiple forms of choosing a colour
                             (r, g, b) = color_code[0]
+                            # catching result of the colour found
                             bulbs = roomDict[room_Name]
+                            # finding the bulbs in the room that the system is working on controlling
                             for bulb in bulbs:
+                                # the bulbs are the found which is in the chosen list
                                 bulb.set_colour(r, g, b)
+                                # then using the set colour function the bulbs are changed to the colour the user picked
                         except:
+                            # where the user doesn't pick a colour and clicks on cancel
                             return
 
                     def loadRoomPage(room_Name):
+                        """loads the room page with the buttons to control the room """
                         load_room_page = Tk()
+                        # window created for controlling room
                         load_room_page.title("HAS - Rooms")
+                        # short name for a small window, stands for home automation system - rooms
                         load_room_page.geometry("200x200")
+                        # gives dimensions for a small window
                         load_room_page.resizable(False, False)
+                        # keeps the windows size static
                         roomName_button = Button(load_room_page, text=room_Name,
                                                  command=lambda: room_more_controls(room_Name))
+                        # button to lead the user to extra controls for the lights, for example scenes
                         roomName_button.place(x=40, y=32)
+                        # places the room name button
                         on_button_rooms = Button(load_room_page, text="On", command=lambda: OnButtonRoom(room_Name))
+                        # button to be used to switch whole room
                         on_button_rooms.place(x=40, y=60)
+                        # button will be placed below name of room
                         off_button_rooms = Button(load_room_page, text="Off", command=lambda: OffButtonRoom(room_Name))
+                        # a button is created to be used to switch the lights inside the room off
                         off_button_rooms.place(x=95, y=60)
+                        # off button for rooms is placed in close proximity to the on button
                         slider_room_page = Scale(
                             load_room_page,
                             from_=10,
                             to=1000,
                             orient='horizontal',
                             command=lambda value: room_slider_control(room_Name, value))
+                        # the slider to control the lights brightness is created
                         slider_room_page.place(x=45, y=90)
+                        # the slider is placed on the window below the on and off button
+                        # with enough space for the dial to not cover any buttons
                         room_colour_picker = Button(load_room_page,
                                                     text="Select colour",
                                                     command=lambda: choose_colour_room(room_Name))
+                        # colour picker for lights is created which passes in the room name
+                        # ensuring the whole room is effected
                         room_colour_picker.place(x=40, y=130)
+                        # colour picker for room is placed on window
 
                     def deleteButtons():
+                        """used where a new user logs in with no buttons registered to their account"""
                         roomButtons.clear()
+                        # each button that was created is cleared
                         for button in roomButtons:
+                            # find buttons that have been made for the window
                             button.destroy()
+                            # connect to buttons found and using the destroy function get rid of them
 
                     def refreshButtons():
+                        """function to re create the buttons once buttons have been cleared
+                        ensures when user logs they only see buttons for each of their personally created rooms"""
                         deleteButtons()
+                        # delete buttons functions is called
                         x = 180
+                        # starting placement of button across
                         y = 100
+                        # starting placement of button downwards direction
                         rooms = roomDict.keys()
+                        # then calling a rooms variable linking back the dictionary created
                         for room_refresh_buttons in rooms:
+                            # where the new button has been found inside the users rooms
                             newButton = Button(home_automation_system_window,
                                                text=room_refresh_buttons,
                                                command=lambda room=room_refresh_buttons: loadRoomPage(room))
+                            # the new button is created for the user to control th lights in the room
                             newButton.place(x=x, y=y)
+                            # places the new button using the original placements
                             roomButtons.append(newButton)
+                            # append this new button to the the room buttons list so the system knows
+                            # which buttons to load when each user logs in
                             x = (x + 125) % 380
+                            # how much gap to leave
                             if x < 180:
+                                # where there isn't enough space on the line
                                 x = 180
+                                # call the new position for across direction
                                 y = y + 25
+                                # new position for downwards on the next line
                     refreshButtons()
+                    # call the refresh buttons function
+                    # buttons are displayed for the user
 
                     def voice_assistant_button_clicked():
                         """voice assistant function that the system points to
@@ -1884,69 +2007,120 @@ def login():
                     # button is placed on window
 
                     def more_controls(bulb, bulbName):
+                        """more controls for lights including previous controls"""
                         more_controls_window = Tk()
+                        # creates a new tkinter instance
                         more_controls_window.title("Home Automation System More Controls For Devices")
+                        # gives the new tkinter a name to inform the user
                         more_controls_window.geometry("500x375")
+                        # defines the dimensions for the window
                         more_controls_window.resizable(False, False)
+                        # forces the user to keep the size of the window static
                         more_controls_button_on = Button(more_controls_window,
                                                          text="On",
                                                          command=lambda: light_on(bulb))
+                        # creates the button to control the light for the corresponding action
+                        # passing in the corresponding bulb
                         more_controls_button_on.place(x=195, y=70)
+                        # places the corresponding button
                         more_controls_button_off = Button(more_controls_window,
                                                           text="Off",
                                                           command=lambda: light_off(bulb))
+                        # creates the button to control the light for the corresponding action
+                        # passing in the corresponding bulb
                         more_controls_button_off.place(x=255, y=70)
+                        # places the corresponding button
                         more_controls_colour_picker = Button(more_controls_window,
                                                              text="Select colour",
                                                              command=lambda: choose_colour(bulb))
+                        # creates the button to control the light for the corresponding action
+                        # passing in the corresponding bulb
                         more_controls_colour_picker.place(x=195, y=140)
+                        # places the corresponding button
                         more_controls_name_of_bulb = Label(more_controls_window, text=bulbName)
+                        # name of bulb so the user knows which light they are controlling
                         more_controls_name_of_bulb.place(x=195, y=40)
+                        # places the bulbs name on the window
                         slider_more_controls = Scale(
                             more_controls_window,
                             from_=10,
                             to=1000,
                             orient='horizontal',
                             command=lambda value: slider_control(bulb, value))
+                        # creates the slider for the light and passes in the bulb and the sliders input
                         slider_more_controls.place(x=200, y=97)
+                        # places the slider on the window
                         scenes_more_controls = Label(more_controls_window, text="Scenes")
+                        # creates a label for the window to be placed in the more controls window
                         scenes_more_controls.place(x=225, y=195)
+                        # places the scenes label above each of the scenes buttons
 
                         def set_Scene(sceneBulb, scene):
+                            """set scene function to set scene for individual light"""
                             sceneBulb.set_mode("scene")
+                            # calling the scene passed through the button clicked
                             scene_code = scene_code_dictionary[scene]
+                            # new variable to find what the scene links to
                             sceneBulb.set_value(25, scene_code)
-
+                            # sets the bulb to the scene using the code found from the dictionary
                         scenes_reading = Button(more_controls_window,
                                                 text="Reading", command=lambda: set_Scene(bulb, "Reading"))
+                        # corresponding button for specific scene to change the light to
+                        # by linking it to the above function name of scene links with variable name
                         scenes_reading.place(x=50, y=225)
+                        # button is placed on window with careful placement to ensure relevant spacing between each
                         scenes_night = Button(more_controls_window,
                                               text="Night", command=lambda: set_Scene(bulb, "Night"))
+                        # corresponding button for specific scene to change the light to
+                        # by linking it to the above function name of scene links with variable name
                         scenes_night.place(x=220, y=225)
+                        # button is placed on window with careful placement to ensure relevant spacing between each
                         scenes_leisure = Button(more_controls_window,
                                                 text="Leisure", command=lambda: set_Scene(bulb, "Leisure"))
+                        # corresponding button for specific scene to change the light to
+                        # by linking it to the above function name of scene links with variable name
                         scenes_leisure.place(x=380, y=225)
+                        # button is placed on window with careful placement to ensure relevant spacing between each
                         scenes_working = Button(more_controls_window,
                                                 text="Working", command=lambda: set_Scene(bulb, "Working"))
+                        # corresponding button for specific scene to change the light to
+                        # by linking it to the above function name of scene links with variable name
                         scenes_working.place(x=50, y=275)
+                        # button is placed on window with careful placement to ensure relevant spacing between each
                         scenes_soft = Button(more_controls_window,
                                              text="Soft", command=lambda: set_Scene(bulb, "Soft"))
+                        # corresponding button for specific scene to change the light to
+                        # by linking it to the above function name of scene links with variable name
                         scenes_soft.place(x=220, y=275)
+                        # button is placed on window with careful placement to ensure relevant spacing between each
                         scenes_colourful = Button(more_controls_window,
                                                   text="Colourful", command=lambda: set_Scene(bulb, "Colourful"))
+                        # corresponding button for specific scene to change the light to
+                        # by linking it to the above function name of scene links with variable name
                         scenes_colourful.place(x=380, y=275)
+                        # button is placed on window with careful placement to ensure relevant spacing between each
                         scenes_dazzling = Button(more_controls_window,
                                                  text="Dazzling", command=lambda: set_Scene(bulb, "Dazzling"))
+                        # corresponding button for specific scene to change the light to
+                        # by linking it to the above function name of scene links with variable name
                         scenes_dazzling.place(x=120, y=325)
+                        # button is placed on window with careful placement to ensure relevant spacing between each
                         scenes_gorgeous = Button(more_controls_window,
                                                  text="Gorgeous", command=lambda: set_Scene(bulb, "Gorgeous"))
+                        # corresponding button for specific scene to change the light to
+                        # by linking it to the above function name of scene links with variable name
                         scenes_gorgeous.place(x=310, y=325)
+                        # button is placed on window with careful placement to ensure relevant spacing between each
 
                     def light_on(bulb):
+                        """function to turn bulb on"""
                         bulb.turn_on()
+                        # bulb chosen is accessed and turned on
 
                     def light_off(bulb):
+                        """passing in the bulb in focus to turn the light off"""
                         bulb.turn_off()
+                        # turn off bulb in focus
 
                     study_light_1_control_button = Button(home_automation_system_window,
                                                           text="Study Light 1",
@@ -2009,12 +2183,25 @@ def login():
                     # places the off button for the transformer light
 
                     def choose_colour(bulb):
+                        """defines a function called "choose_colour" that takes in one parameter, "bulb"
+                        used to choose a color for a bulb"""
                         try:
+                            # starts a try-except block
+                            # used to handle any errors that may occur during the execution of the code
                             color_code = colorchooser.askcolor(title="Choose Colour")
+                            # prompts the user to choose a color using the colorchooser module
+                            # stores the chosen color code in the "color_code" variable
                             (r, g, b) = color_code[0]
+                            # unpacks the RGB values of the chosen color from the "color_code" variable
+                            # stores them in separate variables: "r", "g", and "b"
                             bulb.set_colour(r, g, b)
+                            # calls the "set_colour" method of the "bulb" object
+                            # passing in the RGB values of the chosen color
                         except:
+                            # starts the "except" block
+                            # executed if an error occurs during the try block
                             return
+                        # returns None if an error occurs, indicating the user cancelled the color selection
 
                     study_light_1_colour_picker = Button(home_automation_system_window,
                                                          text="Select colour",
@@ -2036,7 +2223,12 @@ def login():
                     # places the select colour button on screen with the rest of its light button
 
                     def slider_control(bulb, value):
+                        """defines a function called "slider_control" that takes in two parameters, "bulb" and "value"
+                        used to control the brightness of the bulb"""
                         bulb.set_brightness(int(value))
+                        # calls the "set_brightness" method of the "bulb" object
+                        # passing in the integer value of the "value" parameter
+                        # sets the brightness of the bulb to the chosen value
 
                     slider_study_light_1 = Scale(
                         home_automation_system_window,
@@ -2071,55 +2263,118 @@ def login():
                     def create_rooms_for_devices():
                         """function to make rooms window showing user options for which lights to choose from"""
                         create_rooms_window = Tk()
+                        # create a new window using the Tk() constructor
                         create_rooms_window.title("Adding Devices To A Room")
+                        # sets the window title to "Adding Devices To A Room"
                         create_rooms_window.geometry("450x250")
+                        #  sets the window size to 450x250
                         create_rooms_window.resizable(False, False)
+                        # makes the window non-resizable
                         question_label = Label(create_rooms_window, text="Name of device")
+                        # creates a Label widget that displays the text "Name of device"
                         question_label.place(x=30, y=50)
+                        # places it at position (30, 50) on the window
                         isTransformerChecked = IntVar(create_rooms_window)
+                        # creates a tkinter IntVar object and assigns it to its corresponding variable
+                        # IntVar object is associated with the create_rooms_window window
                         transformer_rooms_yes_or_no = Checkbutton(create_rooms_window, text="transformer",
                                                                   variable=isTransformerChecked)
+                        # creates a tkinter Checkbutton widget
+                        # assigns it to the variable transformer_rooms_yes_or_no
+                        # Checkbutton is associated with the create_rooms_window window
+                        # displays the text "transformer"
+                        # variable parameter specifies that the value of the Checkbutton
+                        # should be tied to the IntVar object isTransformerChecked
                         transformer_rooms_yes_or_no.place(x=30, y=125)
+                        # sets the position of the Checkbutton widget on the create_rooms_window window
+                        # x parameter specifies the horizontal position of the Checkbutton
+                        # y parameter specifies the vertical position
                         isStudyLight1Checked = IntVar(create_rooms_window)
+                        # creates a tkinter IntVar object and assigns it to its corresponding variable
+                        # IntVar object is associated with the create_rooms_window window
                         study_light_1_rooms_yes_or_no = Checkbutton(create_rooms_window, text="study light 1",
                                                                     variable=isStudyLight1Checked)
+                        # checkbutton for the next light connected to the int var created above
                         study_light_1_rooms_yes_or_no.place(x=30, y=100)
+                        # places the checkbutton in the window
                         isStudyLight2Checked = IntVar(create_rooms_window)
+                        # creates a tkinter IntVar object and assigns it to its corresponding variable
+                        # IntVar object is associated with the create_rooms_window window
                         study_light_2_yes_or_no = Checkbutton(create_rooms_window, text="study light 2",
                                                               variable=isStudyLight2Checked)
+                        # creates a checkbutton for the user to select linked to the command created above
                         study_light_2_yes_or_no.place(x=30, y=75)
+                        # places checkbutton on window
                         name_of_room_created_entry = Entry(create_rooms_window)
+                        # creates an entry box for the user to input the name of the room
                         name_of_room_created_entry.place(x=70, y=50)
+                        # places the entry box on the window above the check buttons
 
                         def ok_button_rooms_command(room_name):
+                            """Adds a new room to the UserRooms database table
+                            with the specified room name, lights chosen by the user and the user's user id
+                            then updates the user interface to reflect the changes
+                            passes in the room name as a string"""
                             add_room_connection = sqlite3.connect(database_name)
+                            # creates a connection to the SQLite database with the variable database_name
+                            # assigns it to the variable add_room_connection
                             cursor = add_room_connection.cursor()
+                            # creates a cursor object that allows the program to interact with the database
+                            # through the connection established in the previous line
                             bulb_List = []
-                            bulbBoolean = [0, 0, 0, 0]
+                            # creates an empty list called bulb_List
+                            bulbBoolean = [0, 0, 0]
+                            # creates a list of four zeros called bulbBoolean
+                            # this is used as the starting position for each light if it doesn't get selected
                             if isStudyLight1Checked.get() == 1:
+                                # checks whether a variable called isStudyLight1Checked is equal to 1
+                                # where it is, the code within the if statement is executed
+                                # this will be if this light's check box has been selected
                                 bulb_List.append(study_light_1)
+                                # appends a variable called study_light_1 to the bulb_List list
                                 bulbBoolean[0] = 1
+                                # sets the first element of the bulbBoolean list to 1.
                             if isStudyLight2Checked.get():
+                                # fetches the information for whether or not the light is selected
                                 bulb_List.append(study_light_2)
+                                # appends a variable called study_light_2 to the bulb_List list
                                 bulbBoolean[1] = 1
+                                # sets the second element of the bulbBoolean list to 1.
                             if isTransformerChecked.get():
+                                # checks if this light has been selected in the window
                                 bulb_List.append(Transformer)
+                                # where it has the list will be appended
                                 bulbBoolean[2] = 1
+                                # sets the third element of the list to 1 representing its been selected
                             insertRoomQuery = "INSERT INTO UserRooms VALUES(%d,'%s',%d,%d,%d) " % (loggedInUserID,
                                                                                                    room_name,
                                                                                                    bulbBoolean[0],
                                                                                                    bulbBoolean[1],
                                                                                                    bulbBoolean[2])
+                            # creates a SQL query to insert data into a table called UserRooms
+                            # uses string formatting to insert the values
+                            # of loggedInUserID, room_name, and the elements of the bulbBoolean list
+                            # into the query string
                             cursor.execute(insertRoomQuery)
+                            # executes the SQL query using the cursor object created above
                             add_room_connection.commit()
+                            # commits the changes to the database
                             add_room_connection.close()
+                            # closes connection to database
                             roomDict[room_name] = bulb_List
+                            # adds a key-value pair to the dictionary called roomDict
+                            # key is room_name and the value is bulb_List
                             refreshButtons()
+                            # refresh buttons function is called and executed
                             create_rooms_window.destroy()
+                            # create rooms window is closed so user can see home automation system homepage
                         ok_button_rooms = Button(create_rooms_window, text="Ok",
                                                  command=lambda:
                                                  ok_button_rooms_command(name_of_room_created_entry.get()))
+                        # button for the user to click on, and when they do program will point to function
+                        # name of room is also fetched
                         ok_button_rooms.place(x=130, y=160)
+                        # ok button is placed on window to make it clear its function
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
                                                      command=create_rooms_for_devices)
                     # makes the create a room button with its function
