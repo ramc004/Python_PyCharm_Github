@@ -2122,7 +2122,8 @@ def login():
                         ok_button_rooms.place(x=130, y=160)
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
                                                      command=create_rooms_for_devices)
-                    # makes the create a room button with its function
+                    # makes the create a room button
+
                     rooms_for_lights_button.place(x=45, y=100)
                     # places the create a room button, along the top of the window
             else:
