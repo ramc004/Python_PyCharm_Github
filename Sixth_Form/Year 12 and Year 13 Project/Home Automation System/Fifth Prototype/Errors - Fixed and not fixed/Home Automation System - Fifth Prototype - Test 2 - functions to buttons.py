@@ -1355,25 +1355,6 @@ def login():
                     # passes through the dev id, the address, the local key and the version
                     # the dev id is found on the website
                     # the address, local key and version are found from terminal command
-                    roomDict = {}
-                    getRoomsQuery = """SELECT roomName, studyLight1,studyLight2,transformer FROM UserRooms WHERE userID = %d""" % id
-                    cursor_log_in.execute(getRoomsQuery)
-                    roomList = cursor_log_in.fetchall()
-                    if roomList:
-                        roomList = roomList[0:]
-
-                        for room in roomList:
-                            roomName = room[0]
-                            bulbBooleans = room[1:]
-                            bulbList = []
-                            if bulbBooleans[0] == 1:
-                                bulbList.append(study_light_1)
-                            if bulbBooleans[1] == 1:
-                                bulbList.append(study_light_2)
-                            if bulbBooleans[3] == 1:
-                                bulbList.append(Transformer)
-                            roomDict[roomName] = [bulbList]
-
                     home_automation_system_window = Tk()
                     # a new tkinter page will be created and set equal to a new variable
                     home_automation_system_window.title("Home Automation System HomePage")
@@ -1382,7 +1363,6 @@ def login():
                     # gives the user a starting size using the geometry function built into tkinter
                     home_automation_system_window.resizable(False, False)
                     # creates limits for the window at the original size
-                    roomButtons = []
 
                     def room_more_controls(room_Name):
                         room_more_controls_window = Tk()
@@ -2064,7 +2044,7 @@ def login():
                         to=1000,
                         orient='horizontal',
                         command=lambda value: slider_control(Transformer, value))
-                        # creates scale for final light
+                    # creates scale for final light
                     slider_Transformer.place(x=100, y=432)
                     # places scale with the rest of its buttons
 

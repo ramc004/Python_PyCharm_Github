@@ -2064,7 +2064,7 @@ def login():
                         to=1000,
                         orient='horizontal',
                         command=lambda value: slider_control(Transformer, value))
-                        # creates scale for final light
+                    # creates scale for final light with slider control function
                     slider_Transformer.place(x=100, y=432)
                     # places scale with the rest of its buttons
 
