@@ -27,9 +27,6 @@ import speech_recognition as sr
 # then execute the appropriate commands
 import tinytuya
 # allows me to connect to lights and adapt the status of the lights
-from tkinter import colorchooser
-# calls the tkinter library and pulls colorchooser which shows a range of ways to choose a colour
-# the user is satisfied with to change their light(s) to
 
 scope = "user-modify-playback-state, user-read-playback-state"
 # creates a variable, 'scope', and passes in two separate parameters one for playing and pausing music,
@@ -68,21 +65,6 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
 # and version of each system available
 # using a list calls the User-Agent which tells is a variable allowing the program
 # to perform searches on the mentioned browsers in the background
-scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
-                         "Night": '000e0d0000000000000000c80000',
-                         "Working": '020e0d0000000000000003e803e8',
-                         "Leisure": '030e0d0000000000000001f401f4',
-                         "Soft": '04464602007803e803e800000000464602007803e8000a00000000',
-                         "Colourful": '05464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000'
-                                      '464601003d03e803e80000000046460100ae03e803e800000000464601011303e803e800000000',
-                         "Dazzling": '06464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000',
-                         "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e8000000004'
-                                     '64602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'}
-# creates a variable and sets it equal to a list passing through variables
-# these variables links to specific scenes
-# each of these codes have been found by running a python script to determine which scene the light was on at that point
-roomDict = {}
-# calls in the list which will be for the users rooms they have created to ensure when it is called it has been created
 loggedInUserID = None
 # this tells the system that user has not signed in setting its boolean operator
 database_name = 'Home Automation System.db'
