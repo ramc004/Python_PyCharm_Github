@@ -25,11 +25,6 @@ from spotipy.oauth2 import SpotifyOAuth
 import speech_recognition as sr
 # lets me use the speech recognition library to allow me to be able to recognise the user's commands
 # then execute the appropriate commands
-import tinytuya
-# allows me to connect to lights and adapt the status of the lights
-from tkinter import colorchooser
-# calls the tkinter library and pulls colorchooser which shows a range of ways to choose a colour
-# the user is satisfied with to change their light(s) to
 
 scope = "user-modify-playback-state, user-read-playback-state"
 # creates a variable, 'scope', and passes in two separate parameters one for playing and pausing music,
@@ -68,21 +63,6 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
 # and version of each system available
 # using a list calls the User-Agent which tells is a variable allowing the program
 # to perform searches on the mentioned browsers in the background
-scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
-                         "Night": '000e0d0000000000000000c80000',
-                         "Working": '020e0d0000000000000003e803e8',
-                         "Leisure": '030e0d0000000000000001f401f4',
-                         "Soft": '04464602007803e803e800000000464602007803e8000a00000000',
-                         "Colourful": '05464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000'
-                                      '464601003d03e803e80000000046460100ae03e803e800000000464601011303e803e800000000',
-                         "Dazzling": '06464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000',
-                         "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e8000000004'
-                                     '64602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'}
-# creates a variable and sets it equal to a list passing through variables
-# these variables links to specific scenes
-# each of these codes have been found by running a python script to determine which scene the light was on at that point
-roomDict = {}
-# calls in the list which will be for the users rooms they have created to ensure when it is called it has been created
 loggedInUserID = None
 # this tells the system that user has not signed in setting its boolean operator
 database_name = 'Home Automation System.db'
@@ -112,17 +92,6 @@ password text not null, accessLevel text, nickname text,  date_of_birth DATE)"""
 # these fields are only optional meaning they can be empty inside the database
 # if they do enter a nickname it will be stored as text
 # if they enter a date_of_birth then it will be stored as a DATE which allows the user to enter their dob simply
-c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (userID int not null, roomName text not null, 
-studyLight1 BOOLEAN not null, studyLight2 BOOLEAN not null, transformer BOOLEAN not null, 
-PRIMARY KEY (userID,roomName))""")
-# calls the cursor connection from above
-# makes a table unless table is already found, with a name of 'UserRooms' creates the field userID with an integer value
-# another field, roomName with boolean operator for text
-# makes fields for each of the lights so to allow a user to save which lights they wanted saved to each room created
-# by giving each of the operators the default data type
-# allows each field to have a value of 0 if not selected and value of 1 to be selected
-# also links to the other table created above by using a primary key,
-# this allows the lights to be selected to be saved to each specific user
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
 # creates a variable called findAdminQuery
 # this will select the userID from our table but only where they are not a customer
@@ -1245,15 +1214,21 @@ def login():
                 # forces program to fetch only one piece of data at a time
                 access_Level = access_Level[0]
                 # sets the access level search from 0 so this is where it starts
-
                 getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % email_address_log_in
+                # creates new variable and using a select statement collects the user id
+                # where the email address is equal to the email address entered
                 cursor_log_in.execute(getUserIDQuery)
+                # executes the above sql statement
                 id = cursor_log_in.fetchone()
+                # creates a variable for one piece of data the system will collect
                 if id:
+                    # where the variable does exist
                     id = int(id[0])
+                    # give the new id a new increment from the previous id
                     global loggedInUserID
+                    # allows us to call the logged in account as none from the top
                     loggedInUserID = id
-
+                    # then sets the new logged in account to the new increment
                 if access_Level == "admin":
                     # the following code is where the admin account is trying update users' information
                     # where the access level has been fetched and found to be admin
@@ -1527,7 +1502,6 @@ def login():
                                     # however if there is not answer
                                     return None
                                     # return nothing to the user
-
                             r = sr.Recognizer()
                             # variable used to recognise speech
                             song = sp.current_playback()
@@ -1572,7 +1546,7 @@ def login():
                                         # where spotify is recognised in speech
                                         do_spotify_command()
                                         # the conditional statement will point to the spotify command
-                                    elif "weather" in speech:
+                                    elif "what's the weather" in speech:
                                         # where the recognizer finds that the user had weather in their speech
                                         tempValue, description = find_weather()
                                         # two variables are linked to the find weather function for the temperature
@@ -1622,12 +1596,19 @@ def login():
                                             # window updated with new labels
                                         else:
                                             # where result  is found tp exist
-                                            maths_label_answer = Label(home_automation_system_window,
-                                                                       text="The answer to " +
-                                                                            question + " is " + result, padx=75)
+                                            maths_label_answer_line_1 = Label(home_automation_system_window,
+                                                                              text="The answer to " +
+                                                                                   question)
                                             # creates a variable
                                             # holding a label with text of the result to the maths problem
-                                            maths_label_answer.place(x=100, y=590)
+                                            maths_label_answer_line_1.place(x=65, y=590)
+                                            # places the maths label answer
+                                            # where result  is found to exist
+                                            maths_label_answer_line_2 = Label(home_automation_system_window,
+                                                                              text=" is " + result)
+                                            # creates a variable
+                                            # holding a label with text of the result to the maths problem
+                                            maths_label_answer_line_2.place(x=65, y=610)
                                             # places the maths label answer
                                             home_automation_system_window.update()
                                             # will update the system's window so user can see latest labels
@@ -1674,7 +1655,7 @@ def login():
                             # places label on screen
                             general_error_voice_assistant_label_line_2 = Label(home_automation_system_window,
                                                                                text="again to retry",
-                                                                               padx=15)
+                                                                               padx=100)
                             # creates label for second half of general label
                             general_error_voice_assistant_label_line_2.place(x=50, y=590)
                             # places second half of general error label

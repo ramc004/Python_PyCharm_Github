@@ -1796,12 +1796,19 @@ def login():
                                             # window updated with new labels
                                         else:
                                             # where result  is found tp exist
-                                            maths_label_answer = Label(home_automation_system_window,
-                                                                       text="The answer to " +
-                                                                            question + " is " + result, padx=75)
+                                            maths_label_answer_line_1 = Label(home_automation_system_window,
+                                                                              text="The answer to " +
+                                                                                   question)
                                             # creates a variable
                                             # holding a label with text of the result to the maths problem
-                                            maths_label_answer.place(x=100, y=590)
+                                            maths_label_answer_line_1.place(x=65, y=590)
+                                            # places the maths label answer
+                                            # where result  is found to exist
+                                            maths_label_answer_line_2 = Label(home_automation_system_window,
+                                                                              text=" is " + result)
+                                            # creates a variable
+                                            # holding a label with text of the result to the maths problem
+                                            maths_label_answer_line_2.place(x=65, y=610)
                                             # places the maths label answer
                                             home_automation_system_window.update()
                                             # will update the system's window so user can see latest labels
