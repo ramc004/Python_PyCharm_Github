@@ -27,9 +27,6 @@ import speech_recognition as sr
 # then execute the appropriate commands
 import tinytuya
 # allows me to connect to lights and adapt the status of the lights
-from tkinter import colorchooser
-# calls the tkinter library and pulls colorchooser which shows a range of ways to choose a colour
-# the user is satisfied with to change their light(s) to
 
 scope = "user-modify-playback-state, user-read-playback-state"
 # creates a variable, 'scope', and passes in two separate parameters one for playing and pausing music,
@@ -68,21 +65,6 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
 # and version of each system available
 # using a list calls the User-Agent which tells is a variable allowing the program
 # to perform searches on the mentioned browsers in the background
-scene_code_dictionary = {"Reading": '010e0d0000000000000003e801f4',
-                         "Night": '000e0d0000000000000000c80000',
-                         "Working": '020e0d0000000000000003e803e8',
-                         "Leisure": '030e0d0000000000000001f401f4',
-                         "Soft": '04464602007803e803e800000000464602007803e8000a00000000',
-                         "Colourful": '05464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000'
-                                      '464601003d03e803e80000000046460100ae03e803e800000000464601011303e803e800000000',
-                         "Dazzling": '06464601000003e803e800000000464601007803e803e80000000046460100f003e803e800000000',
-                         "Gorgeous": '07464602000003e803e800000000464602007803e803e80000000046460200f003e803e8000000004'
-                                     '64602003d03e803e80000000046460200ae03e803e800000000464602011303e803e800000000'}
-# creates a variable and sets it equal to a list passing through variables
-# these variables links to specific scenes
-# each of these codes have been found by running a python script to determine which scene the light was on at that point
-roomDict = {}
-# calls in the list which will be for the users rooms they have created to ensure when it is called it has been created
 loggedInUserID = None
 # this tells the system that user has not signed in setting its boolean operator
 database_name = 'Home Automation System.db'
@@ -112,17 +94,6 @@ password text not null, accessLevel text, nickname text,  date_of_birth DATE)"""
 # these fields are only optional meaning they can be empty inside the database
 # if they do enter a nickname it will be stored as text
 # if they enter a date_of_birth then it will be stored as a DATE which allows the user to enter their dob simply
-c.execute("""CREATE TABLE IF NOT EXISTS UserRooms  (userID int not null, roomName text not null, 
-studyLight1 BOOLEAN not null, studyLight2 BOOLEAN not null, bananas BOOLEAN not null, transformer BOOLEAN not null, 
-PRIMARY KEY (userID,roomName))""")
-# calls the cursor connection from above
-# makes a table unless table is already found, with a name of 'UserRooms' creates the field userID with an integer value
-# another field, roomName with boolean operator for text
-# makes fields for each of the lights so to allow a user to save which lights they wanted saved to each room created
-# by giving each of the operators the default data type
-# allows each field to have a value of 0 if not selected and value of 1 to be selected
-# also links to the other table created above by using a primary key,
-# this allows the lights to be selected to be saved to each specific user
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
 # creates a variable called findAdminQuery
 # this will select the userID from our table but only where they are not a customer
@@ -462,24 +433,37 @@ def register():
         view_key_orange_description_label = Label(view_key_window_register_screen, text="You have entered "
                                                                                         "information but"
                                                                                         " you can not move on yet")
+        # creates a label to indicate that the user has entered information, but cannot move on yet
         view_key_orange_description_label.place(x=68, y=30)
+        # positions the label at x=68, y=30
         view_key_red_description_label = Label(view_key_window_register_screen, text="You have not entered the correct "
                                                                                      "information therefore cannot "
                                                                                      "move on")
+        # creates a label to indicate that the user has not entered the correct information, and cannot move on
         view_key_red_description_label.place(x=68, y=60)
+        # positions the label at x=68, y=60
         view_key_green_description_label = Label(view_key_window_register_screen, text="You have entered correct "
                                                                                        "information and are now able to"
                                                                                        " move on")
+        # creates a label to indicate that the user has entered correct information and can move on
         view_key_green_description_label.place(x=68, y=90)
+        # positions the label at x=68, y=90
         view_key_orange_colour_label.config(foreground="orange")
+        # sets the color of the orange color label to orange
         view_key_orange_description_label.config(foreground="orange")
+        # sets the color of the orange description label to orange
         view_key_red_colour_label.config(foreground="red")
+        # sets the color of the red color label to red
         view_key_red_description_label.config(foreground="red")
+        # sets the color of the red description label to red
         view_key_green_colour_label.config(foreground="green")
+        # sets the color of the green color label to green
         view_key_green_description_label.config(foreground="green")
-
+        # sets the color of the green description label to green
     view_key_button = Button(register_screen, text="View Key", command=view_key_register_screen)
+    # creates a button to view the key and calls the function "view_key_register_screen" when clicked
     view_key_button.place(x=100, y=32)
+    # positions the button at x=100, y=32
     email_address_entry_register_screen = Entry(register_screen)
     # creates a new variable and sets it equal to an entry box placing it in the register_screen
     email_address_entry_register_screen.place(x=150, y=70)
@@ -886,47 +870,75 @@ def login():
             # connecting to a label made below changes the label to a cross mark
 
     def view_key_login_screen():
+        """displays a window with color-coded labels and descriptions for colour meanings for the login window """
         view_key_window_login_screen = Tk()
+        # attaches a new tkinter window to the new variable
         view_key_window_login_screen.geometry("540x180")
+        # using the geometry function defines the starting size
         view_key_window_login_screen.resizable(False, False)
+        # the resizable function is used to set both the across and down directions to false
+        # preventing the window from being resized
         view_key_window_login_screen.title("View Key for Login Screen")
+        # using the title function gives the tkinter window a title
         view_key_orange_colour_label = Label(view_key_window_login_screen, text="Orange: ")
+        # using the label function creates a label with text for the orange label
         view_key_orange_colour_label.place(x=15, y=30)
+        # using the place function positions the label
         view_key_red_colour_label = Label(view_key_window_login_screen, text="Red: ")
+        # using the label function creates a label with text for the red label
         view_key_red_colour_label.place(x=35, y=60)
+        # positions the label using the the place function and calling the x and y parameters
         view_key_green_colour_label = Label(view_key_window_login_screen, text="Green: ")
+        # creates another label, this time for the green label
         view_key_green_colour_label.place(x=22, y=90)
+        # positions the label below the red label and slightly before the red label to ensure it is in line with the end
         view_key_blue_colour_label = Label(view_key_window_login_screen, text="Blue: ")
+        # creates a new label for the blue label and places it inside the 'view_key_window_login_screen' window
         view_key_blue_colour_label.place(x=32, y=120)
-
+        # positions the label inside the window using the place function
         view_key_orange_description_label = Label(view_key_window_login_screen, text="You have left optional "
                                                                                      "information blank, you are able "
                                                                                      "to move on")
+        # creates a new label for the orange description using the label function
         view_key_orange_description_label.place(x=68, y=30)
+        # positions the orange description label inline with the orange label
         view_key_blue_description_label = Label(view_key_window_login_screen, text="You have entered information "
                                                                                    "into an optional field")
+        # creates a new label for the blue description and places it inside the 'view_key_window_login_screen'
         view_key_blue_description_label.place(x=68, y=120)
+        # positions the blue description label using the x and y parameters
         view_key_red_description_label = Label(view_key_window_login_screen, text="You have not entered the correct "
                                                                                   "information therefore cannot "
                                                                                   "move on")
+        # makes a new label which is to be placed inside the 'view_key_window_login_screen' window
         view_key_red_description_label.place(x=68, y=60)
+        # places the new label across the x axis and the y axis
         view_key_green_description_label = Label(view_key_window_login_screen, text="You have entered correct "
                                                                                     "information and are now able to"
                                                                                     " move on")
+        # creates a description using the text parameter and places it inside the same window
         view_key_green_description_label.place(x=68, y=90)
-
+        # places the label using the place function 68 along and 90 down
         view_key_orange_colour_label.config(foreground="orange")
+        # using the config function sets the colour of the text of the orange label
         view_key_orange_description_label.config(foreground="orange")
+        # changes the default colour of black text (foreground) and white background to orange text
         view_key_red_colour_label.config(foreground="red")
+        # using the config function changes the colour of the red colour label to red
         view_key_red_description_label.config(foreground="red")
+        # changes the colour of description for the red to be red
         view_key_green_colour_label.config(foreground="green")
+        # makes the green label have a green colour
         view_key_green_description_label.config(foreground="green")
+        # gives the description a green colour
         view_key_blue_description_label.config(foreground="blue")
+        # gives the blue label a blue colour to match its text
         view_key_blue_colour_label.config(foreground="blue")
-
+        # matching the name label gives the description the same colour
     view_key_button = Button(login_screen, text="View Key", command=view_key_login_screen)
+    # creates a new button passing in parameters and pointing the program to the function above
     view_key_button.place(x=105, y=20)
-
+    # places the button inside the window above the email address entry box
     check_rules_button_email_address_login = Button(login_screen, text="check rules", command=check_email_address)
     # creates a variable connecting it to a button inside the login_screen with text and a command
     # the command wil check which rules pass or fail
@@ -996,7 +1008,7 @@ def login():
             # emoji will reflect this by being a red cross
         password_numbers_login = password_entry_login.get()
         # new variable now equal to the information entered into the password entry box
-        if re.search(r'[1234567890]{2,}', password_numbers_login):
+        if re.search(r'[1234567890]{1,}', password_numbers_login):
             # calls the re library and using the built in search function, searches through the user's entered password
             emoji_label_clause_4_password_login.config(text=f'{emoji.emojize(":check_mark_button:")}')
             # either changes the cross to a tick or shows the user a tick
@@ -1034,7 +1046,7 @@ def login():
     # hopefully informing the user the information they have to input into their password
     check_clause_3_password_login.place(x=150, y=290)
     # informs the system where to place the third password clause
-    check_clause_4_password_login = Label(login_screen, text="At least 1 numbers")
+    check_clause_4_password_login = Label(login_screen, text="At least 1 number")
     # final clause for password made be creating a variable setting it equal label with text in login screen
     check_clause_4_password_login.place(x=150, y=310)
     # places the label inside the login screen
@@ -1204,15 +1216,21 @@ def login():
                 # forces program to fetch only one piece of data at a time
                 access_Level = access_Level[0]
                 # sets the access level search from 0 so this is where it starts
-
                 getUserIDQuery = "SELECT userID FROM users where email_address = '%s'" % email_address_log_in
+                # creates new variable and using a select statement collects the user id
+                # where the email address is equal to the email address entered
                 cursor_log_in.execute(getUserIDQuery)
+                # executes the above sql statement
                 id = cursor_log_in.fetchone()
+                # creates a variable for one piece of data the system will collect
                 if id:
+                    # where the variable does exist
                     id = int(id[0])
+                    # give the new id a new increment from the previous id
                     global loggedInUserID
+                    # allows us to call the logged in account as none from the top
                     loggedInUserID = id
-
+                    # then sets the new logged in account to the new increment
                 if access_Level == "admin":
                     # the following code is where the admin account is trying update users' information
                     # where the access level has been fetched and found to be admin
@@ -1285,39 +1303,29 @@ def login():
                                                         address='192.168.1.159',
                                                         local_key='622ab2625722d80a',
                                                         version=3.3)
+                    # creates a variable with the same name as the device being controlled for simplicity
+                    # connects this variable to the tinytuya python library and works with the bulb device function
+                    # passes through the dev id, the address, the local key and the version
+                    # the dev id is found on the website
+                    # the address, local key and version are found from terminal command
                     study_light_2 = tinytuya.BulbDevice(dev_id='bf57d83388422ac905nl4q',
                                                         address='192.168.1.147',
                                                         local_key='ed75d11af9d56a62',
                                                         version=3.3)
+                    # creates another variable with the same name as the device being controlled for simplicity
+                    # connects this variable to the tinytuya python library and works with the bulb device function
+                    # passes through the dev id, the address, the local key and the version
+                    # the dev id is found on the website
+                    # the address, local key and version are found from terminal command
                     Transformer = tinytuya.BulbDevice(dev_id='bf95a987949dd79c645dw7',
                                                       address='192.168.1.155',
                                                       local_key='021d37949f73862e',
                                                       version=3.3)
-                    Bananas = tinytuya.BulbDevice(dev_id='bf8e3b5d5202077a15d42q',
-                                                  address='192.168.1.129',
-                                                  local_key='9d8233fcceacb8e6',
-                                                  version=3.3)
-                    roomDict = {}
-                    getRoomsQuery = """SELECT roomName, studyLight1,studyLight2,bananas,transformer FROM UserRooms WHERE userID = %d""" % id
-                    cursor_log_in.execute(getRoomsQuery)
-                    roomList = cursor_log_in.fetchall()
-                    if roomList:
-                        roomList = roomList[0:]
-
-                        for room in roomList:
-                            roomName = room[0]
-                            bulbBooleans = room[1:]
-                            bulbList = []
-                            if bulbBooleans[0] == 1:
-                                bulbList.append(study_light_1)
-                            if bulbBooleans[1] == 1:
-                                bulbList.append(study_light_2)
-                            if bulbBooleans[2] == 1:
-                                bulbList.append(Bananas)
-                            if bulbBooleans[3] == 1:
-                                bulbList.append(Transformer)
-                            roomDict[roomName] = [bulbList]
-
+                    # creates a new variable with the same name as the device being controlled for simplicity
+                    # connects this variable to the tinytuya python library and works with the bulb device function
+                    # passes through the dev id, the address, the local key and the version
+                    # the dev id is found on the website
+                    # the address, local key and version are found from terminal command
                     home_automation_system_window = Tk()
                     # a new tkinter page will be created and set equal to a new variable
                     home_automation_system_window.title("Home Automation System HomePage")
@@ -1326,182 +1334,70 @@ def login():
                     # gives the user a starting size using the geometry function built into tkinter
                     home_automation_system_window.resizable(False, False)
                     # creates limits for the window at the original size
-                    # speak_now_voice_assistant_label = Label(home_automation_system_window,
-                    # text="Click here, wait 1 second, say command")
-                    # speak_now_voice_assistant_label.place(x=70, y=550)
-                    roomButtons = []
-
-                    def room_more_controls(room_Name):
-                        room_more_controls_window = Tk()
-                        room_more_controls_window.title("Home Automation System Rooms More Controls")
-                        room_more_controls_window.geometry("500x375")
-                        room_more_controls_window.resizable(False, False)
-                        more_controls_button_on = Button(room_more_controls_window,
-                                                         text="On",
-                                                         command=lambda: OnButtonRoom(room_Name))
-                        more_controls_button_on.place(x=195, y=70)
-                        more_controls_button_off = Button(room_more_controls_window,
-                                                          text="Off",
-                                                          command=lambda: OffButtonRoom(room_Name))
-                        more_controls_button_off.place(x=255, y=70)
-                        more_controls_colour_picker = Button(room_more_controls_window,
-                                                             text="Select colour",
-                                                             command=lambda: choose_colour_room(room_Name))
-                        more_controls_colour_picker.place(x=195, y=140)
-                        more_controls_name_of_bulb = Label(room_more_controls_window, text=room_Name)
-                        more_controls_name_of_bulb.place(x=195, y=40)
-                        slider_more_controls = Scale(
-                            room_more_controls_window,
-                            from_=10,
-                            to=1000,
-                            orient='horizontal',
-                            command=lambda value: room_slider_control(room_Name, value))
-                        slider_more_controls.place(x=200, y=97)
-                        scenes_more_controls = Label(room_more_controls_window, text="Scenes")
-                        scenes_more_controls.place(x=225, y=195)
-
-                        def set_Scene(sceneBulb, scene):
-                            sceneBulb.set_mode("scene")
-                            scene_code = scene_code_dictionary[scene]
-                            sceneBulb.set_value(25, scene_code)
-
-                        scenes_reading = Button(room_more_controls_window,
-                                                text="Reading", command=lambda: setRoomScenes(room_Name, "Reading"))
-                        scenes_reading.place(x=50, y=225)
-                        scenes_night = Button(room_more_controls_window,
-                                              text="Night", command=lambda: setRoomScenes(room_Name, "Night"))
-                        scenes_night.place(x=220, y=225)
-                        scenes_leisure = Button(room_more_controls_window,
-                                                text="Leisure", command=lambda: setRoomScenes(room_Name, "Leisure"))
-                        scenes_leisure.place(x=380, y=225)
-                        scenes_working = Button(room_more_controls_window,
-                                                text="Working", command=lambda: setRoomScenes(room_Name, "Working"))
-                        scenes_working.place(x=50, y=275)
-                        scenes_soft = Button(room_more_controls_window,
-                                             text="Soft", command=lambda: setRoomScenes(room_Name, "Soft"))
-                        scenes_soft.place(x=220, y=275)
-                        scenes_colourful = Button(room_more_controls_window,
-                                                  text="Colourful",
-                                                  command=lambda: setRoomScenes(room_Name, "Colourful"))
-                        scenes_colourful.place(x=380, y=275)
-                        scenes_dazzling = Button(room_more_controls_window,
-                                                 text="Dazzling", command=lambda: setRoomScenes(room_Name, "Dazzling"))
-                        scenes_dazzling.place(x=120, y=325)
-                        scenes_gorgeous = Button(room_more_controls_window,
-                                                 text="Gorgeous", command=lambda: setRoomScenes(room_Name, "Gorgeous"))
-                        scenes_gorgeous.place(x=310, y=325)
-
-                        def setRoomScenes(roomName2, scene):
-                            bulbs = roomDict[roomName2]
-                            for bulb in bulbs:
-                                set_Scene(bulb, scene)
-
-                    def OnButtonRoom(room_Name):
-                        bulbs = roomDict[room_Name]
-                        for bulb in bulbs:
-                            bulb.turn_on()
-
-                    def OffButtonRoom(room_Name):
-                        bulbs = roomDict[room_Name]
-                        for bulb in bulbs:
-                            bulb.turn_off()
-
-                    def room_slider_control(room_Name, value):
-                        bulbs = roomDict[room_Name]
-                        for bulb in bulbs:
-                            bulb.set_brightness(int(value))
-
-                    def choose_colour_room(room_Name):
-                        try:
-                            color_code = colorchooser.askcolor(title="Choose Colour")
-                            (r, g, b) = color_code[0]
-                            bulbs = roomDict[room_Name]
-                            for bulb in bulbs:
-                                bulb.set_colour(r, g, b)
-                        except:
-                            return
-
-                    def loadRoomPage(room_Name):
-                        load_room_page = Tk()
-                        load_room_page.title("HAS - Rooms")
-                        load_room_page.geometry("200x200")
-                        load_room_page.resizable(False, False)
-                        roomName_button = Button(load_room_page, text=room_Name,
-                                                 command=lambda: room_more_controls(room_Name))
-                        roomName_button.place(x=40, y=32)
-                        on_button_rooms = Button(load_room_page, text="On", command=lambda: OnButtonRoom(room_Name))
-                        on_button_rooms.place(x=40, y=60)
-                        off_button_rooms = Button(load_room_page, text="Off", command=lambda: OffButtonRoom(room_Name))
-                        off_button_rooms.place(x=95, y=60)
-                        slider_room_page = Scale(
-                            load_room_page,
-                            from_=10,
-                            to=1000,
-                            orient='horizontal',
-                            command=lambda value: room_slider_control(room_Name, value))
-                        slider_room_page.place(x=45, y=90)
-                        room_colour_picker = Button(load_room_page,
-                                                    text="Select colour",
-                                                    command=lambda: choose_colour_room(room_Name))
-                        room_colour_picker.place(x=40, y=130)
-
-                    def deleteButtons():
-                        roomButtons.clear()
-                        for button in roomButtons:
-                            button.destroy()
-
-                    def refreshButtons():
-                        deleteButtons()
-                        x = 180
-                        y = 100
-                        rooms = roomDict.keys()
-                        for room_refresh_buttons in rooms:
-                            newButton = Button(home_automation_system_window,
-                                               text=room_refresh_buttons,
-                                               command=lambda room=room_refresh_buttons: loadRoomPage(room))
-                            newButton.place(x=x, y=y)
-                            roomButtons.append(newButton)
-                            x = (x + 125) % 380
-                            if x < 180:
-                                x = 180
-                                y = y + 25
-                    refreshButtons()
 
                     def voice_assistant_button_clicked():
-                        """"""
+                        """voice assistant function that the system points to
+                        when the voice assistant button is clicked on
+                        it will report the user the weather, do maths calculations
+                        and be able to control spotify's playback for my account details"""
                         try:
+                            # try the following commands
                             def do_spotify_command():
+                                """spotify voice assistant function to allow the user to request
+                                the playback in multiple ways"""
                                 r_spotify = sr.Recognizer()
+                                # spotify specific variable used to recognize speech
                                 with sr.Microphone() as source_spotify:
+                                    # using the sr function it stores the microphones
+                                    # reading inside the spotify variable
                                     r_spotify.adjust_for_ambient_noise(source_spotify, duration=0.2)
-                                    # print("What would you like to do with spotify")
+                                    # using the adjust for ambient noise function ensures
+                                    # that only the user's voice is interpreted and then executed
                                     question_spotify_label = Label(home_automation_system_window,
                                                                    text="What would you like to do with spotify?")
+                                    # creates a spotify label for command
                                     question_spotify_label.place(x=50, y=588)
+                                    # places spotify command label on screen
                                     home_automation_system_window.update()
+                                    # updates the home automation system window
                                     audio_spotify = r_spotify.listen(source_spotify)
+                                    # new variable used to listen to what the user's request is
                                     speech_spotify = r_spotify.recognize_google(audio_spotify)
+                                    # then the user's audio is converted and recognised by google
                                     if "pause" in speech_spotify:
+                                        # where the voice assistant manged to recognise
+                                        # the key word pause in the user's speech
                                         sp.pause_playback()
+                                        # using the sp variable to log the user in and modify playback,
+                                        # playback is paused
                                     elif "play" in speech_spotify:
+                                        # where the system recognises the user says play
                                         sp.start_playback()
+                                        # playback begins from where the user left off
                                     elif "change volume" in speech_spotify:
+                                        # if the user is recognised to say change volume
                                         r_volume = sr.Recognizer()
                                         # variable used to recognise speech
                                         with sr.Microphone() as source_volume:
+                                            # using the microphone to detect the users speech
+                                            # and capturing inside the variable
                                             r_volume.adjust_for_ambient_noise(source_volume, duration=0.2)
-                                            # print("What would you like the new percentage of playback to be?")
+                                            # ensuring only the user's commands are interpreted
                                             percentage_playback_question = Label(home_automation_system_window,
                                                                                  text="What would you like the new "
                                                                                       "percentage of playback to be?",
                                                                                  padx=70, pady=15)
+                                            # percentage question label created
                                             percentage_playback_question.place(x=5, y=530)
+                                            # percentage label placed
                                             home_automation_system_window.update()
+                                            # home automation system window updated
                                             volume_change = r_volume.listen(source_volume)
+                                            # then again using a variable to listen to the user's response
                                             speech_volume = r_volume.recognize_google(volume_change)
+                                            # their response is converted using google recognize module
                                             sp.volume(int(speech_volume))
-                                            # print("Your volume has been changed to " + speech_volume +"%, if this is
-                                            # the wrong volume please retry")
+                                            # the volume to the value used
                                             percentage_playback_response = Label(home_automation_system_window,
                                                                                  text="Your volume has been changed to"
                                                                                       " " + speech_volume + "%, if this"
@@ -1511,399 +1407,388 @@ def login():
                                                                                                             "please "
                                                                                                             "retry"
                                                                                  , pady=15)
+                                            # label created for new volume
                                             percentage_playback_response.place(x=5, y=530)
+                                            # new volume window placed
                                             home_automation_system_window.update()
+                                            # window updated with labels
                                     elif "song" in speech_spotify:
+                                        # if the system recognises the user says for example song
                                         r_song = sr.Recognizer()
+                                        # variable used to recognise speech
                                         with sr.Microphone() as song_user:
+                                            # using the microphone its findings are reported and stored in the song_user
                                             r_song.adjust_for_ambient_noise(song_user, duration=0.2)
-                                            # print("Which song would you like to play?")
+                                            # to be sure that any important information is reported(speech)
                                             song_question_label = Label(home_automation_system_window,
                                                                         text="Which song would you like to play?",
                                                                         pady=20, padx=200)
+                                            # song request label
                                             song_question_label.place(x=8, y=525)
+                                            # song request label placed
                                             home_automation_system_window.update()
+                                            # home automation window updated with labels
                                             song_audio = r_spotify.listen(song_user)
+                                            # using the listen module and the microphone
                                             song_user = r_spotify.recognize_google(song_audio)
-                                            # print("You said: " + song_user + ", " + song_user + " is playing, if this
-                                            # wasn't the song you wanted to play, please retry")
+                                            # the users speech is converted and interpreted
                                             song_response_label_line_1 = Label(home_automation_system_window,
                                                                                text="You said: " + song_user + ", "
                                                                                + song_user +
                                                                                " is playing, if this wasn't the song "
                                                                                "you wanted")
+                                            # song interpreted and being played label
                                             song_response_label_line_1.place(x=5, y=530)
+                                            # label placed on window
                                             song_response_label_line_2 = Label(home_automation_system_window,
                                                                                text="to play, please retry", padx=200)
+                                            # second half of label
                                             song_response_label_line_2.place(x=5, y=550)
+                                            # placed on new line of label
                                             home_automation_system_window.update()
+                                            # system will update labels to user
                                             results = sp.search(q=song_user, type='track')
+                                            # then to find the song the user asked for a query is run
+                                            # on the converted speech only searching for specific tracks
                                             track_uri = results['tracks']['items'][0]['uri']
+                                            # then fetching the actual songs data
+                                            # selects the track found along with the song name and its uri
                                             sp.start_playback(uris=[track_uri])
+                                            # then the sp variable will start playback
+                                            # of song just interpreted and found
                                     elif "shuffle" in speech_spotify:
+                                        # if the user is detected to have said shuffle
                                         sp.shuffle(True)
+                                        # the system will shuffle playback
                                     elif "skip" or "next" or "skip it" in speech_spotify:
+                                        # if the user says skip, next or skip it
                                         sp.next_track()
+                                        # the system will move onto the next song in the queue
                                     elif "previous" or "go back" in speech_spotify:
+                                        # if the user is detected to want to go back a song,
+                                        # for example by saying go back
                                         sp.previous_track()
+                                        # then using the previous_track function along with the sp module the
+                                        # system will go back to the previous song in the queue
                                     else:
-                                        # print("retry")
+                                        # where none of these commands are in users speech
                                         general_error_spotify_label_main = Label(home_automation_system_window,
                                                                                  text="I am not sure how to help you, "
                                                                                       "click on voice assistant again "
                                                                                       "to retry")
+                                        # retry label created
                                         general_error_spotify_label_main.place(x=5, y=550)
+                                        # using place function label is positioned in window
                                         home_automation_system_window.update()
+                                        # the window is then updated with the label just created
 
                             def find_weather():
-                                """"""
+                                """the weather function where the voice assistant recognises the key word to be weather"""
                                 url = "https://www.google.co.uk/search?q=weather"
+                                # creates a variable and passes through a website to find the current weather
                                 find_weather_result = requests.get(url, headers=headers)
+                                # then using a new variable the get function within the requests library
+                                # used to perform the request to one of the available browser from the header
+                                # defined at the top of the file
                                 soup = BeautifulSoup(find_weather_result.text, "html.parser")
+                                # variable connected with the beautiful soup library of how the website must be searched
+                                # using the text function and the html parser for how the result must be processed
                                 temperature = soup.select("#wob_tm")[0].getText().strip()
+                                # another variable using the variable for how to search the website is told
+                                # which part of the website to find and store using the getText and the strip functions to
+                                # only collecting the information required
                                 weather_description = soup.select("#wob_dc")[0].getText().strip()
+                                # then performing another search using the select function
+                                # going from the first index selects more information from the website
+                                # this time instead of the temperature the weathers conditions
                                 return temperature, weather_description
+                                # both the temperature and the weather conditions are then returned to the system to be used
 
                             def do_maths(maths_question):
-                                """"""
+                                """maths function to execute maths question received from user"""
                                 maths_question = maths_question.replace(" ", "+")
+                                # using the parameter passed through the function to then allow it to be executed
+                                # using the replace function splitting the question with spaces where a new word is said
                                 url = "https://www.google.co.uk/search?q=%s" % maths_question
+                                # using a the web search for the calculator on google
+                                # replacing the maths question inside the request box
                                 do_maths_result = requests.get(url, headers=headers)
+                                # variable created to get the result using the requests library
+                                # defining the header from the variable created at the top
                                 soup = BeautifulSoup(do_maths_result.text, "html.parser")
+                                # another new variable using the bs4 module to perform the variable create
+                                # above getting the request using the html parser
                                 answer = soup.select("#cwos")
+                                # then using the soup variable created above a new variable is created to select a
+                                # specific part of that web search where the result of the maths problem is displayed
                                 if answer:
+                                    # where answer variable was successfully created
                                     answer = answer[0].getText().strip()
+                                    # new answer variable is now the text displayed from the question
                                     return answer
+                                    # the answer is then stored and return as a tuple
                                 else:
+                                    # however if there is not answer
                                     return None
+                                    # return nothing to the user
 
                             r = sr.Recognizer()
                             # variable used to recognise speech
                             song = sp.current_playback()
+                            # using a new variable the current where a song is being played
                             currVolume = 0
+                            # a variable to start where the volume is coming from
                             if song:
+                                # where the variable was created
                                 currVolume = song["device"]["volume_percent"]
-                                # print(currVolume)
+                                # using the variable find the device that's playing the music and volume percentage
                                 sp.volume(int(10))
+                                # increment it back to 10
                             try:
+                                # try the following commands while capturing the error
                                 with sr.Microphone() as source:
+                                    # this line of code initializes a new microphone object using the sr library
+                                    # which is used to capture audio input from a microphone
+                                    # the with statement creates a temporary context in which the source object is active
+                                    # allowing any code inside the with block to access and use it
+                                    # once the with block is exited, the source object is automatically released
+                                    # any resources it was using are freed up
                                     r.adjust_for_ambient_noise(source, duration=0.2)
-                                    # print("Speak now")
+                                    # uses the adjust_for_ambient_noise method of a Recognizer object
+                                    # to adjust for any background noise from the audio input
+                                    # the method takes in a source object, which is the audio source that was initialized
+                                    # in the previous line, the duration parameter specifies the length of time (in seconds)
+                                    # that the method should listen for background noise before making adjustments
                                     speak_now_label = Label(home_automation_system_window, text="Speak now",
                                                             pady=20, padx=135)
+                                    # the ready label is created with text of speak now
                                     speak_now_label.place(x=5, y=570)
+                                    # the speak now label is placed
                                     home_automation_system_window.update()
+                                    # labels are updated to the window
                                     audio = r.listen(source)
+                                    # using a variable and connection to the recognizer made above the listen function is
+                                    # used while passing in the microphones input
                                     speech = r.recognize_google(audio)
-                                    # print("You said: " + speech)
-
+                                    # variable used to convert the audio into understandable text
+                                    # using googles recognize module
                                     if "Spotify" in speech:
+                                        # where spotify is recognised in speech
                                         do_spotify_command()
+                                        # the conditional statement will point to the spotify command
                                     elif "weather" in speech:
+                                        # where the recognizer finds that the user had weather in their speech
                                         tempValue, description = find_weather()
-                                        # print(tempValue + " degree celsius", description)
+                                        # two variables are linked to the find weather function for the temperature
+                                        # and for the conditions respectively
                                         weather_label = Label(home_automation_system_window,
                                                               text=tempValue + " °C " + description, padx=120, pady=10)
+                                        # reports the temperature along with the conditions back to the user in a label
                                         weather_label.place(x=0, y=580)
+                                        # places the weather label
                                         home_automation_system_window.update()
+                                        # updates the window with the weather label
                                     elif "calculator" in speech:
+                                        # where the user's speech contained the key word calculator
                                         r.adjust_for_ambient_noise(source, duration=0.2)
-                                        # print("Ask your question")
+                                        # voice assistant will listen to only user's speech
                                         question_calculator_label = Label(home_automation_system_window,
                                                                           text="Ask your question")
+                                        # specific question for calculator label created
                                         question_calculator_label.place(x=120, y=590)
+                                        # calculator label placed
                                         home_automation_system_window.update()
+                                        # home automation system window updated with new label
                                         questionAudio = r.listen(source)
+                                        # where the user has something in source variable is created
+                                        # that is used when listening to the users speech
                                         question = r.recognize_google(questionAudio)
+                                        # then a new variable is used to convert
+                                        # the user's speech into executable commands
                                         result = do_maths(question)
-                                        # print(result)
+                                        # then a variable is used to execute the function passing in the function
                                         if not result:
-                                            # print("Couldn't find an answer, click on voice assistant again to retry")
+                                            # where result was not found
                                             general_error_voice_assistant_maths_label_line_1 = Label(
                                                 home_automation_system_window,
                                                 text="I am not sure how to help you, "
                                                      "click on voice assistant")
+                                            # general error label created where speech is not recognised (1st half)
                                             general_error_voice_assistant_maths_label_line_1.place(x=5, y=570)
+                                            # first half of label is placed
                                             general_error_voice_assistant_maths_label_line_2 = Label(
                                                 home_automation_system_window,
                                                 text="again to retry", padx=100)
+                                            # second half, requesting the user retry
                                             general_error_voice_assistant_maths_label_line_2.place(x=50, y=590)
+                                            # label placed line below in middle
                                             home_automation_system_window.update()
+                                            # window updated with new labels
                                         else:
-                                            maths_label_answer = Label(home_automation_system_window,
-                                                                       text=result, padx=75)
-                                            maths_label_answer.place(x=100, y=590)
+                                            # where result  is found tp exist
+                                            maths_label_answer_line_1 = Label(home_automation_system_window,
+                                                                              text="The answer to " +
+                                                                                   question)
+                                            # creates a variable
+                                            # holding a label with text of the result to the maths problem
+                                            maths_label_answer_line_1.place(x=65, y=590)
+                                            # places the maths label answer
+                                            # where result  is found to exist
+                                            maths_label_answer_line_2 = Label(home_automation_system_window,
+                                                                              text=" is " + result)
+                                            # creates a variable
+                                            # holding a label with text of the result to the maths problem
+                                            maths_label_answer_line_2.place(x=65, y=610)
+                                            # places the maths label answer
                                             home_automation_system_window.update()
+                                            # will update the system's window so user can see latest labels
                                     else:
-                                        # print("I am not sure how to help you, click on voice assistant
-                                        # again to retry")
+                                        # however if the speech did not contain weather
                                         general_error_label_line_1 = Label(home_automation_system_window,
                                                                            text="I am not sure how to help you, "
                                                                                 "click on voice assistant")
+                                        # help error label is created
                                         general_error_label_line_1.place(x=5, y=570)
+                                        # general error is placed
                                         general_error_label_line_2 = Label(home_automation_system_window,
                                                                            text="again to retry", padx=100)
+                                        # general error is created
                                         general_error_label_line_2.place(x=50, y=590)
+                                        # general error is placed
                                         home_automation_system_window.update()
-                            except:  # Exception as e:
+                                        # updates window with labels
+                            except:
+                                # capture the error and where occurs hold it
                                 spotify_no_speech_label_line_1 = Label(home_automation_system_window,
                                                                        text="I am not sure how to help you, "
                                                                             "click on voice assistant")
+                                # specific error label created with text and placed on home automation system window
                                 spotify_no_speech_label_line_1.place(x=5, y=570)
+                                # specific error label placed
                                 spotify_no_speech_label_line_2 = Label(home_automation_system_window,
                                                                        text="again to retry", padx=100)
+                                # system is told about the creation of a label where text and a padx are passed
                                 spotify_no_speech_label_line_2.place(x=50, y=590)
+                                # label informs system where it will be positioned
                                 home_automation_system_window.update()
+                                # labels are updated to system
                                 sp.volume(int(currVolume))
-                                # print(e)
+                                # the volume is then set to what is found to be at
                         except:
-                            # print("I am not sure how to help you, click on voice assistant again to retry")
+                            # if the above commands did not run successfully instead of throwing the user scary error
+                            # the error is hidden and ignored
                             general_error_voice_assistant_label_line_1 = Label(home_automation_system_window,
                                                                                text="I am not sure how to help you, "
                                                                                     "click on voice assistant")
+                            # creates general label for first half of error
                             general_error_voice_assistant_label_line_1.place(x=8, y=570)
+                            # places label on screen
                             general_error_voice_assistant_label_line_2 = Label(home_automation_system_window,
                                                                                text="again to retry",
                                                                                padx=15)
+                            # creates label for second half of general label
                             general_error_voice_assistant_label_line_2.place(x=50, y=590)
+                            # places second half of general error label
                             home_automation_system_window.update()
+                            # system updates current labels on window
                     voice_assistant_button = Button(home_automation_system_window,
                                                     text="Voice Assistant",
                                                     command=voice_assistant_button_clicked)
+                    # button linked to voice assistant function is created
                     voice_assistant_button.place(x=350, y=580)
-
-                    def more_controls(bulb, bulbName):
-                        more_controls_window = Tk()
-                        more_controls_window.title("Home Automation System More Controls For Devices")
-                        more_controls_window.geometry("500x375")
-                        more_controls_window.resizable(False, False)
-                        more_controls_button_on = Button(more_controls_window,
-                                                         text="On",
-                                                         command=lambda: light_on(bulb))
-                        more_controls_button_on.place(x=195, y=70)
-                        more_controls_button_off = Button(more_controls_window,
-                                                          text="Off",
-                                                          command=lambda: light_off(bulb))
-                        more_controls_button_off.place(x=255, y=70)
-                        more_controls_colour_picker = Button(more_controls_window,
-                                                             text="Select colour",
-                                                             command=lambda: choose_colour(bulb))
-                        more_controls_colour_picker.place(x=195, y=140)
-                        more_controls_name_of_bulb = Label(more_controls_window, text=bulbName)
-                        more_controls_name_of_bulb.place(x=195, y=40)
-                        slider_more_controls = Scale(
-                            more_controls_window,
-                            from_=10,
-                            to=1000,
-                            orient='horizontal',
-                            command=lambda value: slider_control(bulb, value))
-                        slider_more_controls.place(x=200, y=97)
-                        scenes_more_controls = Label(more_controls_window, text="Scenes")
-                        scenes_more_controls.place(x=225, y=195)
-
-                        def set_Scene(sceneBulb, scene):
-                            sceneBulb.set_mode("scene")
-                            scene_code = scene_code_dictionary[scene]
-                            sceneBulb.set_value(25, scene_code)
-
-                        scenes_reading = Button(more_controls_window,
-                                                text="Reading", command=lambda: set_Scene(bulb, "Reading"))
-                        scenes_reading.place(x=50, y=225)
-                        scenes_night = Button(more_controls_window,
-                                              text="Night", command=lambda: set_Scene(bulb, "Night"))
-                        scenes_night.place(x=220, y=225)
-                        scenes_leisure = Button(more_controls_window,
-                                                text="Leisure", command=lambda: set_Scene(bulb, "Leisure"))
-                        scenes_leisure.place(x=380, y=225)
-                        scenes_working = Button(more_controls_window,
-                                                text="Working", command=lambda: set_Scene(bulb, "Working"))
-                        scenes_working.place(x=50, y=275)
-                        scenes_soft = Button(more_controls_window,
-                                             text="Soft", command=lambda: set_Scene(bulb, "Soft"))
-                        scenes_soft.place(x=220, y=275)
-                        scenes_colourful = Button(more_controls_window,
-                                                  text="Colourful", command=lambda: set_Scene(bulb, "Colourful"))
-                        scenes_colourful.place(x=380, y=275)
-                        scenes_dazzling = Button(more_controls_window,
-                                                 text="Dazzling", command=lambda: set_Scene(bulb, "Dazzling"))
-                        scenes_dazzling.place(x=120, y=325)
-                        scenes_gorgeous = Button(more_controls_window,
-                                                 text="Gorgeous", command=lambda: set_Scene(bulb, "Gorgeous"))
-                        scenes_gorgeous.place(x=310, y=325)
-
-                    def light_on(bulb):
-                        bulb.turn_on()
-
-                    def light_off(bulb):
-                        bulb.turn_off()
-
+                    # button is placed on window
                     study_light_1_control_button = Button(home_automation_system_window,
-                                                          text="Study Light 1",
-                                                          command=lambda: more_controls(study_light_1, "Study Light 1"))
-                    study_light_1_control_button.place(x=95, y=175)
-                    study_light_1_on_button = Button(home_automation_system_window,
-                                                     text="On",
-                                                     command=lambda: light_on(study_light_1))
-                    study_light_1_on_button.place(x=95, y=205)
-                    study_light_1_off_button = Button(home_automation_system_window,
-                                                      text="Off",
-                                                      command=lambda: light_off(study_light_1))
-                    study_light_1_off_button.place(x=155, y=205)
-                    study_light_2_control_button = Button(home_automation_system_window,
-                                                          text="Study Light 2",
-                                                          command=lambda: more_controls(study_light_2, "Study Light 2"))
-                    study_light_2_control_button.place(x=295, y=175)
-                    study_light_2_on_button = Button(home_automation_system_window,
-                                                     text="On",
-                                                     command=lambda: light_on(study_light_2))
-                    study_light_2_on_button.place(x=295, y=205)
-                    study_light_2_off_button = Button(home_automation_system_window,
-                                                      text="Off",
-                                                      command=lambda: light_off(study_light_2))
-                    study_light_2_off_button.place(x=355, y=205)
-                    Transformer_control_button = Button(home_automation_system_window,
-                                                        text="Transformer",
-                                                        command=lambda: more_controls(Transformer, "Transformer"))
-                    Transformer_control_button.place(x=95, y=375)
-                    Transformer_on_button = Button(home_automation_system_window,
-                                                   text="On", command=lambda: light_on(Transformer))
-                    Transformer_on_button.place(x=95, y=405)
-                    Transformer_off_button = Button(home_automation_system_window,
-                                                    text="Off", command=lambda: light_off(Transformer))
-                    Transformer_off_button.place(x=155, y=405)
-                    Bananas_control_button = Button(home_automation_system_window,
-                                                    text="Bananas",
-                                                    command=lambda: more_controls(Bananas, "Bananas"))
-                    Bananas_control_button.place(x=295, y=375)
-                    Bananas_on_button = Button(home_automation_system_window,
-                                               text="On",
-                                               command=lambda: light_on(Bananas))
-                    Bananas_on_button.place(x=295, y=405)
-                    Bananas_off_button = Button(home_automation_system_window,
-                                                text="Off",
-                                                command=lambda: light_off(Bananas))
-                    Bananas_off_button.place(x=355, y=405)
+                                                          text="Study Light 1")
 
-                    def choose_colour(bulb):
-                        try:
-                            color_code = colorchooser.askcolor(title="Choose Colour")
-                            (r, g, b) = color_code[0]
-                            bulb.set_colour(r, g, b)
-                        except:
-                            return
+                    study_light_1_control_button.place(x=95, y=175)
+
+                    study_light_1_on_button = Button(home_automation_system_window,
+                                                     text="On")
+
+                    study_light_1_on_button.place(x=95, y=205)
+
+                    study_light_1_off_button = Button(home_automation_system_window,
+                                                      text="Off")
+
+                    study_light_1_off_button.place(x=155, y=205)
+
+                    study_light_2_control_button = Button(home_automation_system_window,
+                                                          text="Study Light 2")
+
+                    study_light_2_control_button.place(x=295, y=175)
+
+                    study_light_2_on_button = Button(home_automation_system_window,
+                                                     text="On")
+
+                    study_light_2_on_button.place(x=295, y=205)
+
+                    study_light_2_off_button = Button(home_automation_system_window,
+                                                      text="Off")
+
+                    study_light_2_off_button.place(x=355, y=205)
+
+                    Transformer_control_button = Button(home_automation_system_window,
+                                                        text="Transformer")
+
+                    Transformer_control_button.place(x=95, y=375)
+
+                    Transformer_on_button = Button(home_automation_system_window,
+                                                   text="On")
+
+                    Transformer_on_button.place(x=95, y=405)
+
+                    Transformer_off_button = Button(home_automation_system_window,
+                                                    text="Off")
+
+                    Transformer_off_button.place(x=155, y=405)
 
                     study_light_1_colour_picker = Button(home_automation_system_window,
-                                                         text="Select colour",
-                                                         command=lambda: choose_colour(study_light_1))
-                    study_light_1_colour_picker.place(x=95, y=275)
-                    study_light_2_colour_picker = Button(home_automation_system_window,
-                                                         text="Select colour",
-                                                         command=lambda: choose_colour(study_light_2))
-                    study_light_2_colour_picker.place(x=295, y=275)
-                    Transformer_colour_picker = Button(home_automation_system_window,
-                                                       text="Select colour",
-                                                       command=lambda: choose_colour(Transformer))
-                    Transformer_colour_picker.place(x=95, y=475)
-                    Bananas_colour_picker = Button(home_automation_system_window,
-                                                   text="Select colour",
-                                                   command=lambda: choose_colour(Bananas))
-                    Bananas_colour_picker.place(x=295, y=475)
+                                                         text="Select colour")
 
-                    def slider_control(bulb, value):
-                        bulb.set_brightness(int(value))
+                    study_light_1_colour_picker.place(x=95, y=275)
+
+                    study_light_2_colour_picker = Button(home_automation_system_window,
+                                                         text="Select colour")
+
+                    study_light_2_colour_picker.place(x=295, y=275)
+
+                    Transformer_colour_picker = Button(home_automation_system_window,
+                                                       text="Select colour")
+
+                    Transformer_colour_picker.place(x=95, y=475)
 
                     slider_study_light_1 = Scale(
                         home_automation_system_window,
                         from_=10,
                         to=1000,
-                        orient='horizontal',
-                        command=lambda value: slider_control(study_light_1, value))
+                        orient='horizontal')
+
                     slider_study_light_1.place(x=100, y=232)
+
                     slider_study_light_2 = Scale(
                         home_automation_system_window,
                         from_=10,
                         to=1000,
-                        orient='horizontal',
-                        command=lambda value: slider_control(study_light_2, value))
+                        orient='horizontal')
+
                     slider_study_light_2.place(x=300, y=232)
+
                     slider_Transformer = Scale(
                         home_automation_system_window,
                         from_=10,
                         to=1000,
-                        orient='horizontal',
-                        command=lambda value: slider_control(Transformer, value))
-                    slider_Transformer.place(x=100, y=432)
-                    slider_Bananas = Scale(
-                        home_automation_system_window,
-                        from_=10,
-                        to=1000,
-                        orient='horizontal',
-                        command=lambda value: slider_control(Bananas, value))
-                    slider_Bananas.place(x=300, y=432)
+                        orient='horizontal')
+
+                    slider_Transformer.place(x=100, y=43)
+                    #
 
                     def create_rooms_for_devices():
-                        create_rooms_window = Tk()
-                        create_rooms_window.title("Adding Devices To A Room")
-                        create_rooms_window.geometry("450x250")
-                        create_rooms_window.resizable(False, False)
-                        question_label = Label(create_rooms_window, text="Name of device")
-                        question_label.place(x=30, y=50)
-                        isBananasChecked = IntVar(create_rooms_window)
-                        bananas_rooms_yes_or_no = Checkbutton(create_rooms_window, text="bananas",
-                                                              variable=isBananasChecked)
-                        bananas_rooms_yes_or_no.place(x=30, y=150)
-                        isTransformerChecked = IntVar(create_rooms_window)
-                        transformer_rooms_yes_or_no = Checkbutton(create_rooms_window, text="transformer",
-                                                                  variable=isTransformerChecked)
-                        transformer_rooms_yes_or_no.place(x=30, y=125)
-                        isStudyLight1Checked = IntVar(create_rooms_window)
-                        study_light_1_rooms_yes_or_no = Checkbutton(create_rooms_window, text="study light 1",
-                                                                    variable=isStudyLight1Checked)
-                        study_light_1_rooms_yes_or_no.place(x=30, y=100)
-                        isStudyLight2Checked = IntVar(create_rooms_window)
-                        study_light_2_yes_or_no = Checkbutton(create_rooms_window, text="study light 2",
-                                                              variable=isStudyLight2Checked)
-                        study_light_2_yes_or_no.place(x=30, y=75)
-                        name_of_room_created_entry = Entry(create_rooms_window)
-                        name_of_room_created_entry.place(x=70, y=50)
-
-                        def ok_button_rooms_command(room_name):
-                            add_room_connection = sqlite3.connect(database_name)
-                            cursor = add_room_connection.cursor()
-                            bulb_List = []
-                            bulbBoolean = [0, 0, 0, 0]
-                            if isStudyLight1Checked.get() == 1:
-                                bulb_List.append(study_light_1)
-                                bulbBoolean[0] = 1
-                            if isStudyLight2Checked.get():
-                                bulb_List.append(study_light_2)
-                                bulbBoolean[1] = 1
-                            if isTransformerChecked.get():
-                                bulb_List.append(Transformer)
-                                bulbBoolean[2] = 1
-                            if isBananasChecked.get():
-                                bulb_List.append(Bananas)
-                                bulbBoolean[3] = 1
-                            insertRoomQuery = "INSERT INTO UserRooms VALUES(%d,'%s',%d,%d,%d,%d) " % (loggedInUserID,
-                                                                                                      room_name,
-                                                                                                      bulbBoolean[0],
-                                                                                                      bulbBoolean[1],
-                                                                                                      bulbBoolean[2],
-                                                                                                      bulbBoolean[3])
-                            cursor.execute(insertRoomQuery)
-                            add_room_connection.commit()
-                            add_room_connection.close()
-                            roomDict[room_name] = bulb_List
-                            refreshButtons()
-                            create_rooms_window.destroy()
-                        ok_button_rooms = Button(create_rooms_window, text="Ok",
-                                                 command=lambda:
-                                                 ok_button_rooms_command(name_of_room_created_entry.get()))
-                        ok_button_rooms.place(x=130, y=160)
+                        """function to make rooms window showing user options for which lights to choose from"""
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
                                                      command=create_rooms_for_devices)
-
+                    # makes the create a room button and connects to a command
                     rooms_for_lights_button.place(x=45, y=100)
+                    # places the create a room button, along the top of the window
             else:
                 # where users entered password doesn't match the password they registered with
                 password_does_not_match = Label(login_screen, text="password does not match")
