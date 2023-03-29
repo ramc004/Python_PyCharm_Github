@@ -1332,14 +1332,29 @@ def login():
                                                         address='192.168.1.159',
                                                         local_key='622ab2625722d80a',
                                                         version=3.3)
+                    # creates a variable with the same name as the device being controlled for simplicity
+                    # connects this variable to the tinytuya python library and works with the bulb device function
+                    # passes through the dev id, the address, the local key and the version
+                    # the dev id is found on the website
+                    # the address, local key and version are found from terminal command
                     study_light_2 = tinytuya.BulbDevice(dev_id='bf57d83388422ac905nl4q',
                                                         address='192.168.1.147',
                                                         local_key='ed75d11af9d56a62',
                                                         version=3.3)
+                    # creates another variable with the same name as the device being controlled for simplicity
+                    # connects this variable to the tinytuya python library and works with the bulb device function
+                    # passes through the dev id, the address, the local key and the version
+                    # the dev id is found on the website
+                    # the address, local key and version are found from terminal command
                     Transformer = tinytuya.BulbDevice(dev_id='bf95a987949dd79c645dw7',
                                                       address='192.168.1.155',
                                                       local_key='021d37949f73862e',
                                                       version=3.3)
+                    # creates a new variable with the same name as the device being controlled for simplicity
+                    # connects this variable to the tinytuya python library and works with the bulb device function
+                    # passes through the dev id, the address, the local key and the version
+                    # the dev id is found on the website
+                    # the address, local key and version are found from terminal command
                     roomDict = {}
                     getRoomsQuery = """SELECT roomName, studyLight1,studyLight2,transformer FROM UserRooms WHERE userID = %d""" % id
                     cursor_log_in.execute(getRoomsQuery)
@@ -1936,37 +1951,62 @@ def login():
                     study_light_1_control_button = Button(home_automation_system_window,
                                                           text="Study Light 1",
                                                           command=lambda: more_controls(study_light_1, "Study Light 1"))
+                    # creates a variable with name for button controlling specific light
+                    # connects it to the button function and puts the button inside the home automation system window
+                    # the button has text of the device being controlled
                     study_light_1_control_button.place(x=95, y=175)
+                    # button is placed so its in line and clear which device links to which buttons
                     study_light_1_on_button = Button(home_automation_system_window,
                                                      text="On",
                                                      command=lambda: light_on(study_light_1))
+                    # using a variable with name of light its controlling
+                    # has text of on, informing the user, clicking on this button will switch the light on
                     study_light_1_on_button.place(x=95, y=205)
+                                                      # places the light on button so its in line and clear which device will be controlled
                     study_light_1_off_button = Button(home_automation_system_window,
                                                       text="Off",
                                                       command=lambda: light_off(study_light_1))
+                    # the off button is created
                     study_light_1_off_button.place(x=155, y=205)
+                                                          # the off button is placed in line with slight gap next to teh on button
                     study_light_2_control_button = Button(home_automation_system_window,
                                                           text="Study Light 2",
                                                           command=lambda: more_controls(study_light_2, "Study Light 2"))
+                     # creates a variable with name for button controlling specific light
+                    # connects it to the button function and puts the button inside the home automation system window
+                    # the button has text of the device being controlled
                     study_light_2_control_button.place(x=295, y=175)
+                                                     # button for name of light is placed at top of the rest of the button for the corresponding light
                     study_light_2_on_button = Button(home_automation_system_window,
                                                      text="On",
                                                      command=lambda: light_on(study_light_2))
+                    # creates the button for light to be on
                     study_light_2_on_button.place(x=295, y=205)
+                                                      # places the on button
                     study_light_2_off_button = Button(home_automation_system_window,
                                                       text="Off",
                                                       command=lambda: light_off(study_light_2))
+                                                      # makes the off button and puts it inside the home automation system window
                     study_light_2_off_button.place(x=355, y=205)
+                    # places the off button in line with the on button for the appropriate device
                     Transformer_control_button = Button(home_automation_system_window,
                                                         text="Transformer",
                                                         command=lambda: more_controls(Transformer, "Transformer"))
+                    # creates a variable with name for button controlling specific light
+                    # connects it to the button function and puts the button inside the home automation system window
+                    # the button has text of the device being controlled
                     Transformer_control_button.place(x=95, y=375)
+                    # connecting back to the variable name and placing it below the two devices' buttons just created
                     Transformer_on_button = Button(home_automation_system_window,
                                                    text="On", command=lambda: light_on(Transformer))
+                                                   # creates the 'on' button for the transformer button
                     Transformer_on_button.place(x=95, y=405)
+                                                    # places the on button on the window
                     Transformer_off_button = Button(home_automation_system_window,
                                                     text="Off", command=lambda: light_off(Transformer))
+                    # creates the off button for the transformer light
                     Transformer_off_button.place(x=155, y=405)
+                            # places the off button for the transformer light
 
                     def choose_colour(bulb):
                         try:
@@ -1979,15 +2019,21 @@ def login():
                     study_light_1_colour_picker = Button(home_automation_system_window,
                                                          text="Select colour",
                                                          command=lambda: choose_colour(study_light_1))
+                                                         # creates the colour picker for each corresponding light
                     study_light_1_colour_picker.place(x=95, y=275)
+                    # places the select colour button on screen with the rest of its light button
                     study_light_2_colour_picker = Button(home_automation_system_window,
                                                          text="Select colour",
                                                          command=lambda: choose_colour(study_light_2))
+                                                         # creates the colour picker for each corresponding light
                     study_light_2_colour_picker.place(x=295, y=275)
+                    # places the select colour button on screen with the rest of its light button
                     Transformer_colour_picker = Button(home_automation_system_window,
                                                        text="Select colour",
                                                        command=lambda: choose_colour(Transformer))
+                                                       # creates the colour picker for each corresponding light
                     Transformer_colour_picker.place(x=95, y=475)
+                    # places the select colour button on screen with the rest of its light button
 
                     def slider_control(bulb, value):
                         bulb.set_brightness(int(value))
@@ -1998,23 +2044,32 @@ def login():
                         to=1000,
                         orient='horizontal',
                         command=lambda value: slider_control(study_light_1, value))
+                        # running a specific python script finding out that the brightness is measured from 10 to 1000
+                    # placing the slider scale inside the same window
                     slider_study_light_1.place(x=100, y=232)
+                        # places the scale for the corresponding light
                     slider_study_light_2 = Scale(
                         home_automation_system_window,
                         from_=10,
                         to=1000,
                         orient='horizontal',
                         command=lambda value: slider_control(study_light_2, value))
+                        # using the scale function creates a slider to be used to control the brightness
                     slider_study_light_2.place(x=300, y=232)
+                        # places the slider for the light along from the other light
+                    # so within position of corresponding light
                     slider_Transformer = Scale(
                         home_automation_system_window,
                         from_=10,
                         to=1000,
                         orient='horizontal',
                         command=lambda value: slider_control(Transformer, value))
+                        # creates scale for final light
                     slider_Transformer.place(x=100, y=432)
+                        # places scale with the rest of its buttons
 
                     def create_rooms_for_devices():
+                        """function to make rooms window showing user options for which lights to choose from"""
                         create_rooms_window = Tk()
                         create_rooms_window.title("Adding Devices To A Room")
                         create_rooms_window.geometry("450x250")
@@ -2067,8 +2122,10 @@ def login():
                         ok_button_rooms.place(x=130, y=160)
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
                                                      command=create_rooms_for_devices)
+                    # makes the create a room button
 
                     rooms_for_lights_button.place(x=45, y=100)
+                    # places the create a room button, along the top of the window
             else:
                 # where users entered password doesn't match the password they registered with
                 password_does_not_match = Label(login_screen, text="password does not match")

@@ -1699,94 +1699,99 @@ def login():
                     # button is placed on window
                     study_light_1_control_button = Button(home_automation_system_window,
                                                           text="Study Light 1")
-
+                    # creates a variable with name for button controlling specific light
+                    # connects it to the button function and puts the button inside the home automation system window
+                    # the button has text of the device being controlled
                     study_light_1_control_button.place(x=95, y=175)
-
+                    # button is placed so its in line and clear which device links to which buttons
                     study_light_1_on_button = Button(home_automation_system_window,
                                                      text="On")
-
+                    # using a variable with name of light its controlling
+                    # has text of on, informing the user, clicking on this button will switch the light on
                     study_light_1_on_button.place(x=95, y=205)
-
+                    # places the light on button so its in line and clear which device will be controlled
                     study_light_1_off_button = Button(home_automation_system_window,
                                                       text="Off")
-
+                    # the off button is created
                     study_light_1_off_button.place(x=155, y=205)
-
+                    # the off button is placed in line with slight gap next to teh on button
                     study_light_2_control_button = Button(home_automation_system_window,
                                                           text="Study Light 2")
-
+                    # creates a variable with name for button controlling specific light
+                    # connects it to the button function and puts the button inside the home automation system window
+                    # the button has text of the device being controlled
                     study_light_2_control_button.place(x=295, y=175)
-
+                    # button for name of light is placed at top of the rest of the button for the corresponding light
                     study_light_2_on_button = Button(home_automation_system_window,
                                                      text="On")
-
+                    # creates the button for light to be on
                     study_light_2_on_button.place(x=295, y=205)
-
+                    # places the on button
                     study_light_2_off_button = Button(home_automation_system_window,
                                                       text="Off")
-
+                    # makes the off button and puts it inside the home automation system window
                     study_light_2_off_button.place(x=355, y=205)
-
+                    # places the off button in line with the on button for the appropriate device
                     Transformer_control_button = Button(home_automation_system_window,
                                                         text="Transformer")
-
+                    # creates a variable with name for button controlling specific light
+                    # connects it to the button function and puts the button inside the home automation system window
+                    # the button has text of the device being controlled
                     Transformer_control_button.place(x=95, y=375)
-
+                    # connecting back to the variable name and placing it below the two devices' buttons just created
                     Transformer_on_button = Button(home_automation_system_window,
                                                    text="On")
-
+                    # creates the 'on' button for the transformer button
                     Transformer_on_button.place(x=95, y=405)
-
+                    # places the on button on the window
                     Transformer_off_button = Button(home_automation_system_window,
                                                     text="Off")
-
+                    # creates the off button for the transformer light
                     Transformer_off_button.place(x=155, y=405)
-
+                    # places the off button for the transformer light
                     study_light_1_colour_picker = Button(home_automation_system_window,
                                                          text="Select colour")
-
+                    # creates the colour picker for each corresponding light
                     study_light_1_colour_picker.place(x=95, y=275)
-
+                    # places the select colour button on screen with the rest of its light button
                     study_light_2_colour_picker = Button(home_automation_system_window,
                                                          text="Select colour")
-
+                    # creates the colour picker for each corresponding light
                     study_light_2_colour_picker.place(x=295, y=275)
-
+                    # places the select colour button on screen with the rest of its light button
                     Transformer_colour_picker = Button(home_automation_system_window,
                                                        text="Select colour")
-
+                    # creates the colour picker for each corresponding light
                     Transformer_colour_picker.place(x=95, y=475)
-
+                    # places the select colour button on screen with the rest of its light button
                     slider_study_light_1 = Scale(
                         home_automation_system_window,
                         from_=10,
                         to=1000,
                         orient='horizontal')
-
+                    # running a specific python script finding out that the brightness is measured from 10 to 1000
+                    # placing the slider scale inside the same window
                     slider_study_light_1.place(x=100, y=232)
-
+                    # places the scale for the corresponding light
                     slider_study_light_2 = Scale(
                         home_automation_system_window,
                         from_=10,
                         to=1000,
                         orient='horizontal')
-
+                    # using the scale function creates a slider to be used to control the brightness
                     slider_study_light_2.place(x=300, y=232)
-
+                    # places the slider for the light along from the other light
+                    # so within position of corresponding light
                     slider_Transformer = Scale(
                         home_automation_system_window,
                         from_=10,
                         to=1000,
                         orient='horizontal')
-
+                    # creates scale for final light
                     slider_Transformer.place(x=100, y=43)
-                    #
-
-                    def create_rooms_for_devices():
-                        """function to make rooms window showing user options for which lights to choose from"""
-                    rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
-                                                     command=create_rooms_for_devices)
-                    # makes the create a room button and connects to a command
+                    # places scale with the rest of its buttons
+                    rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room")
+                    # makes the create a room button
                     rooms_for_lights_button.place(x=45, y=100)
                     # places the create a room button, along the top of the window
             else:
