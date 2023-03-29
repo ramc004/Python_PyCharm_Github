@@ -1788,7 +1788,7 @@ def login():
                         to=1000,
                         orient='horizontal')
                     # creates scale for final light
-                    slider_Transformer.place(x=100, y=43)
+                    slider_Transformer.place(x=100, y=432)
                     # places scale with the rest of its buttons
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room")
                     # makes the create a room button
