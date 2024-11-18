@@ -28,6 +28,7 @@ import speech_recognition as sr
 import tinytuya
 # allows me to connect to lights and adapt the status of the lights
 from tkinter import colorchooser
+
 # calls the tkinter library and pulls colorchooser which shows a range of ways to choose a colour
 # the user is satisfied with to change their light(s) to
 
@@ -62,7 +63,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope,
 # tells the program where the client secret can be found
 # this link is also added to the spotify developers page when creating the api
 # it is redirect website where in the case the information provided is invalid the user will be taken to an error page
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' 
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 # creates another variable defining how the program must search the web referencing the architecture
 # and version of each system available
@@ -125,8 +126,8 @@ PRIMARY KEY (userID,roomName))""")
 # this allows the lights to be selected to be saved to each specific user
 findAdminQuery = "SELECT userID FROM users WHERE accessLevel == 'admin'"
 # creates a variable called findAdminQuery
-# this will select the userID from our table but only where they are not a customer
-# this is if they wanted to update users inputs
+# this will select the userID from our table, but only where they are not a customer
+# this is if they wanted to update users' inputs
 c.execute(findAdminQuery)
 # executes the findAdminQuery to ensure its commands are executed
 MyAdmin = c.fetchone()
@@ -157,6 +158,8 @@ if not MyAdmin:
     c.execute(createAdminQuery)
     # executes the admin query to ensure the above database statement follows through
 register_verify = False
+
+
 # creates a variable called register_verify outside any functions allowing us to call it from anywhere
 # sets the user to being register to false for now, because they haven't entered any correct credentials at this point
 
@@ -233,13 +236,13 @@ def check_verification(email_address, password, actual_code, user_code, register
         verified = False
         # calls the verified variable and sets it false blocking the user from successfully signing up
     else:
-        # if the user's inputted password is 8 or more characters then they have followed this rule
+        # if the user's inputted password is 8 or more characters than they have followed this rule
         emoji_label_clause_1_password_check_verification.config(text=f'{emoji.emojize(":check_mark_button:")}')
-        # the system will then overlay a tick emoji overriding the cross emoji
+        # the system will then overlay a tick emoji overriding the cross-emoji
     if not re.search(r'[A-Z]{1,}', password):
         # using the re library to check the user has entered 2 or more capital letters
         emoji_label_clause_2_password_check_verification.config(text=f'{emoji.emojize(":cross_mark:")}')
-        # calls the variable from above and places the cross emoji
+        # calls the variable from above and places the cross-emoji
         verified = False
         # sets the verified variable to false if the user hasn't entered two capital letters
     else:
@@ -343,6 +346,7 @@ def register():
     register_screen.geometry("500x600")
     # gives the starting size for the Tkinter user interface
     register_screen.resizable(False, False)
+
     # limits the user from resizing the interface
 
     def sign_up(email_address_db, password_db, actual_code, user_code):
@@ -444,17 +448,17 @@ def register():
         # defines the original dimensions for the window using the built-in geometry function
         view_key_window_register_screen.resizable(False, False)
         # tells the program to fetch for the variable and then connect to the resizable function
-        # and sets both the x and y direction to false to force the window to stay at its original size
+        # and sets both the x and y direction too false to force the window to stay at its original size
         view_key_window_register_screen.title("View Key for Register Screen")
         # gives the window which will be displayed in the border of the window to show the user which window is open
         view_key_orange_colour_label = Label(view_key_window_register_screen, text="Orange: ")
         # creates a new variable and sets it equal to a specific function which allows me to put labels on the window
         view_key_orange_colour_label.place(x=15, y=30)
-        # tells the system where to place this label in reference with the x and y axis
+        # tells the system where to place this label in reference with the x and y-axis
         view_key_red_colour_label = Label(view_key_window_register_screen, text="Red: ")
         # variable for label telling the user Red:
         view_key_red_colour_label.place(x=35, y=60)
-        # places this text inside the label along the x axis and down the y axis
+        # places this text inside the label along the x-axis and down the y-axis
         view_key_green_colour_label = Label(view_key_window_register_screen, text="Green: ")
         # creates the colour label telling the user Green
         view_key_green_colour_label.place(x=22, y=90)
@@ -489,6 +493,7 @@ def register():
         # sets the color of the green color label to green
         view_key_green_description_label.config(foreground="green")
         # sets the color of the green description label to green
+
     view_key_button = Button(register_screen, text="View Key", command=view_key_register_screen)
     # creates a button to view the key and calls the function "view_key_register_screen" when clicked
     view_key_button.place(x=100, y=32)
@@ -510,6 +515,7 @@ def register():
     verify_text.place(x=13, y=203)
     # places this label next to the verify box so the user knows where to put the information
     code = str(random.randint(100000, 999999))
+
     # using the random function which uses an algorithm to cycle through numbers and creates a six digit code
 
     def send_email():
@@ -709,6 +715,7 @@ def register():
     # creates another variable and sets it equal to another entry box where the users password can be inputted
     # to ensure security the users password will stay safe we star out whatever they type in to the password box
     password_entry.place(x=150, y=250)
+
     # places these stars inside the tkinter window
 
     def show_password_register():
@@ -805,6 +812,7 @@ def login():
     email_address_text_login_screen = Label(login_screen, text="Email address")
     # tells the user which information they need to enter with text
     email_address_text_login_screen.place(x=56.2, y=52)
+
     # places email address text next to the email address box
 
     def check_email_address():
@@ -964,6 +972,7 @@ def login():
         # gives the blue label a blue colour to match its text
         view_key_blue_colour_label.config(foreground="blue")
         # matching the name label gives the description the same colour
+
     view_key_button = Button(login_screen, text="View Key", command=view_key_login_screen)
     # creates a new button passing in parameters and pointing the program to the function above
     view_key_button.place(x=105, y=20)
@@ -978,7 +987,7 @@ def login():
     check_clause_1_email_address_login.place(x=150, y=80)
     # places the above 'contains account name' text inside our window
     check_clause_2_email_address_login = Label(login_screen, text="'@' sign")
-    # creates a new variable for the email clause telling the user whether or not they have an @ sign in the email
+    # creates a new variable for the email clause telling the user whether they have an @ sign in the email
     check_clause_2_email_address_login.place(x=150, y=100)
     # places our @ sign text in our login_screen window
     check_clause_3_email_address_login = Label(login_screen, text="Domain name")
@@ -992,6 +1001,7 @@ def login():
     password_entry_login = Entry(login_screen, show='*')
     # creates a new variable and sets it equal to an entry box showing stars in place of whatever the user enters
     password_entry_login.place(x=150, y=190)
+
     # directs the program to where the entry box is to be placed inside the login_screen
 
     def show_password_login():
@@ -1008,8 +1018,9 @@ def login():
     show_password_check_box_login = Checkbutton(login_screen, text='Show Password', command=show_password_login)
     # creates a variable and sets it equal to a checkbutton which will have text of show password
     # has a command linking to the above function telling the system how to behave
-    # whether or not the check box is ticked
+    # whether the check box is ticked
     show_password_check_box_login.place(x=85, y=227)
+
     # places the checkButton along the x axis and down the y axis
 
     def check_password():
@@ -1101,7 +1112,7 @@ def login():
     # places this label inside our tkinter window following the place rules set
     emoji_label_clause_2_email_address_login = Label(login_screen)
     # creates a new variable and sets it equal to a label
-    # this is to be used for the second clause saying whether or not the user has fulfilled the rules
+    # this is to be used for the second clause saying whether the user has fulfilled the rules
     emoji_label_clause_2_email_address_login.place(x=125, y=100)
     # allows the program to know it has to place this emoji label next to and in line with the second clause
     emoji_label_clause_3_email_address_login = Label(login_screen)
@@ -1145,11 +1156,12 @@ def login():
     connection_login.commit()
     # commits any changes the users inputs have made to the database
     connection_login.close()
+
     # closes the connection for the database
 
     def log_in(email_address_log_in, password_db_log_in, nickname, date_of_birth):
         """this function informs the user of the fields the user has inputted
-        and whether or not they match the saved information by connecting to a and reading from the database"""
+        and whether they match the saved information by connecting to a and reading from the database"""
         connection_log_in = sqlite3.connect(database_name)
         # creates a database with a name of 'User Login Page Database' or connects to a database with this name
         cursor_log_in = connection_log_in.cursor()
@@ -1399,6 +1411,7 @@ def login():
                     home_automation_system_window.resizable(False, False)
                     # creates limits for the window at the original size
                     roomButtons = []
+
                     # creates the list for the room buttons
 
                     def room_more_controls(room_Name):
@@ -1446,6 +1459,7 @@ def login():
                         scenes_more_controls = Label(room_more_controls_window, text="Scenes")
                         # creates a label directing the user what the following buttons are (Scenes)
                         scenes_more_controls.place(x=225, y=195)
+
                         # places the informative label
 
                         def set_Scene(sceneBulb, scene):
@@ -1498,6 +1512,7 @@ def login():
                                                  text="Gorgeous", command=lambda: setRoomScenes(room_Name, "Gorgeous"))
                         # creates the button along with the scene to pass through
                         scenes_gorgeous.place(x=310, y=325)
+
                         # places the scenes button on the window in line so they each line up
 
                         def setRoomScenes(roomName2, scene):
@@ -1639,7 +1654,9 @@ def login():
                                 # call the new position for across direction
                                 y = y + 25
                                 # new position for downwards on the next line
+
                     refreshButtons()
+
                     # call the refresh buttons function
                     # buttons are displayed for the user
 
@@ -1742,9 +1759,9 @@ def login():
                                             # the users speech is converted and interpreted
                                             song_response_label_line_1 = Label(home_automation_system_window,
                                                                                text="You said: " + song_user + ", "
-                                                                               + song_user +
-                                                                               " is playing, if this wasn't the song "
-                                                                               "you wanted")
+                                                                                    + song_user +
+                                                                                    " is playing, if this wasn't the song "
+                                                                                    "you wanted")
                                             # song interpreted and being played label
                                             song_response_label_line_1.place(x=5, y=530)
                                             # label placed on window
@@ -1791,7 +1808,8 @@ def login():
                                         # the window is then updated with the label just created
 
                             def find_weather():
-                                """the weather function where the voice assistant recognises the key word to be weather"""
+                                """the weather function where the voice assistant recognises
+                                the key word to be weather"""
                                 url = "https://www.google.co.uk/search?q=weather"
                                 # creates a variable and passes through a website to find the current weather
                                 find_weather_result = requests.get(url, headers=headers)
@@ -1803,14 +1821,16 @@ def login():
                                 # using the text function and the html parser for how the result must be processed
                                 temperature = soup.select("#wob_tm")[0].getText().strip()
                                 # another variable using the variable for how to search the website is told
-                                # which part of the website to find and store using the getText and the strip functions to
+                                # which part of the website to find and store using the getText and the
+                                # strip functions to
                                 # only collecting the information required
                                 weather_description = soup.select("#wob_dc")[0].getText().strip()
                                 # then performing another search using the select function
                                 # going from the first index selects more information from the website
                                 # this time instead of the temperature the weathers conditions
                                 return temperature, weather_description
-                                # both the temperature and the weather conditions are then returned to the system to be used
+                                # both the temperature and the weather conditions are then returned to the system to
+                                # be used
 
                             def do_maths(maths_question):
                                 """maths function to execute maths question received from user"""
@@ -1856,27 +1876,28 @@ def login():
                                 # try the following commands while capturing the error
                                 with sr.Microphone() as source:
                                     # this line of code initializes a new microphone object using the sr library
-                                    # which is used to capture audio input from a microphone
-                                    # the with statement creates a temporary context in which the source object is active
-                                    # allowing any code inside the with block to access and use it
-                                    # once the with block is exited, the source object is automatically released
-                                    # any resources it was using are freed up
+                                    # which is used to capture audio input from a microphone the with statement
+                                    # creates a temporary context in which the source object is active allowing any
+                                    # code inside the with block to access and use it once the with block is exited,
+                                    # the source object is automatically released any resources it was using are
+                                    # freed up
                                     r.adjust_for_ambient_noise(source, duration=0.2)
-                                    # uses the adjust_for_ambient_noise method of a Recognizer object
-                                    # to adjust for any background noise from the audio input
-                                    # the method takes in a source object, which is the audio source that was initialized
-                                    # in the previous line, the duration parameter specifies the length of time (in seconds)
-                                    # that the method should listen for background noise before making adjustments
+                                    # uses the adjust_for_ambient_noise method of a Recognizer object to adjust for
+                                    # any background noise from the audio input the method takes in a source object,
+                                    # which is the audio source that was initialized in the previous line,
+                                    # the duration parameter specifies the length of time (in seconds) that the
+                                    # method should listen for background noise before making adjustments
                                     speak_now_label = Label(home_automation_system_window, text="Speak now",
                                                             pady=20, padx=135)
-                                    # the ready label is created with text of speak now
+                                    # the ready label is created with text of speaking now
                                     speak_now_label.place(x=5, y=570)
-                                    # the speak now label is placed
+                                    # the speaking now label is placed
                                     home_automation_system_window.update()
                                     # labels are updated to the window
                                     audio = r.listen(source)
-                                    # using a variable and connection to the recognizer made above the listen function is
-                                    # used while passing in the microphones input
+                                    # using a variable and connection to the recognizer made above the listen
+                                    # function is used
+                                    # while passing in the microphone input
                                     speech = r.recognize_google(audio)
                                     # variable used to convert the audio into understandable text
                                     # using googles recognize module
@@ -1916,7 +1937,7 @@ def login():
                                         result = do_maths(question)
                                         # then a variable is used to execute the function passing in the function
                                         if not result:
-                                            # where result was not found
+                                            # where a result was not found
                                             general_error_voice_assistant_maths_label_line_1 = Label(
                                                 home_automation_system_window,
                                                 text="I am not sure how to help you, "
@@ -1964,22 +1985,22 @@ def login():
                                         general_error_label_line_2.place(x=50, y=590)
                                         # general error is placed
                                         home_automation_system_window.update()
-                                        # updates window with labels
+                                        # updates a window with labels
                             except:
                                 # capture the error and where occurs hold it
                                 spotify_no_speech_label_line_1 = Label(home_automation_system_window,
                                                                        text="I am not sure how to help you, "
                                                                             "click on voice assistant")
-                                # specific error label created with text and placed on home automation system window
-                                spotify_no_speech_label_line_1.place(x=5, y=570)
+                                # specific error label created with text and placed on a home automation system window
+                                spotify_no_speech_label_line_1.place(x=8, y=570)
                                 # specific error label placed
                                 spotify_no_speech_label_line_2 = Label(home_automation_system_window,
                                                                        text="again to retry", padx=100)
-                                # system is told about the creation of a label where text and a padx are passed
+                                # the system is told about the creation of a label where a text and a pad-x are passed
                                 spotify_no_speech_label_line_2.place(x=50, y=590)
-                                # label informs system where it will be positioned
+                                # label informs a system where it will be positioned
                                 home_automation_system_window.update()
-                                # labels are updated to system
+                                # labels are updated to a system
                                 sp.volume(int(currVolume))
                                 # the volume is then set to what is found to be at
                         except:
@@ -1998,13 +2019,15 @@ def login():
                             general_error_voice_assistant_label_line_2.place(x=50, y=590)
                             # places second half of general error label
                             home_automation_system_window.update()
-                            # system updates current labels on window
+                            # system updates current labels on a window
+
                     voice_assistant_button = Button(home_automation_system_window,
                                                     text="Voice Assistant",
                                                     command=voice_assistant_button_clicked)
                     # button linked to voice assistant function is created
                     voice_assistant_button.place(x=350, y=580)
-                    # button is placed on window
+
+                    # button is placed on a window
 
                     def more_controls(bulb, bulbName):
                         """more controls for lights including previous controls"""
@@ -2053,6 +2076,7 @@ def login():
                         scenes_more_controls = Label(more_controls_window, text="Scenes")
                         # creates a label for the window to be placed in the more controls window
                         scenes_more_controls.place(x=225, y=195)
+
                         # places the scenes label above each of the scenes buttons
 
                         def set_Scene(sceneBulb, scene):
@@ -2063,6 +2087,7 @@ def login():
                             # new variable to find what the scene links to
                             sceneBulb.set_value(25, scene_code)
                             # sets the bulb to the scene using the code found from the dictionary
+
                         scenes_reading = Button(more_controls_window,
                                                 text="Reading", command=lambda: set_Scene(bulb, "Reading"))
                         # corresponding button for specific scene to change the light to
@@ -2180,6 +2205,7 @@ def login():
                                                     text="Off", command=lambda: light_off(Transformer))
                     # creates the off button for the transformer light
                     Transformer_off_button.place(x=155, y=405)
+
                     # places the off button for the transformer light
 
                     def choose_colour(bulb):
@@ -2220,6 +2246,7 @@ def login():
                                                        command=lambda: choose_colour(Transformer))
                     # creates the colour picker for each corresponding light
                     Transformer_colour_picker.place(x=95, y=475)
+
                     # places the select colour button on screen with the rest of its light button
 
                     def slider_control(bulb, value):
@@ -2258,6 +2285,7 @@ def login():
                         command=lambda value: slider_control(Transformer, value))
                     # creates scale for final light with slider control function
                     slider_Transformer.place(x=100, y=432)
+
                     # places scale with the rest of its buttons
 
                     def create_rooms_for_devices():
@@ -2308,6 +2336,7 @@ def login():
                         name_of_room_created_entry = Entry(create_rooms_window)
                         # creates an entry box for the user to input the name of the room
                         name_of_room_created_entry.place(x=70, y=50)
+
                         # places the entry box on the window above the check buttons
 
                         def ok_button_rooms_command(room_name):
@@ -2368,6 +2397,7 @@ def login():
                             # refresh buttons function is called and executed
                             create_rooms_window.destroy()
                             # create rooms window is closed so user can see home automation system homepage
+
                         ok_button_rooms = Button(create_rooms_window, text="Ok",
                                                  command=lambda:
                                                  ok_button_rooms_command(name_of_room_created_entry.get()))
@@ -2375,6 +2405,7 @@ def login():
                         # name of room is also fetched
                         ok_button_rooms.place(x=130, y=160)
                         # ok button is placed on window to make it clear its function
+
                     rooms_for_lights_button = Button(home_automation_system_window, text="Create a Room",
                                                      command=create_rooms_for_devices)
                     # makes the create a room button with its function
